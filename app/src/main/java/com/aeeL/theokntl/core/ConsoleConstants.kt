@@ -2,7 +2,6 @@ package com.aeeL.theokntl.core
 
 /**
  * Wire constants preserved from the reference client (TheoTown 1.12.95a).
- * The gift-code endpoint is intentionally absent; that feature is not ported.
  */
 object ConsoleConstants {
     const val LIMIT = 100_000L

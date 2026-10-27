@@ -27,10 +27,11 @@ class ConsoleException(
 data class FailureInfo(
     val kind: ErrorKind,
     val technical: String,
+    val httpStatus: Int? = null,
 )
 
 fun Throwable.toFailureInfo(): FailureInfo = when (this) {
-    is ConsoleException -> FailureInfo(kind, message.orEmpty())
+    is ConsoleException -> FailureInfo(kind, message.orEmpty(), httpStatus)
     is java.util.concurrent.CancellationException -> FailureInfo(ErrorKind.CANCELLED, message.orEmpty())
     else -> FailureInfo(ErrorKind.UNKNOWN, message.orEmpty())
 }
