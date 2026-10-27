@@ -5,7 +5,7 @@ package com.aeeL.theokntl.core
  */
 object ConsoleConstants {
     const val LIMIT = 100_000L
-    const val INT32_MAX = Int.MAX_VALUE.toLong()
+    const val INT32_MAX = 2_147_483_647L
 
     const val EVENT_EARNED = "CgkIl_L2yOgLEAIQDg"
     const val EVENT_SPEND = "CgkIl_L2yOgLEAIQDw"
