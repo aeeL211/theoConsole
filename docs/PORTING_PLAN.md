@@ -205,7 +205,7 @@ referensi (`cli_src/`) tidak di-commit ke repositori Android.
   - status fitur dan verifikasi,
   - crypto: MD5 vektor uji, AES-CBC vektor NIST, segel password (panjang/format),
   - `FeatureSync` dengan gateway palsu: idempoten, watch, refresh, fallback,
-    probe, dan pembatalan.
+    dan probe.
 - UI test dasar (Compose) hanya dikompilasi di CI, tidak dijalankan tanpa
   emulator.
 - Lint + R8/shrinkResources saat release.
