@@ -1,0 +1,30 @@
+# Android / Gradle
+.gradle/
+.idea/
+*.iml
+local.properties
+build/
+captures/
+.externalNativeBuild/
+.cxx/
+*.apk
+*.aab
+*.ap_
+*.dex
+output-metadata.json
+
+# Keystores and secrets
+*.jks
+*.keystore
+keystore.properties
+secrets.properties
+.env
+
+# Reference CLI source is kept locally, outside the Android deliverable
+/cli_src/
+/cli.zip
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
