@@ -61,7 +61,29 @@ jobs:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-        run: gradle lint testDebugUnitTest assembleDebug assembleRelease --stacktrace
+        run: |
+          set -o pipefail
+          gradle lint testDebugUnitTest assembleDebug assembleRelease --stacktrace 2>&1 | tee gradle-build.log
+
+      - name: Report Gradle failure
+        if: failure()
+        run: |
+          if [ ! -f gradle-build.log ]; then
+            echo "::error::Gradle did not produce a log file."
+            exit 0
+          fi
+          grep -E '(^e: |^FAILURE:|^> Task .* FAILED|^Execution failed|^[0-9]+ tests completed|^There were failing tests|^FAILED|^Lint found|^.*\.kt:[0-9]+:[0-9]+:|^.*\.xml:[0-9]+:)' gradle-build.log \
+            | tail -n 80 \
+            | while IFS= read -r line; do echo "::error::$line"; done
+
+      - name: Upload Gradle log
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gradle-log-${{ github.sha }}
+          path: gradle-build.log
+          if-no-files-found: ignore
+          retention-days: 7
 
       - name: Compile instrumented tests
         run: gradle assembleDebugAndroidTest --stacktrace
