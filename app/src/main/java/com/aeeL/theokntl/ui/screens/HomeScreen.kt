@@ -8,12 +8,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Button
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -379,18 +377,6 @@ private fun ToolsSection(
             body = stringResource(R.string.home_help_summary),
             icon = Icons.Default.Menu,
             onClick = onHelp,
-        )
-        ToolRow(
-            title = stringResource(R.string.action_top_up),
-            body = stringResource(R.string.home_topup_summary),
-            icon = Icons.Default.AddCircle,
-            onClick = onTopUp,
-        )
-        ToolRow(
-            title = stringResource(R.string.title_purchases),
-            body = stringResource(R.string.home_purchases_summary),
-            icon = Icons.Default.ShoppingCart,
-            onClick = onPurchases,
         )
     }
 }

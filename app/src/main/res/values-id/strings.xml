@@ -78,8 +78,6 @@
     <string name="home_protocol_summary">Konstanta wire yang dipakai klien</string>
     <string name="home_developer_summary">Kontak dan informasi build</string>
     <string name="home_help_summary">Peta command, opsi, dan catatan keamanan</string>
-    <string name="home_topup_summary">Terapkan diamond dan buka dua fitur</string>
-    <string name="home_purchases_summary">Baca atau sinkronkan pembelian fitur</string>
 
     <string name="login_title">Masuk forum</string>
     <string name="login_subtitle">Pakai akun forum yang sama dengan game. Aplikasi terhubung ke api.theotown.com lewat HTTPS.</string>

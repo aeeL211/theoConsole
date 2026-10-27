@@ -78,8 +78,6 @@
     <string name="home_protocol_summary">Wire constants used by the client</string>
     <string name="home_developer_summary">Contact and build information</string>
     <string name="home_help_summary">Command map, options, and security notes</string>
-    <string name="home_topup_summary">Apply diamonds and unlock the two features</string>
-    <string name="home_purchases_summary">Read or sync feature purchases</string>
 
     <string name="login_title">Forum sign-in</string>
     <string name="login_subtitle">Use the same forum account as the game. The app talks to api.theotown.com over HTTPS.</string>
