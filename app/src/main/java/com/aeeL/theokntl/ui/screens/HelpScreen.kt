@@ -31,10 +31,6 @@ fun HelpScreen() {
             body = stringResource(R.string.help_features_body),
         )
         HelpSection(
-            title = stringResource(R.string.help_section_options),
-            body = stringResource(R.string.help_options_body),
-        )
-        HelpSection(
             title = stringResource(R.string.help_section_security),
             body = stringResource(R.string.help_security_body),
         )
@@ -50,7 +46,6 @@ fun HelpScreen() {
                     BuildConfig.VERSION_NAME,
                     BuildConfig.VERSION_CODE,
                 ),
-                mono = true,
             )
         }
     }

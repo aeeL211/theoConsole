@@ -269,84 +269,112 @@ private val RosePalette = PaletteColors(
 )
 
 private val RobotoFlex = FontFamily(
-    Font(R.font.roboto_flex, FontWeight.Thin),
-    Font(R.font.roboto_flex, FontWeight.ExtraLight),
-    Font(R.font.roboto_flex, FontWeight.Light),
     Font(R.font.roboto_flex, FontWeight.Normal),
-    Font(R.font.roboto_flex, FontWeight.Medium),
-    Font(R.font.roboto_flex, FontWeight.SemiBold),
-    Font(R.font.roboto_flex, FontWeight.Bold),
-    Font(R.font.roboto_flex, FontWeight.ExtraBold),
-    Font(R.font.roboto_flex, FontWeight.Black),
 )
 
 private fun Typography.withRobotoFlex(): Typography = Typography(
-    displayLarge = displayLarge.copy(fontFamily = RobotoFlex),
-    displayMedium = displayMedium.copy(fontFamily = RobotoFlex),
-    displaySmall = displaySmall.copy(fontFamily = RobotoFlex),
-    headlineLarge = headlineLarge.copy(fontFamily = RobotoFlex),
-    headlineMedium = headlineMedium.copy(fontFamily = RobotoFlex),
-    headlineSmall = headlineSmall.copy(fontFamily = RobotoFlex),
-    titleLarge = titleLarge.copy(fontFamily = RobotoFlex),
-    titleMedium = titleMedium.copy(fontFamily = RobotoFlex),
-    titleSmall = titleSmall.copy(fontFamily = RobotoFlex),
-    bodyLarge = bodyLarge.copy(fontFamily = RobotoFlex),
-    bodyMedium = bodyMedium.copy(fontFamily = RobotoFlex),
-    bodySmall = bodySmall.copy(fontFamily = RobotoFlex),
-    labelLarge = labelLarge.copy(fontFamily = RobotoFlex),
-    labelMedium = labelMedium.copy(fontFamily = RobotoFlex),
-    labelSmall = labelSmall.copy(fontFamily = RobotoFlex),
+    displayLarge = displayLarge.copy(
+        fontFamily = RobotoFlex,
+        fontWeight = FontWeight.Normal,
+    ),
+    displayMedium = displayMedium.copy(
+        fontFamily = RobotoFlex,
+        fontWeight = FontWeight.Normal,
+    ),
+    displaySmall = displaySmall.copy(
+        fontFamily = RobotoFlex,
+        fontWeight = FontWeight.Normal,
+    ),
+    headlineLarge = headlineLarge.copy(
+        fontFamily = RobotoFlex,
+        fontWeight = FontWeight.Normal,
+    ),
+    headlineMedium = headlineMedium.copy(
+        fontFamily = RobotoFlex,
+        fontWeight = FontWeight.Normal,
+    ),
+    headlineSmall = headlineSmall.copy(
+        fontFamily = RobotoFlex,
+        fontWeight = FontWeight.Normal,
+    ),
+    titleLarge = titleLarge.copy(
+        fontFamily = RobotoFlex,
+        fontWeight = FontWeight.Normal,
+    ),
+    titleMedium = titleMedium.copy(
+        fontFamily = RobotoFlex,
+        fontWeight = FontWeight.Normal,
+    ),
+    titleSmall = titleSmall.copy(
+        fontFamily = RobotoFlex,
+        fontWeight = FontWeight.Normal,
+    ),
+    bodyLarge = bodyLarge.copy(
+        fontFamily = RobotoFlex,
+        fontWeight = FontWeight.Normal,
+    ),
+    bodyMedium = bodyMedium.copy(
+        fontFamily = RobotoFlex,
+        fontWeight = FontWeight.Normal,
+    ),
+    bodySmall = bodySmall.copy(
+        fontFamily = RobotoFlex,
+        fontWeight = FontWeight.Normal,
+    ),
+    labelLarge = labelLarge.copy(
+        fontFamily = RobotoFlex,
+        fontWeight = FontWeight.Normal,
+    ),
+    labelMedium = labelMedium.copy(
+        fontFamily = RobotoFlex,
+        fontWeight = FontWeight.Normal,
+    ),
+    labelSmall = labelSmall.copy(
+        fontFamily = RobotoFlex,
+        fontWeight = FontWeight.Normal,
+    ),
 )
 
 private val TheoTypography = Typography().let { base ->
     Typography(
         displayLarge = base.displayLarge.copy(
-            fontWeight = FontWeight.Black,
             fontSize = 56.sp,
             lineHeight = 60.sp,
             letterSpacing = (-1.4).sp,
         ),
         displayMedium = base.displayMedium.copy(
-            fontWeight = FontWeight.Black,
             fontSize = 44.sp,
             lineHeight = 48.sp,
             letterSpacing = (-1.0).sp,
         ),
         displaySmall = base.displaySmall.copy(
-            fontWeight = FontWeight.Black,
             fontSize = 36.sp,
             lineHeight = 40.sp,
             letterSpacing = (-0.7).sp,
         ),
         headlineLarge = base.headlineLarge.copy(
-            fontWeight = FontWeight.Bold,
             fontSize = 32.sp,
             lineHeight = 38.sp,
             letterSpacing = (-0.4).sp,
         ),
         headlineMedium = base.headlineMedium.copy(
-            fontWeight = FontWeight.Bold,
             fontSize = 28.sp,
             lineHeight = 34.sp,
             letterSpacing = (-0.2).sp,
         ),
         headlineSmall = base.headlineSmall.copy(
-            fontWeight = FontWeight.SemiBold,
             fontSize = 24.sp,
             lineHeight = 30.sp,
         ),
         titleLarge = base.titleLarge.copy(
-            fontWeight = FontWeight.Bold,
             fontSize = 22.sp,
             lineHeight = 28.sp,
         ),
         titleMedium = base.titleMedium.copy(
-            fontWeight = FontWeight.SemiBold,
             fontSize = 18.sp,
             lineHeight = 24.sp,
         ),
         titleSmall = base.titleSmall.copy(
-            fontWeight = FontWeight.SemiBold,
             fontSize = 15.sp,
             lineHeight = 20.sp,
         ),
@@ -366,17 +394,14 @@ private val TheoTypography = Typography().let { base ->
             letterSpacing = 0.2.sp,
         ),
         labelLarge = base.labelLarge.copy(
-            fontWeight = FontWeight.Bold,
             fontSize = 14.sp,
             letterSpacing = 0.2.sp,
         ),
         labelMedium = base.labelMedium.copy(
-            fontWeight = FontWeight.Bold,
             fontSize = 12.sp,
             letterSpacing = 0.7.sp,
         ),
         labelSmall = base.labelSmall.copy(
-            fontWeight = FontWeight.Bold,
             fontSize = 11.sp,
             letterSpacing = 1.0.sp,
         ),

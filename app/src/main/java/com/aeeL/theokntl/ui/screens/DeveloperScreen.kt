@@ -30,7 +30,6 @@ fun DeveloperScreen() {
             LabeledValue(
                 label = stringResource(R.string.developer_telegram),
                 value = developer.telegramLabel,
-                mono = true,
             )
             Button(
                 onClick = { runCatching { uriHandler.openUri(developer.telegramUrl) } },
@@ -52,12 +51,10 @@ fun DeveloperScreen() {
                     BuildConfig.VERSION_NAME,
                     BuildConfig.VERSION_CODE,
                 ),
-                mono = true,
             )
             LabeledValue(
                 label = stringResource(R.string.developer_topup_limit),
                 value = Formatters.number(com.aeeL.theokntl.core.ConsoleConstants.LIMIT),
-                mono = true,
             )
         }
     }

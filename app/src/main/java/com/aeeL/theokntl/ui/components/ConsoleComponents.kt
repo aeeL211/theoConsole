@@ -1,5 +1,12 @@
 package com.aeeL.theokntl.ui.components
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -29,19 +36,47 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.aeeL.theokntl.R
 import com.aeeL.theokntl.domain.model.BusyOperation
 import com.aeeL.theokntl.domain.model.FeatureReport
 import com.aeeL.theokntl.domain.model.FeatureStatus
 import com.aeeL.theokntl.ui.LocalDebugDetails
+
+// Animated sections collapse to zero height. Skipping them and scaling the
+// following gap with their height keeps the 16 dp rhythm without a final jump.
+private val ScreenColumnArrangement = object : Arrangement.Vertical {
+    override val spacing: Dp = 16.dp
+
+    override fun Density.arrange(
+        totalSize: Int,
+        sizes: IntArray,
+        outPositions: IntArray,
+    ) {
+        val gap = spacing.roundToPx()
+        var position = 0
+        sizes.forEachIndexed { index, size ->
+            if (size == 0) {
+                outPositions[index] = position
+                return@forEachIndexed
+            }
+            outPositions[index] = position
+            position += size + minOf(gap, size)
+        }
+    }
+}
 
 @Composable
 fun ScreenColumn(
@@ -53,7 +88,7 @@ fun ScreenColumn(
             .fillMaxWidth()
             .verticalScroll(rememberScrollState())
             .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
+        verticalArrangement = ScreenColumnArrangement,
         content = content,
     )
 }
@@ -65,7 +100,9 @@ fun SectionCard(
     content: @Composable ColumnScope.() -> Unit,
 ) {
     Card(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .animateContentSize(),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
         ),
@@ -77,7 +114,6 @@ fun SectionCard(
             Text(
                 text = title,
                 style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold,
             )
             content()
         }
@@ -89,7 +125,6 @@ fun LabeledValue(
     label: String,
     value: String,
     modifier: Modifier = Modifier,
-    mono: Boolean = false,
 ) {
     Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(2.dp)) {
         Text(
@@ -100,7 +135,6 @@ fun LabeledValue(
         Text(
             text = value,
             style = MaterialTheme.typography.bodyLarge,
-            fontFamily = if (mono) FontFamily.Monospace else null,
             overflow = TextOverflow.Ellipsis,
         )
     }
@@ -129,7 +163,6 @@ fun StatTile(
             Text(
                 text = value,
                 style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onSurface,
             )
         }
@@ -185,29 +218,49 @@ fun BusyPanel(
     onStop: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Surface(
-        modifier = modifier.fillMaxWidth(),
-        shape = MaterialTheme.shapes.medium,
-        color = MaterialTheme.colorScheme.tertiaryContainer,
+    var lastOperation by remember { mutableStateOf(operation) }
+    LaunchedEffect(operation) {
+        if (operation != null) lastOperation = operation
+    }
+
+    AnimatedVisibility(
+        visible = operation != null,
+        modifier = modifier,
+        enter = fadeIn(animationSpec = tween(180)) +
+            expandVertically(
+                animationSpec = tween(260),
+                expandFrom = Alignment.Top,
+            ),
+        exit = fadeOut(animationSpec = tween(140)) +
+            shrinkVertically(
+                animationSpec = tween(220),
+                shrinkTowards = Alignment.Top,
+            ),
     ) {
-        Row(
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
+        Surface(
+            modifier = Modifier.fillMaxWidth(),
+            shape = MaterialTheme.shapes.medium,
+            color = MaterialTheme.colorScheme.tertiaryContainer,
         ) {
-            CircularProgressIndicator(
-                modifier = Modifier.size(20.dp),
-                strokeWidth = 2.dp,
-                color = MaterialTheme.colorScheme.onTertiaryContainer,
-            )
-            Text(
-                text = stringResource(busyLabel(operation)),
-                modifier = Modifier.weight(1f),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onTertiaryContainer,
-            )
-            TextButton(onClick = onStop) {
-                Text(stringResource(R.string.action_stop))
+            Row(
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(20.dp),
+                    strokeWidth = 2.dp,
+                    color = MaterialTheme.colorScheme.onTertiaryContainer,
+                )
+                Text(
+                    text = stringResource(busyLabel(operation ?: lastOperation)),
+                    modifier = Modifier.weight(1f),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onTertiaryContainer,
+                )
+                TextButton(onClick = onStop) {
+                    Text(stringResource(R.string.action_stop))
+                }
             }
         }
     }
@@ -274,7 +327,6 @@ fun FeatureReportContent(
                         Text(
                             text = failure.technical.ifBlank { failure.kind.name },
                             style = MaterialTheme.typography.bodySmall,
-                            fontFamily = FontFamily.Monospace,
                             color = MaterialTheme.colorScheme.onErrorContainer,
                         )
                     }
@@ -368,20 +420,6 @@ fun SpacerHeight(height: Int) {
 }
 
 @Composable
-fun MonoText(
-    text: String,
-    modifier: Modifier = Modifier,
-) {
-    Text(
-        text = text,
-        modifier = modifier,
-        style = MaterialTheme.typography.bodySmall,
-        fontFamily = FontFamily.Monospace,
-        overflow = TextOverflow.Ellipsis,
-    )
-}
-
-@Composable
 fun StatusPill(
     text: String,
     positive: Boolean,
@@ -414,7 +452,6 @@ fun InlineRow(
     label: String,
     value: String,
     modifier: Modifier = Modifier,
-    mono: Boolean = false,
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),
@@ -431,7 +468,6 @@ fun InlineRow(
             text = value,
             modifier = Modifier.weight(1f),
             style = MaterialTheme.typography.bodyMedium,
-            fontFamily = if (mono) FontFamily.Monospace else null,
         )
     }
 }

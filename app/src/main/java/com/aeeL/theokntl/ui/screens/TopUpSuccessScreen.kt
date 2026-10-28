@@ -54,7 +54,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -130,7 +129,6 @@ fun TopUpSuccessScreen(
             Text(
                 text = stringResource(R.string.topup_success_title),
                 style = MaterialTheme.typography.displaySmall,
-                fontWeight = FontWeight.Black,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(top = 8.dp),
             )
@@ -166,7 +164,6 @@ fun TopUpSuccessScreen(
                             Formatters.number(outcome.amount),
                         ),
                         style = MaterialTheme.typography.displayMedium,
-                        fontWeight = FontWeight.Black,
                         color = MaterialTheme.colorScheme.primary,
                         textAlign = TextAlign.Center,
                     )

@@ -1,5 +1,11 @@
 package com.aeeL.theokntl.ui.screens
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -21,13 +27,16 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.aeeL.theokntl.R
 import com.aeeL.theokntl.core.Formatters
 import com.aeeL.theokntl.domain.model.ConsoleState
@@ -84,10 +93,20 @@ fun HomeScreen(
 
         ScreenColumn {
             GreetingHeader(state = state, period = period)
-            if (state.busy) {
-                BusyPanel(operation = state.busyOperation, onStop = onStop)
-            }
-            if ((state.stats.balance ?: 0L) >= state.stats.limit) {
+            BusyPanel(operation = state.busyOperation, onStop = onStop)
+            AnimatedVisibility(
+                visible = (state.stats.balance ?: 0L) >= state.stats.limit,
+                enter = fadeIn(animationSpec = tween(180)) +
+                    expandVertically(
+                        animationSpec = tween(260),
+                        expandFrom = Alignment.Top,
+                    ),
+                exit = fadeOut(animationSpec = tween(140)) +
+                    shrinkVertically(
+                        animationSpec = tween(220),
+                        shrinkTowards = Alignment.Top,
+                    ),
+            ) {
                 SectionCard(title = stringResource(R.string.home_ceiling_title)) {
                     Text(
                         text = stringResource(R.string.home_ceiling_warning),
@@ -110,7 +129,6 @@ fun HomeScreen(
                         ActionsSection(
                             busy = state.busy,
                             onRefresh = onRefresh,
-                            onSync = onSync,
                             onTopUp = onTopUp,
                         )
                         LastTopUpSection(outcome = state.lastTopUp)
@@ -138,7 +156,6 @@ fun HomeScreen(
                 ActionsSection(
                     busy = state.busy,
                     onRefresh = onRefresh,
-                    onSync = onSync,
                     onTopUp = onTopUp,
                 )
                 LastTopUpSection(outcome = state.lastTopUp)
@@ -168,19 +185,12 @@ private fun GreetingHeader(
     val accountName = state.account?.label?.takeIf { it.isNotBlank() }
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
         Text(
-            text = stringResource(R.string.home_eyebrow),
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.primary,
-            letterSpacing = 2.sp,
-        )
-        Text(
             text = if (state.signedIn && accountName != null) {
                 stringResource(R.string.home_greeting_name, greeting, accountName)
             } else {
                 greeting
             },
             style = MaterialTheme.typography.displaySmall,
-            fontWeight = FontWeight.Black,
         )
         if (state.signedIn) {
             Row(
@@ -216,7 +226,6 @@ private fun BalanceSection(state: ConsoleState) {
             Text(
                 text = Formatters.number(balance),
                 style = MaterialTheme.typography.displaySmall,
-                fontWeight = FontWeight.Bold,
             )
             Text(
                 text = stringResource(
@@ -270,7 +279,6 @@ private fun BalanceSection(state: ConsoleState) {
 private fun ActionsSection(
     busy: Boolean,
     onRefresh: () -> Unit,
-    onSync: () -> Unit,
     onTopUp: () -> Unit,
 ) {
     SectionCard(title = stringResource(R.string.home_actions)) {
@@ -282,24 +290,12 @@ private fun ActionsSection(
             ) {
                 Text(stringResource(R.string.action_top_up))
             }
-            Row(
+            OutlinedButton(
+                onClick = onRefresh,
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                enabled = !busy,
             ) {
-                OutlinedButton(
-                    onClick = onRefresh,
-                    modifier = Modifier.weight(1f),
-                    enabled = !busy,
-                ) {
-                    Text(stringResource(R.string.action_refresh))
-                }
-                OutlinedButton(
-                    onClick = onSync,
-                    modifier = Modifier.weight(1f),
-                    enabled = !busy,
-                ) {
-                    Text(stringResource(R.string.action_sync))
-                }
+                Text(stringResource(R.string.action_refresh))
             }
         }
     }
@@ -307,33 +303,52 @@ private fun ActionsSection(
 
 @Composable
 private fun LastTopUpSection(outcome: TopUpOutcome?) {
-    if (outcome == null) return
-    SectionCard(title = stringResource(R.string.home_last_topup)) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            StatTile(
-                label = stringResource(R.string.home_before),
-                value = Formatters.number(outcome.before),
-                modifier = Modifier.weight(1f),
-            )
-            StatTile(
-                label = stringResource(R.string.home_amount),
-                value = Formatters.number(outcome.amount),
-                modifier = Modifier.weight(1f),
-            )
-            StatTile(
-                label = stringResource(R.string.home_after),
-                value = Formatters.number(outcome.after),
-                modifier = Modifier.weight(1f),
-            )
-        }
-        if (outcome.capped) {
-            StatusPill(
-                text = stringResource(R.string.topup_capped),
-                positive = false,
-            )
+    var shownOutcome by remember { mutableStateOf(outcome) }
+    LaunchedEffect(outcome) {
+        if (outcome != null) shownOutcome = outcome
+    }
+
+    AnimatedVisibility(
+        visible = outcome != null,
+        enter = fadeIn(animationSpec = tween(180)) +
+            expandVertically(
+                animationSpec = tween(260),
+                expandFrom = Alignment.Top,
+            ),
+        exit = fadeOut(animationSpec = tween(140)) +
+            shrinkVertically(
+                animationSpec = tween(220),
+                shrinkTowards = Alignment.Top,
+            ),
+    ) {
+        val lastOutcome = outcome ?: shownOutcome ?: return@AnimatedVisibility
+        SectionCard(title = stringResource(R.string.home_last_topup)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                StatTile(
+                    label = stringResource(R.string.home_before),
+                    value = Formatters.number(lastOutcome.before),
+                    modifier = Modifier.weight(1f),
+                )
+                StatTile(
+                    label = stringResource(R.string.home_amount),
+                    value = Formatters.number(lastOutcome.amount),
+                    modifier = Modifier.weight(1f),
+                )
+                StatTile(
+                    label = stringResource(R.string.home_after),
+                    value = Formatters.number(lastOutcome.after),
+                    modifier = Modifier.weight(1f),
+                )
+            }
+            if (lastOutcome.capped) {
+                StatusPill(
+                    text = stringResource(R.string.topup_capped),
+                    positive = false,
+                )
+            }
         }
     }
 }

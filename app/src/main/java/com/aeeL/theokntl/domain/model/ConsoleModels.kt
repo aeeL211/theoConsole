@@ -140,7 +140,6 @@ enum class AccountField {
 data class AccountRow(
     val field: AccountField,
     val value: String,
-    val mono: Boolean,
 )
 
 data class AccountView(
@@ -230,7 +229,6 @@ data class TopUpOutcome(
 data class ProtocolRow(
     val labelKey: String,
     val value: String,
-    val mono: Boolean = false,
 )
 
 data class ProtocolInfo(
@@ -254,12 +252,12 @@ fun protocolInfo(): ProtocolInfo = ProtocolInfo(
         ProtocolRow("limit", "100,000"),
     ),
     raw = listOf(
-        ProtocolRow("vi", ConsoleConstants.CLIENT_VI, mono = true),
-        ProtocolRow("earned", ConsoleConstants.EVENT_EARNED, mono = true),
-        ProtocolRow("spend", ConsoleConstants.EVENT_SPEND, mono = true),
-        ProtocolRow("request salt", ConsoleConstants.REQUEST_SALT_HEX, mono = true),
-        ProtocolRow("response salt", ConsoleConstants.RESPONSE_SALT_HEX, mono = true),
-        ProtocolRow("session iv", ConsoleConstants.SESSION_IV, mono = true),
+        ProtocolRow("vi", ConsoleConstants.CLIENT_VI),
+        ProtocolRow("earned", ConsoleConstants.EVENT_EARNED),
+        ProtocolRow("spend", ConsoleConstants.EVENT_SPEND),
+        ProtocolRow("request salt", ConsoleConstants.REQUEST_SALT_HEX),
+        ProtocolRow("response salt", ConsoleConstants.RESPONSE_SALT_HEX),
+        ProtocolRow("session iv", ConsoleConstants.SESSION_IV),
     ),
     endpointHost = ConsoleConstants.API_HOST,
 )

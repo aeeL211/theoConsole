@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Theo Console</string>
-    <string name="home_eyebrow">THEO CONSOLE</string>
     <string name="greeting_morning">Good morning</string>
     <string name="greeting_afternoon">Good afternoon</string>
     <string name="greeting_evening">Good evening</string>
@@ -82,7 +81,7 @@
     <string name="home_session_summary">Session status, key fingerprint, and endpoint</string>
     <string name="home_protocol_summary">Wire constants used by the client</string>
     <string name="home_developer_summary">Contact and build information</string>
-    <string name="home_help_summary">Command map, options, and security notes</string>
+    <string name="home_help_summary">Step-by-step guidance and security notes</string>
 
     <string name="login_title">Forum sign-in</string>
     <string name="login_subtitle">Use the same forum account as the game. The app talks to api.theotown.com over HTTPS.</string>
@@ -201,15 +200,13 @@
     <string name="developer_build">Build</string>
     <string name="developer_topup_limit">Balance limit</string>
 
-    <string name="help_intro">This app is an Android port of the theotown-console CLI, with a screen for every interactive command.</string>
+    <string name="help_intro">A native Android console for TheoTown, with a screen for every task.</string>
     <string name="help_section_start">Getting started</string>
     <string name="help_start_body">1. Sign in with the forum account. 2. Read the balance on Home. 3. Top up on the Top up tab, review the summary, then swipe to write. 4. Read or sync feature purchases after the write.</string>
     <string name="help_section_topup">Top-up</string>
     <string name="help_topup_body">The normalized expected balance is max(earned, spend) + amount - spend. The write is rejected above 2,147,483,647 or when the balance has no room under 100,000. A swipe-to-confirm control performs the write; the balance is read again and the two feature rows are checked in a short watch window.</string>
     <string name="help_section_features">Feature purchases</string>
     <string name="help_features_body">Sync reads first, writes only missing rows, and keeps a 12-hour stamp per account. If the rows stay missing it refreshes the session once, falls back to max purchase, and probes with a temporary row. The full watch can take more than a minute; use Stop to cancel.</string>
-    <string name="help_section_options">CLI options</string>
-    <string name="help_options_body">--user: prefills the saved username. --yes: applies without review. --json: copy or share the activity log as JSON. --no-color: theme setting. --debug: technical error details. --help: this screen. --version: Settings and Help show the app version.</string>
     <string name="help_section_security">Security</string>
     <string name="help_security_body">The password is sealed with RSA PKCS#1 v1.5 after an MD5 mask. Session data stays in memory. The app stores only the optional username and per-account purchase write stamps. There is no storage or notification permission.</string>
     <string name="help_section_build">Build</string>
@@ -242,7 +239,7 @@
     <string name="settings_build_note">Builds and tests run in GitHub Actions. No keystore or secret is bundled with the app.</string>
 
     <string name="activity_empty">No activity yet</string>
-    <string name="activity_empty_body">Requests, responses, and failures appear here as a terminal-style log.</string>
+    <string name="activity_empty_body">Requests, responses, and failures appear here.</string>
     <string name="activity_size">%1$d entries</string>
     <string name="activity_copied">Log copied as JSON</string>
     <string name="activity_share_title">Share activity log</string>

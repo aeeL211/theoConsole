@@ -1,13 +1,13 @@
 # Theo Console
 
-Aplikasi Android native untuk TheoTown Console: port dari CLI Node.js
-`theotown-console` ke Kotlin + Jetpack Compose + Material 3 ekspresif.
+Aplikasi Android native untuk TheoTown Console, dibangun dengan Kotlin +
+Jetpack Compose + Material 3 ekspresif.
 
 - Package: `com.aeeL.theokntl`
 - minSdk 26, targetSdk 36, compileSdk 36
 - Single module `app`, Clean Architecture ringan (`ui/`, `domain/`, `data/`)
 - MVVM + UDF, Hilt, Coroutines/Flow, Navigation Compose, DataStore
-- HTTP memakai OkHttp dengan protokol terenkripsi yang sama seperti CLI
+- HTTP memakai OkHttp dengan protokol terenkripsi milik klien TheoTown
 
 ## Penting: build hanya di CI
 
@@ -77,7 +77,7 @@ gagal; isi keempat secret secara bersamaan.
 - Pembelian: baca status Free fast speed dan Free tunnels, sinkron fitur dengan
   watch, refresh sesi, fallback max purchase, dan probe.
 - Akun, sesi (fingerprint kunci, endpoint), protokol, pengembang, bantuan,
-  pengaturan tema, dan log aktivitas gaya terminal dengan salin/bagikan JSON.
+  pengaturan tema, dan log aktivitas dengan salin/bagikan JSON.
 - Tema ekspresif dengan lima palet aksen (Teal, Tangerine, Grape, Ocean, Rose),
   **Roboto Flex** untuk seluruh tipografi, shape membulat, dan motion
   slide/fade. Lisensi font ada di `app/src/main/assets/licenses/`.
@@ -85,7 +85,8 @@ gagal; isi keempat secret secara bersamaan.
   dynamic color Android 12+ (default mati, kontrol disembunyikan di Android
   < 12), dan detail teknis. Bahasa dan tema memakai selector dropdown.
 - Navigasi tab utama memakai `HorizontalPager` + bottom bar yang sinkron;
-  gestur horizontal pada Top up dicadangkan untuk konfirmasi. Membuka
+  swipe horizontal berpindah tab dari halaman mana pun, termasuk Top up,
+  sementara kontrol konfirmasi tetap menangani gesturnya sendiri. Membuka
   Pengaturan dari tab mana pun lalu memilih tab akan kembali ke halaman utama
   yang diminta.
 - Edge-to-edge penuh hingga area notch/cutout, safe insets pada konten,
@@ -93,8 +94,7 @@ gagal; isi keempat secret secara bersamaan.
 - String UI tersedia dalam bahasa Inggris (`values/`, `values-en/`) dan
   Indonesia (`values-id/`).
 
-Command terminal `clear` dan `exit` tidak di-port karena siklus hidup aplikasi
-ditangani sistem. Fitur **redeem gift sengaja tidak di-port** sama sekali; lihat
+Fitur **redeem gift tidak disertakan** di aplikasi; lihat
 `docs/PORTING_PLAN.md` bagian "Sengaja tidak di-port".
 
 ## Lisensi font
@@ -113,14 +113,14 @@ app/src/main/java/com/aeeL/theokntl/
   data/       OkHttp transport, TheoClient, repository, DataStore, log
   di/         modul Hilt
   ui/         theme, ViewModel, navigation, screen, komponen
-app/src/main/res/values/       string default (Inggris), tema, warna
+app/src/main/res/values/       string default (Inggris) dan tema
 app/src/main/res/values-en/    string Inggris
 app/src/main/res/values-id/    string Indonesia
 app/src/main/res/font/         Roboto Flex variable font
 app/src/main/assets/licenses/  lisensi font OFL
 app/src/test/                  unit test domain dan crypto
 app/src/androidTest/           satu UI test dasar (hanya dikompilasi di CI)
-docs/PORTING_PLAN.md           pemetaan CLI, asumsi, batasan, exclusions
+docs/PORTING_PLAN.md           asumsi, batasan, dan daftar fitur yang dikecualikan
 ```
 
 ## Verifikasi

@@ -8,16 +8,20 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerDefaults
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
@@ -27,7 +31,10 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material.icons.outlined.AccountCircle as AccountCircleOutlined
+import androidx.compose.material.icons.outlined.AddCircle as AddCircleOutlined
+import androidx.compose.material.icons.outlined.Home as HomeOutlined
+import androidx.compose.material.icons.outlined.ShoppingCart as ShoppingCartOutlined
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -37,9 +44,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -49,11 +55,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -101,13 +108,34 @@ private data class BottomDestination(
     val route: String,
     @StringRes val label: Int,
     val icon: ImageVector,
+    val selectedIcon: ImageVector,
 )
 
 private val bottomDestinations = listOf(
-    BottomDestination(Routes.HOME, R.string.title_home, Icons.Default.Home),
-    BottomDestination(Routes.TOP_UP, R.string.title_topup, Icons.Default.AddCircle),
-    BottomDestination(Routes.PURCHASES, R.string.title_purchases, Icons.Default.ShoppingCart),
-    BottomDestination(Routes.ACCOUNT, R.string.title_account, Icons.Default.AccountCircle),
+    BottomDestination(
+        route = Routes.HOME,
+        label = R.string.title_home,
+        icon = Icons.Outlined.HomeOutlined,
+        selectedIcon = Icons.Filled.Home,
+    ),
+    BottomDestination(
+        route = Routes.TOP_UP,
+        label = R.string.title_topup,
+        icon = Icons.Outlined.AddCircleOutlined,
+        selectedIcon = Icons.Filled.AddCircle,
+    ),
+    BottomDestination(
+        route = Routes.PURCHASES,
+        label = R.string.title_purchases,
+        icon = Icons.Outlined.ShoppingCartOutlined,
+        selectedIcon = Icons.Filled.ShoppingCart,
+    ),
+    BottomDestination(
+        route = Routes.ACCOUNT,
+        label = R.string.title_account,
+        icon = Icons.Outlined.AccountCircleOutlined,
+        selectedIcon = Icons.Filled.AccountCircle,
+    ),
 )
 
 private val detailRoutes = setOf(
@@ -225,8 +253,9 @@ private fun TheoConsoleApp(
                     tonalElevation = 0.dp,
                 ) {
                     bottomDestinations.forEachIndexed { index, destination ->
+                        val selected = mainPage == index
                         NavigationBarItem(
-                            selected = mainPage == index,
+                            selected = selected,
                             onClick = {
                                 if (navRoute == Routes.MAIN) {
                                     mainPage = index
@@ -236,7 +265,11 @@ private fun TheoConsoleApp(
                             },
                             icon = {
                                 Icon(
-                                    imageVector = destination.icon,
+                                    imageVector = if (selected) {
+                                        destination.selectedIcon
+                                    } else {
+                                        destination.icon
+                                    },
                                     contentDescription = stringResource(destination.label),
                                 )
                             },
@@ -378,10 +411,18 @@ private fun MainTabs(
     val topUpPage = pageIndex(Routes.TOP_UP)
     val purchasesPage = pageIndex(Routes.PURCHASES)
     val homePage = pageIndex(Routes.HOME)
+    val flingBehavior = PagerDefaults.flingBehavior(
+        state = pagerState,
+        snapAnimationSpec = tween(320, easing = FastOutSlowInEasing),
+        snapPositionalThreshold = 0.35f,
+    )
 
     LaunchedEffect(currentPage) {
         if (pagerState.currentPage != currentPage) {
-            pagerState.animateScrollToPage(currentPage)
+            pagerState.animateScrollToPage(
+                page = currentPage,
+                animationSpec = tween(320, easing = FastOutSlowInEasing),
+            )
         }
     }
     LaunchedEffect(pagerState.settledPage) {
@@ -393,7 +434,8 @@ private fun MainTabs(
     HorizontalPager(
         state = pagerState,
         modifier = Modifier.fillMaxSize(),
-        userScrollEnabled = pagerState.settledPage != topUpPage,
+        beyondViewportPageCount = 1,
+        flingBehavior = flingBehavior,
     ) { page ->
         when (page) {
             homePage -> HomeScreen(
@@ -440,7 +482,6 @@ private fun MainTabs(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ConsoleTopBar(
     route: String,
@@ -449,22 +490,19 @@ private fun ConsoleTopBar(
     onActivity: () -> Unit,
     onSettings: () -> Unit,
 ) {
-    TopAppBar(
-        title = {
-            Text(
-                text = stringResource(routeTitle(route)),
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Black,
-            )
-        },
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.background,
-            scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
-        ),
-        windowInsets = WindowInsets.safeDrawing.only(
-            WindowInsetsSides.Top + WindowInsetsSides.Horizontal,
-        ),
-        navigationIcon = {
+    Surface(color = MaterialTheme.colorScheme.background) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .windowInsetsPadding(
+                    WindowInsets.safeDrawing.only(
+                        WindowInsetsSides.Top + WindowInsetsSides.Horizontal,
+                    ),
+                )
+                .height(56.dp)
+                .padding(horizontal = 4.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
             if (canGoBack) {
                 IconButton(onClick = onBack) {
                     Icon(
@@ -473,8 +511,15 @@ private fun ConsoleTopBar(
                     )
                 }
             }
-        },
-        actions = {
+            Text(
+                text = stringResource(routeTitle(route)),
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(start = if (canGoBack) 4.dp else 16.dp),
+                style = MaterialTheme.typography.titleLarge,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
             IconButton(onClick = onActivity) {
                 Icon(
                     imageVector = Icons.Default.List,
@@ -487,8 +532,8 @@ private fun ConsoleTopBar(
                     contentDescription = stringResource(R.string.action_settings),
                 )
             }
-        },
-    )
+        }
+    }
 }
 
 @StringRes

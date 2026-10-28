@@ -30,7 +30,6 @@ import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import com.aeeL.theokntl.R
 import com.aeeL.theokntl.data.log.LogEntry
@@ -165,13 +164,11 @@ private fun LogRow(entry: LogEntry) {
             Text(
                 text = entry.time,
                 style = MaterialTheme.typography.labelSmall,
-                fontFamily = FontFamily.Monospace,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             Text(
                 text = entry.level.name,
                 style = MaterialTheme.typography.labelSmall,
-                fontFamily = FontFamily.Monospace,
                 color = levelColor,
             )
         }
@@ -180,13 +177,11 @@ private fun LogRow(entry: LogEntry) {
                 Text(
                     text = entry.message,
                     style = MaterialTheme.typography.bodySmall,
-                    fontFamily = FontFamily.Monospace,
                 )
                 entry.detail?.let { detail ->
                     Text(
                         text = detail,
                         style = MaterialTheme.typography.bodySmall,
-                        fontFamily = FontFamily.Monospace,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }

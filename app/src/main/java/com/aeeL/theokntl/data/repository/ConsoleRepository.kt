@@ -346,32 +346,30 @@ class ConsoleRepository @Inject constructor(
         val rows = mutableListOf<AccountRow>()
         val seen = mutableSetOf<String>()
 
-        fun add(field: AccountField, value: String?, mono: Boolean) {
+        fun add(field: AccountField, value: String?) {
             val text = value?.trim().orEmpty()
             if (text.isEmpty() || text == "-") return
             if (!seen.add(text.lowercase(Locale.US))) return
-            rows += AccountRow(field = field, value = text, mono = mono)
+            rows += AccountRow(field = field, value = text)
         }
 
-        add(AccountField.LOGIN, session.login, mono = true)
-        add(AccountField.PLAYER_NAME, data.account.name, mono = false)
-        add(AccountField.FORUM_NAME, data.account.forumName, mono = false)
+        add(AccountField.LOGIN, session.login)
+        add(AccountField.PLAYER_NAME, data.account.name)
+        add(AccountField.FORUM_NAME, data.account.forumName)
         var email = data.account.email
         if (email.isBlank() || email == "-") {
             if (session.login.contains("@")) email = session.login
         }
-        add(AccountField.EMAIL, email, mono = true)
+        add(AccountField.EMAIL, email)
         rows += AccountRow(
             field = AccountField.USER_ID,
             value = data.userId.toString(),
-            mono = true,
         )
         val forumId = data.account.forumId
         if (forumId != null && forumId != 0L) {
             rows += AccountRow(
                 field = AccountField.FORUM_ID,
                 value = forumId.toString(),
-                mono = true,
             )
         }
         return AccountView(

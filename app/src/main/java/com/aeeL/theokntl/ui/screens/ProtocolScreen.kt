@@ -26,13 +26,11 @@ fun ProtocolScreen() {
                 InlineRow(
                     label = stringResource(protocolLabel(row.labelKey)),
                     value = row.value,
-                    mono = row.mono,
                 )
             }
             InlineRow(
                 label = stringResource(R.string.protocol_endpoint),
                 value = info.endpointHost,
-                mono = true,
             )
         }
         SectionCard(title = stringResource(R.string.protocol_raw)) {
@@ -40,7 +38,6 @@ fun ProtocolScreen() {
                 InlineRow(
                     label = stringResource(protocolLabel(row.labelKey)),
                     value = row.value,
-                    mono = row.mono,
                 )
             }
         }

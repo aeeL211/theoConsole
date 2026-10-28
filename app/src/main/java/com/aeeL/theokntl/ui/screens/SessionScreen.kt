@@ -33,9 +33,7 @@ fun SessionScreen(
     }
 
     ScreenColumn {
-        if (state.busy) {
-            BusyPanel(operation = state.busyOperation, onStop = onStop)
-        }
+        BusyPanel(operation = state.busyOperation, onStop = onStop)
         SectionCard(title = stringResource(R.string.session_title)) {
             LabeledValue(
                 label = stringResource(R.string.session_status),
@@ -44,7 +42,6 @@ fun SessionScreen(
             LabeledValue(
                 label = stringResource(R.string.session_user_id),
                 value = session.userId?.toString() ?: stringResource(R.string.common_not_available),
-                mono = true,
             )
             LabeledValue(
                 label = stringResource(R.string.session_bound),
@@ -55,17 +52,14 @@ fun SessionScreen(
             LabeledValue(
                 label = stringResource(R.string.session_key_fingerprint),
                 value = session.keyFingerprint ?: stringResource(R.string.common_not_available),
-                mono = true,
             )
             LabeledValue(
                 label = stringResource(R.string.session_endpoint),
                 value = session.endpoint ?: stringResource(R.string.common_not_available),
-                mono = true,
             )
             LabeledValue(
                 label = stringResource(R.string.session_last_action),
                 value = session.lastAction ?: stringResource(R.string.common_not_available),
-                mono = true,
             )
         }
         SectionCard(title = stringResource(R.string.session_security_title)) {

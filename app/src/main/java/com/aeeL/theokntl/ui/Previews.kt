@@ -44,8 +44,8 @@ private val previewState = ConsoleState(
         userId = 12095,
         name = "AeeL",
         rows = listOf(
-            AccountRow(AccountField.LOGIN, "aeeL", true),
-            AccountRow(AccountField.USER_ID, "12095", true),
+            AccountRow(AccountField.LOGIN, "aeeL"),
+            AccountRow(AccountField.USER_ID, "12095"),
         ),
         since = "12:00:00",
     ),

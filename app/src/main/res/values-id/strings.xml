@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Theo Console</string>
-    <string name="home_eyebrow">THEO CONSOLE</string>
     <string name="greeting_morning">Selamat pagi</string>
     <string name="greeting_afternoon">Selamat siang</string>
     <string name="greeting_evening">Selamat sore</string>
@@ -82,7 +81,7 @@
     <string name="home_session_summary">Status sesi, fingerprint kunci, dan endpoint</string>
     <string name="home_protocol_summary">Konstanta wire yang dipakai klien</string>
     <string name="home_developer_summary">Kontak dan informasi build</string>
-    <string name="home_help_summary">Peta command, opsi, dan catatan keamanan</string>
+    <string name="home_help_summary">Panduan langkah demi langkah dan catatan keamanan</string>
 
     <string name="login_title">Masuk forum</string>
     <string name="login_subtitle">Pakai akun forum yang sama dengan game. Aplikasi terhubung ke api.theotown.com lewat HTTPS.</string>
@@ -201,15 +200,13 @@
     <string name="developer_build">Build</string>
     <string name="developer_topup_limit">Batas saldo</string>
 
-    <string name="help_intro">Aplikasi ini adalah port Android dari CLI theotown-console, dengan layar untuk setiap command interaktif.</string>
+    <string name="help_intro">Konsol Android native untuk TheoTown, dengan layar untuk setiap tugas.</string>
     <string name="help_section_start">Mulai</string>
     <string name="help_start_body">1. Masuk dengan akun forum. 2. Baca saldo di Beranda. 3. Top up di tab Top up, tinjau ringkasan, lalu geser untuk menulis. 4. Baca atau sinkronkan pembelian fitur setelah penulisan.</string>
     <string name="help_section_topup">Top-up</string>
     <string name="help_topup_body">Saldo yang diharapkan dinormalisasi sebagai max(earned, spend) + jumlah - spend. Penulisan ditolak di atas 2.147.483.647 atau jika saldo tidak punya ruang di bawah 100.000. Kontrol geser untuk konfirmasi melakukan penulisan; saldo dibaca lagi dan dua baris fitur diperiksa dalam jendela pantau singkat.</string>
     <string name="help_section_features">Pembelian fitur</string>
     <string name="help_features_body">Sinkron membaca dulu, hanya menulis baris yang belum ada, dan menyimpan cap waktu 12 jam per akun. Jika baris tetap hilang, sesi disegarkan sekali, fallback ke max purchase, lalu diuji dengan baris sementara. Pantauan penuh bisa lebih dari satu menit; pakai Hentikan untuk membatalkan.</string>
-    <string name="help_section_options">Opsi CLI</string>
-    <string name="help_options_body">--user: mengisi nama pengguna tersimpan. --yes: menerapkan tanpa tinjauan. --json: salin atau bagikan log aktivitas sebagai JSON. --no-color: pengaturan tema. --debug: detail teknis error. --help: layar ini. --version: Pengaturan dan Bantuan menampilkan versi aplikasi.</string>
     <string name="help_section_security">Keamanan</string>
     <string name="help_security_body">Kata sandi disegel dengan RSA PKCS#1 v1.5 setelah mask MD5. Data sesi tetap di memori. Aplikasi hanya menyimpan nama pengguna opsional dan cap waktu penulisan pembelian per akun. Tidak ada izin penyimpanan atau notifikasi.</string>
     <string name="help_section_build">Build</string>
@@ -242,7 +239,7 @@
     <string name="settings_build_note">Build dan test berjalan di GitHub Actions. Tidak ada keystore atau secret yang dibundel di aplikasi.</string>
 
     <string name="activity_empty">Belum ada aktivitas</string>
-    <string name="activity_empty_body">Permintaan, respons, dan kegagalan muncul di sini sebagai log gaya terminal.</string>
+    <string name="activity_empty_body">Permintaan, respons, dan kegagalan muncul di sini.</string>
     <string name="activity_size">%1$d entri</string>
     <string name="activity_copied">Log disalin sebagai JSON</string>
     <string name="activity_share_title">Bagikan log aktivitas</string>

@@ -213,7 +213,6 @@ fun SettingsScreen(
                     BuildConfig.VERSION_NAME,
                     BuildConfig.VERSION_CODE,
                 ),
-                mono = true,
             )
             Text(
                 text = stringResource(R.string.settings_build_note),

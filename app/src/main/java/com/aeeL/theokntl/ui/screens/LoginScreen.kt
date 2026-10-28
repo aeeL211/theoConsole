@@ -79,9 +79,10 @@ fun LoginScreen(
     }
 
     ScreenColumn {
-        if (busy) {
-            BusyPanel(operation = console.busyOperation, onStop = onStop)
-        }
+        BusyPanel(
+            operation = console.busyOperation.takeIf { busy },
+            onStop = onStop,
+        )
         SectionCard(title = stringResource(R.string.login_title)) {
             Text(
                 text = stringResource(R.string.login_subtitle),

@@ -74,7 +74,6 @@ fun AccountScreen(
             LabeledValue(
                 label = stringResource(R.string.field_user_id),
                 value = account.userId.toString(),
-                mono = true,
             )
         }
         SectionCard(title = stringResource(R.string.account_identity)) {
@@ -82,7 +81,6 @@ fun AccountScreen(
                 LabeledValue(
                     label = stringResource(accountFieldLabel(row.field)),
                     value = row.value,
-                    mono = row.mono,
                 )
             }
         }
@@ -97,12 +95,10 @@ fun AccountScreen(
             LabeledValue(
                 label = stringResource(R.string.session_key_fingerprint),
                 value = session.keyFingerprint ?: stringResource(R.string.common_not_available),
-                mono = true,
             )
             LabeledValue(
                 label = stringResource(R.string.session_endpoint),
                 value = session.endpoint ?: stringResource(R.string.common_not_available),
-                mono = true,
             )
             OutlinedButton(
                 onClick = onOpenSession,

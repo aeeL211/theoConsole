@@ -47,9 +47,7 @@ fun PurchasesScreen(
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
-        if (state.busy) {
-            BusyPanel(operation = state.busyOperation, onStop = onStop)
-        }
+        BusyPanel(operation = state.busyOperation, onStop = onStop)
         SectionCard(title = stringResource(R.string.purchases_status_title)) {
             val report = state.features
             if (report == null) {

@@ -98,7 +98,7 @@ fun TopUpScreen(
     BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
         val wide = maxWidth >= 720.dp
         ScreenColumn {
-            if (busy) BusyPanel(operation = state.busyOperation, onStop = onStop)
+            BusyPanel(operation = state.busyOperation, onStop = onStop)
             if (wide) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -197,7 +197,6 @@ private fun FormSection(
         LabeledValue(
             label = stringResource(R.string.topup_room),
             value = Formatters.number(room),
-            mono = true,
         )
         OutlinedTextField(
             value = amount,

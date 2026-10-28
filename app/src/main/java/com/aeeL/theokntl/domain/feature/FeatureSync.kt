@@ -27,8 +27,8 @@ interface PurchaseStampStore {
 }
 
 /**
- * Port of the CLI purchase synchronisation: read first, write only missing rows,
- * keep per-account stamps, watch for the rows, refresh once, fall back to max
+ * Purchase synchronisation: read first, write only missing rows, keep
+ * per-account stamps, watch for the rows, refresh once, fall back to max
  * purchase, and probe when everything stays invisible.
  */
 class FeatureSync(
