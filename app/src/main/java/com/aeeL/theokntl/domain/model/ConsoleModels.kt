@@ -33,10 +33,25 @@ enum class ThemeMode {
     DARK,
 }
 
+enum class ThemePalette {
+    TEAL,
+    TANGERINE,
+    GRAPE,
+    OCEAN,
+    ROSE,
+}
+
+enum class AppLanguage {
+    SYSTEM,
+    ENGLISH,
+    INDONESIAN,
+}
+
 data class AppSettings(
     val username: String = "",
     val themeMode: ThemeMode = ThemeMode.SYSTEM,
-    val dynamicColor: Boolean = true,
+    val palette: ThemePalette = ThemePalette.TEAL,
+    val dynamicColor: Boolean = false,
     val debugDetails: Boolean = false,
 )
 
