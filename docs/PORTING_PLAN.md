@@ -21,7 +21,7 @@ ke repositori Android (lihat `.gitignore`).
 | Command CLI | Padanan Android | Layer / UseCase |
 | --- | --- | --- |
 | `login [nama]` | `LoginScreen` (form username, password, switch "ingat username") | `LoginUseCase` → `ConsoleRepository.login()` |
-| `topup <jumlah>` | `TopUpScreen` (input nominal, kartu tinjauan, kontrol swipe TWRP-style) lalu `TopUpSuccessScreen` | `ReviewTopUpUseCase`, `ApplyTopUpUseCase` |
+| `topup <jumlah>` | `TopUpScreen` (input nominal, kartu tinjauan before/amount/after, kontrol swipe TWRP-style) lalu `TopUpSuccessScreen` | `ReviewTopUpUseCase`, `ApplyTopUpUseCase` |
 | `purchases` | `PurchasesScreen` (status Free fast speed & Free tunnels) | `ReadPurchasesUseCase` |
 | `refresh` | Aksi "Baca ulang" di Beranda dan Top up | `RefreshBalanceUseCase` |
 | `sync` | Aksi "Sinkron fitur" di Beranda, Top up, dan Pembelian | `SyncFeaturesUseCase` → `FeatureSync` |
@@ -63,17 +63,19 @@ ke repositori Android (lihat `.gitignore`).
   - `data/`: OkHttp transport, klien protokol terenkripsi, DataStore,
     `ConsoleRepository`, log sesi, implementasi gateway/state store.
   - `ui/`: Compose + Material 3 dengan tipografi, shape, dan motion ekspresif,
-  lima palet aksen, bahasa per-app, navigasi, ViewModel, theme.
+  lima palet aksen, bahasa aplikasi, navigasi, ViewModel, theme.
 - MVVM + UDF: `StateFlow` untuk state, `Channel`/`Flow` untuk event sekali pakai.
   Event sukses top-up memakai `Channel<TopUpOutcome>` agar layar sukses tidak
   dibuka ulang saat recomposition.
 - DI: Hilt (`@HiltAndroidApp`, `@HiltViewModel`, modul `SingletonComponent`).
 - Async: Coroutines + Flow. Semua I/O jaringan di `Dispatchers.IO`/OkHttp.
 - Penyimpanan: Preferences DataStore untuk username, tema/palet, dan cap waktu
-  penulisan pembelian. Bahasa memakai AppCompat per-app locales. Room tidak
-  diperlukan.
-- Navigasi: Navigation Compose dengan route string, bottom bar, slide + fade,
-  dan swipe horizontal antar tab utama.
+  penulisan pembelian. Bahasa disimpan di SharedPreferences
+  (`theo_language`/`language`) lalu diterapkan lewat
+  `MainActivity.attachBaseContext()`. Room tidak diperlukan.
+- Navigasi: Navigation Compose untuk halaman detail, bottom bar, dan
+  `HorizontalPager` untuk empat tab utama. Halaman Pengaturan/detail selalu
+  kembali ke tab pager yang sedang dipilih.
 - Tidak ada dependency npm yang di-port; tidak ada proses anak.
 
 ### Pemetaan library
@@ -87,6 +89,7 @@ ke repositori Android (lihat `.gitignore`).
 | file `state.json` | Preferences DataStore |
 | ANSI reporter/spinner | Kartu status + `LazyColumn` log bergaya terminal |
 | `Intl.NumberFormat` | `String.format(Locale.US, "%,d")` agar pemisah ribuan sama |
+| Font sistem | **Roboto Flex** variable font yang dibundel di `res/font/`, diterapkan pada seluruh skala tipografi Material 3 |
 
 ## 4. Perilaku protokol yang dipertahankan
 
@@ -103,6 +106,9 @@ ke repositori Android (lihat `.gitignore`).
   - ditolak bila melebihi `INT32_MAX`,
   - batas saldo 100.000,
   - setelah tulis event, snapshot dibaca ulang; `capped` bila saldo < target.
+  - Nilai `target` tetap dipakai untuk validasi/protokol, tetapi tidak lagi
+    ditampilkan sebagai baris UI. Ringkasan Top up, riwayat top-up terakhir, dan
+    layar sukses hanya menampilkan before/amount/after agar tidak membingungkan.
 - Pembelian fitur:
   - baca dulu, tulis `add purchase` hanya untuk baris yang belum terlihat,
   - cap waktu per akun agar sync berulang idempoten (12 jam),
@@ -136,26 +142,52 @@ ke repositori Android (lihat `.gitignore`).
   `MaterialExpressiveTheme` baru tersedia di artifact beta, jadi proyek tetap
   memakai `MaterialTheme` stabil dan membangun ekspresi lewat typography,
   shapes, warna, serta animasi sendiri.
+- Tipografi memakai **Roboto Flex** (variable font, dibundel di
+  `app/src/main/res/font/roboto_flex.ttf`) untuk seluruh skala Material 3,
+  dengan bobot Thin–Black agar hierarki display/headline/title/body/label lebih
+  ekspresif. Lisensi OFL tersedia di `app/src/main/assets/licenses/` dan
+  `docs/licenses/`.
 - Palet aksen: Teal, Tangerine, Grape, Ocean, Rose. Masing-masing punya varian
-  terang/gelap. Dynamic color hanya jika `Build.VERSION.SDK_INT >= 31`, default
-  mati; memilih palet otomatis mematikan dynamic color.
-- Tema terang/gelap/sistem dan edge-to-edge. Warna status bar mengikuti tema.
-- Bahasa: Ikuti sistem, Inggris, Indonesia. Memakai AppCompat per-app locales,
-  `values-en/`, `values-id/`, dan `locales_config.xml`; perubahan bahasa memuat
-  ulang activity agar seluruh label konsisten.
+  terang/gelap. Semua role `surfaceContainer*`, `surfaceDim`, `surfaceBright`,
+  `outlineVariant`, `inverse*`, dan `scrim` diisi konsisten agar kartu, bar,
+  dan kontrol tidak memakai warna permukaan campuran. Dynamic color hanya jika
+  `Build.VERSION.SDK_INT >= 31`, default mati; memilih palet otomatis mematikan
+  dynamic color. Di Android < 12 kontrol dynamic color tidak ditampilkan sama
+  sekali.
+- Tema terang/gelap/sistem dengan edge-to-edge penuh. Window menggambar di
+  belakang status bar, navigation bar, dan display cutout
+  (`layoutInDisplayCutoutMode=ALWAYS` pada API 30+ / `SHORT_EDGES` pada API
+  28–29). Top bar, bottom bar, dan layar sukses memakai `safeDrawing`/safe
+  insets agar konten tidak tertutup notch, sementara background tetap
+  memenuhi seluruh layar.
+- Bahasa: Ikuti sistem, Inggris, Indonesia. Pilihan disimpan manual di
+  SharedPreferences, diterapkan di `attachBaseContext()`, lalu activity
+  dibuat ulang. `locales_config.xml` dan AppCompat per-app locale service tidak
+  dipakai agar sumber kebenaran bahasa hanya satu. Semua label membaca
+  `values-en/`/`values-id/`.
+- Pengaturan memakai selector dropdown untuk bahasa dan tema, bukan radio
+  button; palet memakai selector swatch. Perubahan bahasa langsung memuat ulang
+  UI.
 - Layar: Beranda, Login, Top up, Sukses top up, Pembelian, Akun, Sesi, Protokol,
   Bantuan, Pengembang, Pengaturan, Aktivitas.
 - Beranda memakai sapaan otomatis berdasarkan jam: pagi 04.00–10.59, siang
   11.00–14.59, sore 15.00–17.59, malam 18.00–03.59.
-- Navigasi tab utama memakai swipe horizontal (ambang 72dp) di Beranda,
-  Pembelian, dan Akun. Top up tidak memakai swipe navigasi karena gestur
-  horizontal di layar itu dicadangkan untuk konfirmasi.
+- Navigasi tab utama memakai `HorizontalPager` interaktif dengan bottom bar
+  yang tersinkron dua arah, sehingga swipe terasa natural dan perubahan tab
+  tidak memicu loop animasi. Top up menonaktifkan swipe pager karena gestur
+  horizontal di layar itu dicadangkan untuk konfirmasi. Membuka Pengaturan
+  atau halaman detail dari tab mana pun lalu menekan bottom bar akan kembali
+  ke `Routes.MAIN` dan memilih tab yang diminta, bukan menumpuk halaman.
 - Top up memakai kontrol swipe-to-confirm bergaya TWRP; tidak ada tombol Apply
-  atau Cancel. Swipe pertama membuka tinjauan, kecuali switch "tanpa tinjauan"
-  aktif; swipe berikutnya menulis. Mengubah nominal membatalkan tinjauan.
+  atau Cancel. Offset thumb diperbarui langsung saat drag agar responsif;
+  animasi hanya dipakai untuk snap-back/penyelesaian. Swipe pertama membuka
+  tinjauan, kecuali switch "tanpa tinjauan" aktif; swipe berikutnya menulis.
+  Mengubah nominal membatalkan tinjauan. Baris target internal dihapus dari UI
+  tinjauan.
 - Setelah tulis berhasil, event `TopUpOutcome` membuka layar sukses terpisah
-  dengan orb animasi, confetti, ringkasan before/after, status capped, dan
-  laporan fitur. Layar ini menyembunyikan top bar/bottom bar dan mendukung back.
+  dengan orb animasi, confetti, ringkasan before/amount/after, status capped,
+  dan laporan fitur. Layar ini menyembunyikan top bar/bottom bar, memakai safe
+  insets, dan mendukung back.
 - Transisi navigasi memakai slide horizontal + fade, bukan crossfade.
 - Layout responsif: `BoxWithConstraints` dengan breakpoint 720dp untuk dua
   kolom di tablet; bukan `WindowSizeClass` eksperimental agar API stabil.
@@ -164,7 +196,8 @@ ke repositori Android (lihat `.gitignore`).
 - Log gaya terminal: `LazyColumn`, font monospace, timestamp, level, salin,
   bagikan, bersihkan.
 - Semua string UI di `values/strings.xml` (Inggris default), `values-en/`, dan
-  `values-id/`. Log protokol bersifat data teknis (tidak diterjemahkan).
+  `values-id/`; jumlah key ketiganya dijaga sama. Log protokol bersifat data
+  teknis (tidak diterjemahkan).
 - Preview Compose untuk layar utama, termasuk preview layar sukses top-up.
 
 ## 7. Keamanan dan privasi
@@ -205,9 +238,10 @@ referensi (`cli_src/`) tidak di-commit ke repositori Android.
 - Penulisan top-up/pembelian adalah aksi nyata ke akun. Top-up memakai swipe
   untuk konfirmasi (tanpa tombol Apply/Cancel); switch "tanpa tinjauan"
   melewati kartu tinjauan tetapi tetap memerlukan satu swipe.
-- Preferensi tema/palet disimpan di DataStore. Pilihan bahasa disimpan oleh
-  AppCompat auto-store, bukan di DataStore, agar sistem per-app locale tetap
-  menjadi sumber kebenaran.
+- Preferensi tema/palet disimpan di DataStore. Pilihan bahasa disimpan di
+  SharedPreferences terpisah dan diterapkan lewat `attachBaseContext()`, bukan
+  AppCompat per-app locale, supaya tidak ada dua sumber kebenaran. Pilihan
+  bahasa lama dari AppCompat tidak dimigrasikan; pengguna cukup memilih ulang.
 - Build, lint, dan test hanya dijalankan di GitHub Actions. Tidak ada Gradle
   wrapper karena wrapper tidak bisa digenerate tanpa menjalankan Gradle;
   CI memakai Gradle 8.13 terpasang.
@@ -224,7 +258,8 @@ referensi (`cli_src/`) tidak di-commit ke repositori Android.
 | Hilt | 2.56.2 | Stabil, mendukung KSP2 |
 | Compose BOM | 2025.09.01 | Compose UI 1.9.2 + Material3 1.4.0 yang kompatibel |
 | Material3 | 1.4.0 (via BOM) | Stabil; ekspresi visual dibangun di atas API stabil |
-| AppCompat | 1.7.1 | Per-app locales dan theme host Compose |
+| Roboto Flex | Variable font bundled | Tipografi ekspresif, lisensi OFL disertakan |
+| AppCompat | 1.7.1 | Host theme `Theme.AppCompat.DayNight.NoActionBar`; bukan lagi untuk per-app locale |
 | Navigation Compose | 2.8.9 | Stabil |
 | OkHttp | 4.12.0 | Stabil, mendukung Android 8+ |
 | kotlinx.serialization | 1.8.1 | JSON + state pembelian |

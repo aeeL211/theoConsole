@@ -71,25 +71,38 @@ gagal; isi keempat secret secara bersamaan.
   tidak disimpan.
 - Beranda: sapaan otomatis sesuai jam, saldo, earned/spend, sisa ruang, progres
   batas 100.000, status fitur, dan ringkasan top-up terakhir.
-- Top up: validasi nominal, tinjauan target, konfirmasi swipe-to-confirm tanpa
-  tombol Apply/Cancel, opsi lewati tinjauan, dan layar sukses animasi terpisah.
+- Top up: validasi nominal, ringkasan before/amount/after (tanpa baris target
+  internal), konfirmasi swipe-to-confirm tanpa tombol Apply/Cancel, opsi lewati
+  tinjauan, dan layar sukses animasi terpisah.
 - Pembelian: baca status Free fast speed dan Free tunnels, sinkron fitur dengan
   watch, refresh sesi, fallback max purchase, dan probe.
 - Akun, sesi (fingerprint kunci, endpoint), protokol, pengembang, bantuan,
   pengaturan tema, dan log aktivitas gaya terminal dengan salin/bagikan JSON.
 - Tema ekspresif dengan lima palet aksen (Teal, Tangerine, Grape, Ocean, Rose),
-  tipografi besar, shape membulat, dan motion slide/fade.
+  **Roboto Flex** untuk seluruh tipografi, shape membulat, dan motion
+  slide/fade. Lisensi font ada di `app/src/main/assets/licenses/`.
 - Pengaturan bahasa Indonesia/Inggris/ikuti sistem, tema terang/gelap/sistem,
-  dynamic color Android 12+ (default mati), dan detail teknis.
-- Navigasi swipe horizontal antar tab utama; gestur horizontal pada Top up
-  dicadangkan untuk konfirmasi.
-- Edge-to-edge, predictive back, layout dua kolom pada layar ≥720dp.
+  dynamic color Android 12+ (default mati, kontrol disembunyikan di Android
+  < 12), dan detail teknis. Bahasa dan tema memakai selector dropdown.
+- Navigasi tab utama memakai `HorizontalPager` + bottom bar yang sinkron;
+  gestur horizontal pada Top up dicadangkan untuk konfirmasi. Membuka
+  Pengaturan dari tab mana pun lalu memilih tab akan kembali ke halaman utama
+  yang diminta.
+- Edge-to-edge penuh hingga area notch/cutout, safe insets pada konten,
+  predictive back, dan layout dua kolom pada layar ≥720dp.
 - String UI tersedia dalam bahasa Inggris (`values/`, `values-en/`) dan
   Indonesia (`values-id/`).
 
 Command terminal `clear` dan `exit` tidak di-port karena siklus hidup aplikasi
 ditangani sistem. Fitur **redeem gift sengaja tidak di-port** sama sekali; lihat
 `docs/PORTING_PLAN.md` bagian "Sengaja tidak di-port".
+
+## Lisensi font
+
+Roboto Flex dibundel dari Google Fonts di `app/src/main/res/font/roboto_flex.ttf`
+di bawah SIL Open Font License 1.1. Teks lisensi lengkap tersedia di
+`app/src/main/assets/licenses/roboto_flex_ofl.txt` dan
+`docs/licenses/roboto_flex_ofl.txt`.
 
 ## Struktur singkat
 
@@ -103,6 +116,8 @@ app/src/main/java/com/aeeL/theokntl/
 app/src/main/res/values/       string default (Inggris), tema, warna
 app/src/main/res/values-en/    string Inggris
 app/src/main/res/values-id/    string Indonesia
+app/src/main/res/font/         Roboto Flex variable font
+app/src/main/assets/licenses/  lisensi font OFL
 app/src/test/                  unit test domain dan crypto
 app/src/androidTest/           satu UI test dasar (hanya dikompilasi di CI)
 docs/PORTING_PLAN.md           pemetaan CLI, asumsi, batasan, exclusions

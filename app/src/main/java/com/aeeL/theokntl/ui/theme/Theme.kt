@@ -1,6 +1,7 @@
 package com.aeeL.theokntl.ui.theme
 
 import android.app.Activity
+import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -15,12 +16,17 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.lerp
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.view.WindowCompat
+import com.aeeL.theokntl.R
 import com.aeeL.theokntl.domain.model.ThemeMode
 import com.aeeL.theokntl.domain.model.ThemePalette
 
@@ -262,6 +268,36 @@ private val RosePalette = PaletteColors(
     ),
 )
 
+private val RobotoFlex = FontFamily(
+    Font(R.font.roboto_flex, FontWeight.Thin),
+    Font(R.font.roboto_flex, FontWeight.ExtraLight),
+    Font(R.font.roboto_flex, FontWeight.Light),
+    Font(R.font.roboto_flex, FontWeight.Normal),
+    Font(R.font.roboto_flex, FontWeight.Medium),
+    Font(R.font.roboto_flex, FontWeight.SemiBold),
+    Font(R.font.roboto_flex, FontWeight.Bold),
+    Font(R.font.roboto_flex, FontWeight.ExtraBold),
+    Font(R.font.roboto_flex, FontWeight.Black),
+)
+
+private fun Typography.withRobotoFlex(): Typography = Typography(
+    displayLarge = displayLarge.copy(fontFamily = RobotoFlex),
+    displayMedium = displayMedium.copy(fontFamily = RobotoFlex),
+    displaySmall = displaySmall.copy(fontFamily = RobotoFlex),
+    headlineLarge = headlineLarge.copy(fontFamily = RobotoFlex),
+    headlineMedium = headlineMedium.copy(fontFamily = RobotoFlex),
+    headlineSmall = headlineSmall.copy(fontFamily = RobotoFlex),
+    titleLarge = titleLarge.copy(fontFamily = RobotoFlex),
+    titleMedium = titleMedium.copy(fontFamily = RobotoFlex),
+    titleSmall = titleSmall.copy(fontFamily = RobotoFlex),
+    bodyLarge = bodyLarge.copy(fontFamily = RobotoFlex),
+    bodyMedium = bodyMedium.copy(fontFamily = RobotoFlex),
+    bodySmall = bodySmall.copy(fontFamily = RobotoFlex),
+    labelLarge = labelLarge.copy(fontFamily = RobotoFlex),
+    labelMedium = labelMedium.copy(fontFamily = RobotoFlex),
+    labelSmall = labelSmall.copy(fontFamily = RobotoFlex),
+)
+
 private val TheoTypography = Typography().let { base ->
     Typography(
         displayLarge = base.displayLarge.copy(
@@ -345,7 +381,7 @@ private val TheoTypography = Typography().let { base ->
             letterSpacing = 1.0.sp,
         ),
     )
-}
+}.withRobotoFlex()
 
 private val TheoShapes = Shapes(
     extraSmall = RoundedCornerShape(10.dp),
@@ -355,13 +391,34 @@ private val TheoShapes = Shapes(
     extraLarge = RoundedCornerShape(36.dp),
 )
 
+private fun ColorScheme.withExpressiveSurfaces(): ColorScheme = copy(
+    surfaceTint = primary,
+    inverseSurface = onSurface,
+    inverseOnSurface = surface,
+    inversePrimary = primaryContainer,
+    surfaceDim = lerp(surface, Color.Black, 0.08f),
+    surfaceBright = lerp(surface, Color.White, 0.08f),
+    surfaceContainerLowest = surface,
+    surfaceContainerLow = lerp(surface, surfaceVariant, 0.18f),
+    surfaceContainer = lerp(surface, surfaceVariant, 0.32f),
+    surfaceContainerHigh = lerp(surface, surfaceVariant, 0.48f),
+    surfaceContainerHighest = lerp(surface, surfaceVariant, 0.64f),
+    outlineVariant = lerp(outline, surfaceVariant, 0.5f),
+    scrim = Color.Black,
+)
+
+private fun PaletteColors.withExpressiveSurfaces(): PaletteColors = PaletteColors(
+    light = light.withExpressiveSurfaces(),
+    dark = dark.withExpressiveSurfaces(),
+)
+
 private fun paletteColors(palette: ThemePalette): PaletteColors = when (palette) {
     ThemePalette.TEAL -> TealPalette
     ThemePalette.TANGERINE -> TangerinePalette
     ThemePalette.GRAPE -> GrapePalette
     ThemePalette.OCEAN -> OceanPalette
     ThemePalette.ROSE -> RosePalette
-}
+}.withExpressiveSurfaces()
 
 @Composable
 fun TheoConsoleTheme(
@@ -390,6 +447,7 @@ fun TheoConsoleTheme(
     if (!view.isInEditMode) {
         SideEffect {
             val activity = view.context as? Activity ?: return@SideEffect
+            activity.window.setBackgroundDrawable(ColorDrawable(colors.background.toArgb()))
             val controller = WindowCompat.getInsetsController(activity.window, view)
             controller.isAppearanceLightStatusBars = !darkTheme
             controller.isAppearanceLightNavigationBars = !darkTheme
