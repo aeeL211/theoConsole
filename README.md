@@ -70,13 +70,14 @@ gagal; isi keempat secret secara bersamaan.
 - Beranda: sapaan otomatis sesuai jam, saldo, earned/spend, sisa ruang, progres
   batas 100.000, status fitur, dan ringkasan top-up terakhir.
 - Top up: validasi nominal, ringkasan before/amount/after (tanpa baris target
-  internal), konfirmasi swipe-to-confirm tanpa tombol Apply/Cancel, opsi lewati
-  tinjauan, dan layar sukses animasi terpisah.
+  internal), tinjauan wajib, konfirmasi swipe-to-confirm tanpa tombol
+  Apply/Cancel, dan layar sukses animasi terpisah.
 - Verifikasi fitur otomatis setelah top-up: baca status Free fast speed dan Free
   tunnels, sinkron fitur dengan watch, refresh sesi, fallback max purchase, dan
   probe. Tidak ada tab Pembelian terpisah.
-- Akun, sesi (fingerprint kunci, endpoint), protokol, pengembang, bantuan,
-  pengaturan tema, dan log aktivitas dengan salin/bagikan JSON.
+- Akun dengan identitas dan detail sesi (status, fingerprint kunci, endpoint),
+  protokol, pengembang, bantuan, pengaturan tema, dan log aktivitas dengan
+  salin/bagikan JSON.
 - Tema ekspresif dengan lima palet aksen (Teal, Tangerine, Grape, Ocean, Rose),
   **Roboto Flex** untuk seluruh tipografi, shape membulat, dan motion
   slide/fade. Lisensi font ada di `app/src/main/assets/licenses/`.
@@ -89,7 +90,7 @@ gagal; isi keempat secret secara bersamaan.
   Bottom bar hanya tampil di tab utama. Halaman detail memakai tombol kembali
   di top bar dan kembali ke tab pager yang sedang aktif; login yang berhasil
   kembali ke Beranda.
-- Status bar disembunyikan; top bar 52dp menempati area cutout tanpa inset atas
+- Status bar disembunyikan; top bar 60dp menempati area cutout tanpa inset atas
   tambahan, safe inset hanya diterapkan sekali pada konten, predictive back, dan
   layout dua kolom pada layar ≥720dp.
 - String UI tersedia dalam bahasa Inggris (`values/`, `values-en/`) dan

@@ -78,7 +78,10 @@ Jaga perilaku berikut saat mengubah UI:
 - Di tab Top up, pager tetap dapat digeser; kontrol swipe-to-confirm mengonsumsi
   gestur horizontal hanya di area kontrolnya agar tidak bentrok. Tombol kembali
   dari tab utama selain Beranda kembali ke Beranda.
-- Jangan menambahkan tombol Apply/Cancel pada top-up; konfirmasi memakai swipe.
+- Detail sesi berada di Akun; jangan membuat layar Sesi terpisah atau entri
+  Session di Beranda.
+- Jangan menambahkan tombol Apply/Cancel pada top-up; konfirmasi memakai swipe
+  setelah ringkasan tinjauan. Jangan menambahkan jalan pintas tanpa tinjauan.
 - Semua string UI harus melalui resource. Jangan hardcode teks yang terlihat
   pengguna.
 

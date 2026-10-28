@@ -77,12 +77,6 @@ class ConsoleViewModel @Inject constructor(
         applyCurrentReview()
     }
 
-    fun topUp(rawAmount: String, skipReview: Boolean) {
-        val reviewed = reviewOrReport(rawAmount) ?: return
-        _review.value = reviewed
-        if (skipReview) applyCurrentReview()
-    }
-
     fun cancelTopUp() {
         cancelTopUpUseCase()
         _review.value = null

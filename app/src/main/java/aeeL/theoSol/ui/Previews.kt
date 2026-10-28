@@ -27,7 +27,6 @@ import aeeL.theoSol.ui.screens.DeveloperScreen
 import aeeL.theoSol.ui.screens.HelpScreen
 import aeeL.theoSol.ui.screens.HomeScreen
 import aeeL.theoSol.ui.screens.LoginScreen
-import aeeL.theoSol.ui.screens.SessionScreen
 import aeeL.theoSol.ui.screens.SettingsScreen
 import aeeL.theoSol.ui.screens.TopUpScreen
 import aeeL.theoSol.ui.screens.TopUpSuccessScreen
@@ -117,7 +116,6 @@ private fun HomePreview() {
             onSync = {},
             onStop = {},
             onTopUp = {},
-            onSession = {},
             onProtocol = {},
             onDeveloper = {},
             onHelp = {},
@@ -150,7 +148,6 @@ private fun TopUpPreview() {
             review = previewReview,
             onLogin = {},
             onReview = {},
-            onTopUp = { _, _ -> },
             onApply = {},
             onCancelReview = {},
             onStop = {},
@@ -166,7 +163,6 @@ private fun AccountPreview() {
         AccountScreen(
             state = previewState,
             onLogin = {},
-            onOpenSession = {},
             onSignOut = {},
             onStop = {},
         )
@@ -201,19 +197,6 @@ private fun TopUpSuccessPreview() {
         TopUpSuccessScreen(
             outcome = previewState.lastTopUp,
             onDone = {},
-        )
-    }
-}
-
-@Preview(name = "Session", widthDp = 420, heightDp = 800, showBackground = true)
-@Preview(name = "Session dark", widthDp = 420, heightDp = 800, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-private fun SessionPreview() {
-    PreviewSurface {
-        SessionScreen(
-            state = previewState,
-            onLogin = {},
-            onStop = {},
         )
     }
 }

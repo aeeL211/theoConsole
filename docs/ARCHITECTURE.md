@@ -129,7 +129,7 @@ ditangani di dalam proses Android tanpa runtime atau layanan tambahan.
   `BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE`. Window tetap menggambar di belakang
   navigation bar dan display cutout (`layoutInDisplayCutoutMode=ALWAYS` pada
   API 30+, `SHORT_EDGES` pada API 28–29).
-- Top bar setinggi 52dp hanya memakai inset cutout horizontal; inset cutout atas
+- Top bar setinggi 60dp hanya memakai inset cutout horizontal; inset cutout atas
   tidak ditambahkan agar bar tidak turun dan area notch tetap terisi. Status bar
   tidak menambah padding kedua. Bottom bar dan layar sukses memakai inset
   sistem masing-masing satu kali; background tetap memenuhi layar.
@@ -155,8 +155,11 @@ ditangani di dalam proses Android tanpa runtime atau layanan tambahan.
 
 ### Layar
 
-- Beranda, Login, Top up, Sukses top up, Akun, Sesi, Protokol, Bantuan,
-  Pengembang, Pengaturan, dan Aktivitas.
+- Beranda, Login, Top up, Sukses top up, Akun, Protokol, Bantuan, Pengembang,
+  Pengaturan, dan Aktivitas.
+- Akun menggabungkan identitas dan detail sesi: status, waktu masuk, aksi
+  terakhir, fingerprint kunci, endpoint, dan catatan keamanan. Tidak ada layar
+  sesi terpisah.
 - Pembelian tidak memiliki tab terpisah. Setelah top-up, fitur Free fast speed
   dan Free tunnels dibaca dan disinkronkan otomatis; Beranda menyediakan aksi
   sinkron manual.
@@ -165,8 +168,8 @@ ditangani di dalam proses Android tanpa runtime atau layanan tambahan.
 - Top up memakai kontrol swipe-to-confirm; tidak ada tombol Apply atau Cancel.
   Offset thumb mengikuti drag secara langsung, animasi hanya untuk snap-back
   atau penyelesaian.
-- Swipe pertama membuka tinjauan, kecuali opsi lewati tinjauan aktif. Swipe
-  berikutnya menulis. Mengubah nominal membatalkan tinjauan.
+- Swipe pertama selalu membuka tinjauan. Swipe berikutnya menulis. Mengubah
+  nominal membatalkan tinjauan.
 - Setelah tulis berhasil, layar sukses terpisah menampilkan check orb dengan
   ring pulse/rotasi halus di sekeliling ikon, reveal sekali, ringkasan
   before/amount/after, status capped, dan laporan fitur. Tidak ada gradient atau

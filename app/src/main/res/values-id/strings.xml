@@ -11,7 +11,6 @@
     <string name="title_login">Masuk</string>
     <string name="title_topup">Top up</string>
     <string name="title_account">Akun</string>
-    <string name="title_session">Sesi</string>
     <string name="title_protocol">Protokol</string>
     <string name="title_developer">Pengembang</string>
     <string name="title_help">Bantuan</string>
@@ -75,7 +74,6 @@
     <string name="home_ceiling_title">Saldo mencapai batas</string>
     <string name="home_ceiling_warning">Akun berada di batas 100.000 diamond, jadi top-up tidak bisa diterapkan. Belanjakan diamond di game terlebih dahulu.</string>
     <string name="home_tools">Alat konsol</string>
-    <string name="home_session_summary">Status sesi, fingerprint kunci, dan endpoint</string>
     <string name="home_protocol_summary">Konstanta wire yang dipakai klien</string>
     <string name="home_developer_summary">Kontak dan informasi build</string>
     <string name="home_help_summary">Panduan langkah demi langkah dan catatan keamanan</string>
@@ -100,8 +98,6 @@
     <string name="topup_amount_hint">Hanya angka, misalnya 12000.</string>
     <string name="topup_quick_pick">Nominal cepat</string>
     <string name="topup_quick_max">Maks</string>
-    <string name="topup_skip_review">Terapkan tanpa tinjauan</string>
-    <string name="topup_skip_review_hint">Lewati kartu tinjauan dan geser sekali untuk langsung menulis.</string>
     <string name="topup_write_warning">Ini menulis ke akun game asli. Tidak ada pembatalan.</string>
     <string name="topup_review_title">Tinjauan</string>
     <string name="topup_review_empty">Masukkan jumlah dan tinjau untuk melihat ringkasan sebelum/sesudah dan daftar fitur.</string>
@@ -114,7 +110,6 @@
     <string name="topup_confirm_title">Konfirmasi top-up</string>
     <string name="topup_confirm_body">Tulis %1$s diamond ke akun ini? Ini mengubah akun game asli.</string>
     <string name="topup_swipe_review">Geser untuk meninjau</string>
-    <string name="topup_swipe_apply">Geser untuk top up sekarang</string>
     <string name="topup_swipe_confirm">Geser untuk konfirmasi top up</string>
     <string name="topup_swipe_busy">Sedang menulis ke akun…</string>
     <string name="topup_swipe_invalid">Masukkan nominal yang valid dulu.</string>
@@ -142,7 +137,6 @@
     <string name="account_identity">Identitas</string>
     <string name="account_since">Masuk pada</string>
     <string name="account_session_details">Detail sesi</string>
-    <string name="account_open_session">Buka layar sesi</string>
     <string name="account_signout_confirm_title">Keluar?</string>
     <string name="account_signout_confirm_body">Sesi di memori dan kata sandi tersegel dihapus. Nama pengguna tersimpan dan cap waktu pembelian tetap ada.</string>
 
@@ -153,9 +147,6 @@
     <string name="field_user_id">ID pengguna</string>
     <string name="field_forum_id">ID forum</string>
 
-    <string name="session_title">Sesi</string>
-    <string name="session_status">Status</string>
-    <string name="session_user_id">ID pengguna</string>
     <string name="session_bound">Sesi terikat</string>
     <string name="session_key_fingerprint">Fingerprint kunci</string>
     <string name="session_endpoint">Endpoint</string>
@@ -164,8 +155,6 @@
     <string name="session_signed_out">Belum masuk</string>
     <string name="session_ready">Siap</string>
     <string name="session_busy">Bekerja</string>
-    <string name="session_signed_out_title">Tidak ada sesi aktif</string>
-    <string name="session_signed_out_body">Masuk untuk membuat sesi terenkripsi dengan api.theotown.com.</string>
     <string name="session_security_title">Keamanan</string>
 
     <string name="protocol_intro">Konstanta ini mengikuti klien TheoTown 1.12.95a. Nilainya konstanta wire publik, bukan rahasia akun.</string>

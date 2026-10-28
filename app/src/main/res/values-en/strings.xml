@@ -11,7 +11,6 @@
     <string name="title_login">Sign in</string>
     <string name="title_topup">Top up</string>
     <string name="title_account">Account</string>
-    <string name="title_session">Session</string>
     <string name="title_protocol">Protocol</string>
     <string name="title_developer">Developer</string>
     <string name="title_help">Help</string>
@@ -75,7 +74,6 @@
     <string name="home_ceiling_title">Balance at the limit</string>
     <string name="home_ceiling_warning">The account is at the 100,000 diamond limit, so no top-up can be applied. Spend diamonds in the game first.</string>
     <string name="home_tools">Console tools</string>
-    <string name="home_session_summary">Session status, key fingerprint, and endpoint</string>
     <string name="home_protocol_summary">Wire constants used by the client</string>
     <string name="home_developer_summary">Contact and build information</string>
     <string name="home_help_summary">Step-by-step guidance and security notes</string>
@@ -100,8 +98,6 @@
     <string name="topup_amount_hint">Digits only, for example 12000.</string>
     <string name="topup_quick_pick">Quick amounts</string>
     <string name="topup_quick_max">Max</string>
-    <string name="topup_skip_review">Apply without review</string>
-    <string name="topup_skip_review_hint">Skip the review card and swipe once to write immediately.</string>
     <string name="topup_write_warning">This writes to the real game account. There is no undo.</string>
     <string name="topup_review_title">Review</string>
     <string name="topup_review_empty">Enter an amount and review it to see the before/after summary and unlock list.</string>
@@ -114,7 +110,6 @@
     <string name="topup_confirm_title">Confirm top-up</string>
     <string name="topup_confirm_body">Write %1$s diamonds to this account? This changes the real game account.</string>
     <string name="topup_swipe_review">Swipe to review</string>
-    <string name="topup_swipe_apply">Swipe to top up now</string>
     <string name="topup_swipe_confirm">Swipe to confirm top up</string>
     <string name="topup_swipe_busy">Writing to the account…</string>
     <string name="topup_swipe_invalid">Enter a valid amount first.</string>
@@ -142,7 +137,6 @@
     <string name="account_identity">Identity</string>
     <string name="account_since">Signed in at</string>
     <string name="account_session_details">Session details</string>
-    <string name="account_open_session">Open session screen</string>
     <string name="account_signout_confirm_title">Sign out?</string>
     <string name="account_signout_confirm_body">The in-memory session and sealed password are cleared. Saved username and purchase stamps stay.</string>
 
@@ -153,9 +147,6 @@
     <string name="field_user_id">User ID</string>
     <string name="field_forum_id">Forum ID</string>
 
-    <string name="session_title">Session</string>
-    <string name="session_status">Status</string>
-    <string name="session_user_id">User ID</string>
     <string name="session_bound">Session bound</string>
     <string name="session_key_fingerprint">Key fingerprint</string>
     <string name="session_endpoint">Endpoint</string>
@@ -164,8 +155,6 @@
     <string name="session_signed_out">Signed out</string>
     <string name="session_ready">Ready</string>
     <string name="session_busy">Working</string>
-    <string name="session_signed_out_title">No active session</string>
-    <string name="session_signed_out_body">Sign in to create an encrypted session with api.theotown.com.</string>
     <string name="session_security_title">Security</string>
 
     <string name="protocol_intro">These constants mirror the TheoTown 1.12.95a client. They are public wire values, not account secrets.</string>

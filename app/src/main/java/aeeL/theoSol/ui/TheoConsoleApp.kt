@@ -95,7 +95,6 @@ import aeeL.theoSol.ui.screens.HelpScreen
 import aeeL.theoSol.ui.screens.HomeScreen
 import aeeL.theoSol.ui.screens.LoginScreen
 import aeeL.theoSol.ui.screens.ProtocolScreen
-import aeeL.theoSol.ui.screens.SessionScreen
 import aeeL.theoSol.ui.screens.SettingsScreen
 import aeeL.theoSol.ui.screens.TopUpScreen
 import aeeL.theoSol.ui.screens.TopUpSuccessScreen
@@ -111,7 +110,6 @@ object Routes {
     const val TOP_UP = "top_up"
     const val TOP_UP_SUCCESS = "top_up_success"
     const val ACCOUNT = "account"
-    const val SESSION = "session"
     const val PROTOCOL = "protocol"
     const val DEVELOPER = "developer"
     const val HELP = "help"
@@ -149,7 +147,6 @@ private val bottomDestinations = listOf(
 
 private val detailRoutes = setOf(
     Routes.LOGIN,
-    Routes.SESSION,
     Routes.PROTOCOL,
     Routes.DEVELOPER,
     Routes.HELP,
@@ -416,13 +413,6 @@ private fun TheoConsoleApp(
                     onDone = finishSuccess,
                 )
             }
-            composable(Routes.SESSION) {
-                SessionScreen(
-                    state = console,
-                    onLogin = { openRoute(Routes.LOGIN) },
-                    onStop = consoleViewModel::stopOperation,
-                )
-            }
             composable(Routes.PROTOCOL) {
                 ProtocolScreen()
             }
@@ -513,7 +503,6 @@ private fun MainTabs(
                 onSync = consoleViewModel::syncFeatures,
                 onStop = consoleViewModel::stopOperation,
                 onTopUp = { onPageSelected(topUpPage) },
-                onSession = { openRoute(Routes.SESSION) },
                 onProtocol = { openRoute(Routes.PROTOCOL) },
                 onDeveloper = { openRoute(Routes.DEVELOPER) },
                 onHelp = { openRoute(Routes.HELP) },
@@ -523,7 +512,6 @@ private fun MainTabs(
                 review = review,
                 onLogin = { openRoute(Routes.LOGIN) },
                 onReview = consoleViewModel::reviewTopUp,
-                onTopUp = consoleViewModel::topUp,
                 onApply = consoleViewModel::applyTopUp,
                 onCancelReview = consoleViewModel::cancelTopUp,
                 onStop = consoleViewModel::stopOperation,
@@ -531,7 +519,6 @@ private fun MainTabs(
             else -> AccountScreen(
                 state = console,
                 onLogin = { openRoute(Routes.LOGIN) },
-                onOpenSession = { openRoute(Routes.SESSION) },
                 onSignOut = {
                     consoleViewModel.signOut()
                     onPageSelected(homePage)
@@ -615,7 +602,6 @@ private fun routeTitle(route: String): Int = when (route) {
     Routes.TOP_UP -> R.string.title_topup
     Routes.TOP_UP_SUCCESS -> R.string.topup_success_title
     Routes.ACCOUNT -> R.string.title_account
-    Routes.SESSION -> R.string.title_session
     Routes.PROTOCOL -> R.string.title_protocol
     Routes.DEVELOPER -> R.string.title_developer
     Routes.HELP -> R.string.title_help

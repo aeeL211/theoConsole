@@ -16,7 +16,7 @@ object Spacing {
 }
 
 object Dimens {
-    val topBarHeight = 52.dp
+    val topBarHeight = 60.dp
     val buttonHeight = 52.dp
     val listItemMinHeight = 56.dp
     val avatar = 56.dp

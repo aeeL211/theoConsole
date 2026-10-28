@@ -74,7 +74,6 @@ fun HomeScreen(
     onSync: () -> Unit,
     onStop: () -> Unit,
     onTopUp: () -> Unit,
-    onSession: () -> Unit,
     onProtocol: () -> Unit,
     onDeveloper: () -> Unit,
     onHelp: () -> Unit,
@@ -92,7 +91,6 @@ fun HomeScreen(
                     onAction = onLogin,
                 )
                 ToolsSection(
-                    onSession = onSession,
                     onProtocol = onProtocol,
                     onDeveloper = onDeveloper,
                     onHelp = onHelp,
@@ -158,7 +156,6 @@ fun HomeScreen(
                             onSync = onSync,
                         )
                         ToolsSection(
-                            onSession = onSession,
                             onProtocol = onProtocol,
                             onDeveloper = onDeveloper,
                             onHelp = onHelp,
@@ -179,7 +176,6 @@ fun HomeScreen(
                     onSync = onSync,
                 )
                 ToolsSection(
-                    onSession = onSession,
                     onProtocol = onProtocol,
                     onDeveloper = onDeveloper,
                     onHelp = onHelp,
@@ -486,7 +482,6 @@ private fun FeaturesSection(
 
 @Composable
 private fun ToolsSection(
-    onSession: () -> Unit,
     onProtocol: () -> Unit,
     onDeveloper: () -> Unit,
     onHelp: () -> Unit,
@@ -497,13 +492,6 @@ private fun ToolsSection(
             contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp),
             verticalArrangement = Arrangement.spacedBy(0.dp),
         ) {
-            AppListItem(
-                title = stringResource(R.string.title_session),
-                subtitle = stringResource(R.string.home_session_summary),
-                icon = Icons.Default.Info,
-                onClick = onSession,
-            )
-            ListDivider()
             AppListItem(
                 title = stringResource(R.string.title_protocol),
                 subtitle = stringResource(R.string.home_protocol_summary),

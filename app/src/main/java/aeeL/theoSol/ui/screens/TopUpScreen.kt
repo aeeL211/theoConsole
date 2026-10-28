@@ -17,8 +17,6 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -59,13 +57,11 @@ fun TopUpScreen(
     review: TopUpReview?,
     onLogin: () -> Unit,
     onReview: (String) -> Unit,
-    onTopUp: (String, Boolean) -> Unit,
     onApply: () -> Unit,
     onCancelReview: () -> Unit,
     onStop: () -> Unit,
 ) {
     var amount by rememberSaveable { mutableStateOf("") }
-    var skipReview by rememberSaveable { mutableStateOf(false) }
     val room = state.stats.room ?: 0L
     val validation = AmountValidator.validate(amount, room)
     val busy = state.busy
@@ -87,7 +83,6 @@ fun TopUpScreen(
     val swipeLabel = when {
         busy -> stringResource(R.string.topup_swipe_busy)
         review != null -> stringResource(R.string.topup_swipe_confirm)
-        skipReview -> stringResource(R.string.topup_swipe_apply)
         else -> stringResource(R.string.topup_swipe_review)
     }
     val swipeHint = if (!swipeEnabled && !busy) {
@@ -98,8 +93,6 @@ fun TopUpScreen(
     val onSwipe: () -> Unit = {
         if (review != null) {
             onApply()
-        } else if (skipReview) {
-            onTopUp(amount, true)
         } else {
             onReview(amount)
         }
@@ -129,11 +122,6 @@ fun TopUpScreen(
                             room = room,
                             balance = state.stats.balance ?: 0L,
                             error = validation.error,
-                            skipReview = skipReview,
-                            onSkipReviewChange = {
-                                skipReview = it
-                                if (it && review != null) onCancelReview()
-                            },
                             busy = busy,
                         )
                     }
@@ -157,11 +145,6 @@ fun TopUpScreen(
                     room = room,
                     balance = state.stats.balance ?: 0L,
                     error = validation.error,
-                    skipReview = skipReview,
-                    onSkipReviewChange = {
-                        skipReview = it
-                        if (it && review != null) onCancelReview()
-                    },
                     busy = busy,
                 )
                 ReviewSection(review = review)
@@ -183,8 +166,6 @@ private fun ApplyHero(
     room: Long,
     balance: Long,
     error: AmountError?,
-    skipReview: Boolean,
-    onSkipReviewChange: (Boolean) -> Unit,
     busy: Boolean,
 ) {
     HeroCard(
@@ -251,45 +232,6 @@ private fun ApplyHero(
             onPick = onAmountChange,
             enabled = !busy,
         )
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(Spacing.md),
-        ) {
-            Column(
-                modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(2.dp),
-            ) {
-                Text(
-                    text = stringResource(R.string.topup_skip_review),
-                    style = MaterialTheme.typography.bodyMedium,
-                )
-                Text(
-                    text = stringResource(R.string.topup_skip_review_hint),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
-            Switch(
-                checked = skipReview,
-                onCheckedChange = onSkipReviewChange,
-                enabled = !busy,
-                colors = SwitchDefaults.colors(
-                    checkedThumbColor = MaterialTheme.colorScheme.onPrimary,
-                    checkedTrackColor = MaterialTheme.colorScheme.primary,
-                    uncheckedThumbColor = MaterialTheme.colorScheme.outline,
-                    uncheckedTrackColor = MaterialTheme.colorScheme.surfaceContainerHighest,
-                    disabledCheckedThumbColor =
-                        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
-                    disabledCheckedTrackColor =
-                        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
-                    disabledUncheckedThumbColor =
-                        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
-                    disabledUncheckedTrackColor =
-                        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
-                ),
-            )
-        }
         Text(
             text = stringResource(R.string.topup_write_warning),
             style = MaterialTheme.typography.bodySmall,
