@@ -1,7 +1,7 @@
 package com.aeeL.theokntl.core
 
 /**
- * Wire constants preserved from the reference client (TheoTown 1.12.95a).
+ * Public wire constants for the TheoTown 1.12.95a client.
  */
 object ConsoleConstants {
     const val LIMIT = 100_000L

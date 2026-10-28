@@ -92,8 +92,8 @@ gagal; isi keempat secret secara bersamaan.
 - String UI tersedia dalam bahasa Inggris (`values/`, `values-en/`) dan
   Indonesia (`values-id/`).
 
-Fitur **redeem gift tidak disertakan** di aplikasi; lihat
-`docs/PORTING_PLAN.md` bagian "Sengaja tidak di-port".
+Seluruh alur berjalan di dalam aplikasi Android; tidak ada runtime, layanan,
+atau proses tambahan yang diperlukan di perangkat.
 
 ## Lisensi font
 
@@ -117,12 +117,14 @@ app/src/main/res/values-id/    string Indonesia
 app/src/main/res/font/         Roboto Flex variable font
 app/src/main/assets/licenses/  lisensi font OFL
 app/src/test/                  unit test domain dan crypto
-app/src/androidTest/           satu UI test dasar (hanya dikompilasi di CI)
-docs/PORTING_PLAN.md           asumsi, batasan, dan daftar fitur yang dikecualikan
+app/src/androidTest/           UI test dasar (butuh emulator; tidak dijalankan CI)
+docs/ARCHITECTURE.md           arsitektur, protokol, UI, keamanan, dan CI
+AGENTS.md                      panduan kerja untuk agent di repositori ini
 ```
 
 ## Verifikasi
 
-Verifikasi lokal pada tugas ini hanya statis: pembacaan kode, import, referensi
-resource, manifest, versi dependency, dan sintaks YAML. Kompilasi, lint, unit
-test, dan instrumented test pertama akan diverifikasi oleh GitHub Actions.
+Verifikasi lokal hanya statis: pembacaan kode, import, referensi resource,
+manifest, versi dependency, dan sintaks YAML. Kompilasi, lint, dan unit test
+diverifikasi oleh GitHub Actions; UI test instrumented dijalankan manual di
+emulator.
