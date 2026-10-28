@@ -1,27 +1,27 @@
 package com.aeeL.theokntl.ui
 
-import android.content.Context
+import android.content.res.Resources
 import com.aeeL.theokntl.R
 import com.aeeL.theokntl.core.ErrorKind
 import com.aeeL.theokntl.core.FailureInfo
 
-fun failureText(context: Context, failure: FailureInfo, debugDetails: Boolean): String {
+fun failureText(resources: Resources, failure: FailureInfo, debugDetails: Boolean): String {
     val base = when (failure.kind) {
-        ErrorKind.CONFIG -> context.getString(R.string.error_config)
-        ErrorKind.USAGE -> context.getString(R.string.error_usage)
-        ErrorKind.INPUT -> context.getString(R.string.error_input)
-        ErrorKind.STATE -> context.getString(R.string.error_state)
-        ErrorKind.BUSY -> context.getString(R.string.error_busy)
-        ErrorKind.CANCELLED -> context.getString(R.string.error_cancelled)
-        ErrorKind.NETWORK -> context.getString(R.string.error_network)
-        ErrorKind.TIMEOUT -> context.getString(R.string.error_timeout)
-        ErrorKind.AUTH -> context.getString(R.string.error_auth)
-        ErrorKind.SESSION -> context.getString(R.string.error_session)
-        ErrorKind.SIGNATURE -> context.getString(R.string.error_signature)
-        ErrorKind.PROTOCOL -> context.getString(R.string.error_protocol)
-        ErrorKind.OVERFLOW -> context.getString(R.string.error_overflow)
-        ErrorKind.HTTP -> context.getString(R.string.error_http)
-        ErrorKind.UNKNOWN -> context.getString(R.string.error_unknown)
+        ErrorKind.CONFIG -> resources.getString(R.string.error_config)
+        ErrorKind.USAGE -> resources.getString(R.string.error_usage)
+        ErrorKind.INPUT -> resources.getString(R.string.error_input)
+        ErrorKind.STATE -> resources.getString(R.string.error_state)
+        ErrorKind.BUSY -> resources.getString(R.string.error_busy)
+        ErrorKind.CANCELLED -> resources.getString(R.string.error_cancelled)
+        ErrorKind.NETWORK -> resources.getString(R.string.error_network)
+        ErrorKind.TIMEOUT -> resources.getString(R.string.error_timeout)
+        ErrorKind.AUTH -> resources.getString(R.string.error_auth)
+        ErrorKind.SESSION -> resources.getString(R.string.error_session)
+        ErrorKind.SIGNATURE -> resources.getString(R.string.error_signature)
+        ErrorKind.PROTOCOL -> resources.getString(R.string.error_protocol)
+        ErrorKind.OVERFLOW -> resources.getString(R.string.error_overflow)
+        ErrorKind.HTTP -> resources.getString(R.string.error_http)
+        ErrorKind.UNKNOWN -> resources.getString(R.string.error_unknown)
     }
     if (!debugDetails) return base
     val details = buildString {

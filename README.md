@@ -85,10 +85,10 @@ gagal; isi keempat secret secara bersamaan.
   dynamic color Android 12+ (default mati, kontrol disembunyikan di Android
   < 12), dan detail teknis. Bahasa dan tema memakai selector dropdown.
 - Navigasi tab utama memakai `HorizontalPager` + bottom bar yang sinkron;
-  swipe horizontal berpindah tab dari halaman mana pun, termasuk Top up,
-  sementara kontrol konfirmasi tetap menangani gesturnya sendiri. Membuka
-  Pengaturan dari tab mana pun lalu memilih tab akan kembali ke halaman utama
-  yang diminta.
+  swipe horizontal berpindah tab, tetapi dinonaktifkan saat halaman Top up
+  aktif agar gestur horizontal dipakai untuk konfirmasi. Bottom bar tetap
+  bisa dipakai berpindah tab. Membuka Pengaturan dari tab mana pun lalu
+  memilih tab akan kembali ke halaman utama yang diminta.
 - Edge-to-edge penuh hingga area notch/cutout, safe insets pada konten,
   predictive back, dan layout dua kolom pada layar ≥720dp.
 - String UI tersedia dalam bahasa Inggris (`values/`, `values-en/`) dan

@@ -23,16 +23,15 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerDefaults
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.outlined.AccountCircle as AccountCircleOutlined
-import androidx.compose.material.icons.outlined.AddCircle as AddCircleOutlined
 import androidx.compose.material.icons.outlined.Home as HomeOutlined
 import androidx.compose.material.icons.outlined.ShoppingCart as ShoppingCartOutlined
 import androidx.compose.material3.Icon
@@ -57,8 +56,11 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -74,6 +76,8 @@ import com.aeeL.theokntl.domain.model.AppSettings
 import com.aeeL.theokntl.domain.model.ConsoleState
 import com.aeeL.theokntl.domain.model.TopUpOutcome
 import com.aeeL.theokntl.domain.model.TopUpReview
+import com.aeeL.theokntl.ui.icons.DiamondFilled
+import com.aeeL.theokntl.ui.icons.DiamondOutlined
 import com.aeeL.theokntl.ui.screens.AccountScreen
 import com.aeeL.theokntl.ui.screens.ActivityScreen
 import com.aeeL.theokntl.ui.screens.DeveloperScreen
@@ -121,8 +125,8 @@ private val bottomDestinations = listOf(
     BottomDestination(
         route = Routes.TOP_UP,
         label = R.string.title_topup,
-        icon = Icons.Outlined.AddCircleOutlined,
-        selectedIcon = Icons.Filled.AddCircle,
+        icon = DiamondOutlined,
+        selectedIcon = DiamondFilled,
     ),
     BottomDestination(
         route = Routes.PURCHASES,
@@ -157,21 +161,36 @@ fun TheoConsoleRoot(
     consoleViewModel: ConsoleViewModel = hiltViewModel(),
 ) {
     val settings by appViewModel.settings.collectAsStateWithLifecycle()
-    val context = LocalContext.current
-    val language = remember(context) { currentAppLanguage(context) }
-    TheoConsoleTheme(
-        themeMode = settings.themeMode,
-        dynamicColor = settings.dynamicColor,
-        palette = settings.palette,
+    val baseContext = LocalContext.current
+    var language by remember(baseContext) {
+        mutableStateOf(currentAppLanguage(baseContext))
+    }
+    val localized = remember(baseContext, language) {
+        localizedContext(baseContext, language)
+    }
+    CompositionLocalProvider(
+        LocalConfiguration provides localized.resources.configuration,
+        LocalResources provides localized.resources,
     ) {
-        CompositionLocalProvider(LocalDebugDetails provides settings.debugDetails) {
-            TheoConsoleApp(
-                settings = settings,
-                language = language,
-                onLanguage = { selected -> setAppLanguage(context, selected) },
-                appViewModel = appViewModel,
-                consoleViewModel = consoleViewModel,
-            )
+        TheoConsoleTheme(
+            themeMode = settings.themeMode,
+            dynamicColor = settings.dynamicColor,
+            palette = settings.palette,
+        ) {
+            CompositionLocalProvider(LocalDebugDetails provides settings.debugDetails) {
+                TheoConsoleApp(
+                    settings = settings,
+                    language = language,
+                    onLanguage = { selected ->
+                        if (selected != language) {
+                            language = selected
+                            setAppLanguage(baseContext, selected)
+                        }
+                    },
+                    appViewModel = appViewModel,
+                    consoleViewModel = consoleViewModel,
+                )
+            }
         }
     }
 }
@@ -191,7 +210,7 @@ private fun TheoConsoleApp(
     val backStackEntry by navController.currentBackStackEntryAsState()
     val navRoute = backStackEntry?.destination?.route ?: Routes.MAIN
     val snackbarHostState = remember { SnackbarHostState() }
-    val context = LocalContext.current
+    val failureResources = LocalResources.current
     val debugDetails = settings.debugDetails
     val immersive = navRoute == Routes.TOP_UP_SUCCESS
     var mainPage by rememberSaveable { mutableIntStateOf(pageIndex(Routes.HOME)) }
@@ -212,10 +231,14 @@ private fun TheoConsoleApp(
         }
     }
 
-    LaunchedEffect(debugDetails) {
+    BackHandler(enabled = navRoute == Routes.MAIN && mainPage != homePage) {
+        mainPage = homePage
+    }
+
+    LaunchedEffect(debugDetails, failureResources) {
         consoleViewModel.failures.collect { failure ->
             snackbarHostState.showSnackbar(
-                message = failureText(context, failure, debugDetails),
+                message = failureText(failureResources, failure, debugDetails),
                 duration = SnackbarDuration.Long,
             )
         }
@@ -248,33 +271,40 @@ private fun TheoConsoleApp(
         },
         bottomBar = {
             if (!immersive && navRoute != Routes.LOGIN) {
-                NavigationBar(
-                    containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                Surface(
+                    shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
+                    color = MaterialTheme.colorScheme.surfaceContainer,
                     tonalElevation = 0.dp,
+                    shadowElevation = 6.dp,
                 ) {
-                    bottomDestinations.forEachIndexed { index, destination ->
-                        val selected = mainPage == index
-                        NavigationBarItem(
-                            selected = selected,
-                            onClick = {
-                                if (navRoute == Routes.MAIN) {
-                                    mainPage = index
-                                } else {
-                                    goToMain(index)
-                                }
-                            },
-                            icon = {
-                                Icon(
-                                    imageVector = if (selected) {
-                                        destination.selectedIcon
+                    NavigationBar(
+                        containerColor = Color.Transparent,
+                        tonalElevation = 0.dp,
+                    ) {
+                        bottomDestinations.forEachIndexed { index, destination ->
+                            val selected = mainPage == index
+                            NavigationBarItem(
+                                selected = selected,
+                                onClick = {
+                                    if (navRoute == Routes.MAIN) {
+                                        mainPage = index
                                     } else {
-                                        destination.icon
-                                    },
-                                    contentDescription = stringResource(destination.label),
-                                )
-                            },
-                            label = { Text(stringResource(destination.label)) },
-                        )
+                                        goToMain(index)
+                                    }
+                                },
+                                icon = {
+                                    Icon(
+                                        imageVector = if (selected) {
+                                            destination.selectedIcon
+                                        } else {
+                                            destination.icon
+                                        },
+                                        contentDescription = stringResource(destination.label),
+                                    )
+                                },
+                                label = { Text(stringResource(destination.label)) },
+                            )
+                        }
                     }
                 }
             }
@@ -434,6 +464,7 @@ private fun MainTabs(
     HorizontalPager(
         state = pagerState,
         modifier = Modifier.fillMaxSize(),
+        userScrollEnabled = pagerState.settledPage != topUpPage,
         beyondViewportPageCount = 1,
         flingBehavior = flingBehavior,
     ) { page ->
@@ -490,7 +521,12 @@ private fun ConsoleTopBar(
     onActivity: () -> Unit,
     onSettings: () -> Unit,
 ) {
-    Surface(color = MaterialTheme.colorScheme.background) {
+    Surface(
+        color = MaterialTheme.colorScheme.surfaceContainer,
+        contentColor = MaterialTheme.colorScheme.onSurface,
+        shape = RoundedCornerShape(bottomStart = 28.dp, bottomEnd = 28.dp),
+        shadowElevation = 4.dp,
+    ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()

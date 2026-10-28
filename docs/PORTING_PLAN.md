@@ -161,12 +161,14 @@ ke repositori Android (lihat `.gitignore`).
   insets agar konten tidak tertutup notch, sementara background tetap
   memenuhi seluruh layar.
 - Bahasa: Ikuti sistem, Inggris, Indonesia. Pilihan disimpan manual di
-  SharedPreferences, diterapkan di `attachBaseContext()`, lalu activity
-  dibuat ulang. `locales_config.xml` dan AppCompat per-app locale service tidak
-  dipakai agar sumber kebenaran bahasa hanya satu. Semua label membaca
+  SharedPreferences dan diterapkan saat cold start lewat
+  `attachBaseContext()`. Saat aplikasi berjalan, perubahan bahasa langsung
+  mengganti `LocalConfiguration`/`LocalResources` tanpa recreate activity.
+  `locales_config.xml` dan AppCompat per-app locale service tidak dipakai agar
+  sumber kebenaran bahasa hanya satu. Semua label membaca
   `values-en/`/`values-id/`.
 - Pengaturan memakai selector dropdown untuk bahasa dan tema, bukan radio
-  button; palet memakai selector swatch. Perubahan bahasa langsung memuat ulang
+  button; palet memakai selector swatch. Perubahan bahasa langsung memperbarui
   UI.
 - Layar: Beranda, Login, Top up, Sukses top up, Pembelian, Akun, Sesi, Protokol,
   Bantuan, Pengembang, Pengaturan, Aktivitas.

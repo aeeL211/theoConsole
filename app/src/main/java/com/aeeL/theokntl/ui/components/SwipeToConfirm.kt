@@ -9,6 +9,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
@@ -34,13 +35,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.clipRect
+import androidx.compose.ui.graphics.lerp
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.disabled
 import androidx.compose.ui.semantics.onClick
@@ -75,6 +81,14 @@ fun SwipeToConfirm(
     }
     val progress = (offsetPx / maxOffset).coerceIn(0f, 1f)
     val trigger = 0.86f
+    val errorColor = MaterialTheme.colorScheme.error
+    val successColor = if (MaterialTheme.colorScheme.background.luminance() < 0.5f) {
+        Color(0xFF81C784)
+    } else {
+        Color(0xFF2E7D32)
+    }
+    val activeColor = lerp(errorColor, successColor, progress)
+    val activeContent = readableContentColor(activeColor)
 
     fun settle(
         target: Float,
@@ -167,35 +181,44 @@ fun SwipeToConfirm(
                 }
             },
     ) {
-        if (progress > 0f) {
-            Box(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .fillMaxWidth(progress)
-                    .background(
-                        Brush.horizontalGradient(
-                            listOf(
-                                MaterialTheme.colorScheme.primary,
-                                MaterialTheme.colorScheme.tertiary,
-                            ),
-                        ),
-                    ),
-            )
-        }
-        Text(
+        SwipeLabel(
             text = text,
+            color = if (enabled) {
+                MaterialTheme.colorScheme.onSurfaceVariant
+            } else {
+                MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.55f)
+            },
             modifier = Modifier
                 .align(Alignment.Center)
                 .padding(horizontal = 72.dp),
-            style = MaterialTheme.typography.labelLarge,
-            color = when {
-                !enabled -> MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.55f)
-                progress > 0.52f -> MaterialTheme.colorScheme.onPrimary
-                else -> MaterialTheme.colorScheme.onSurfaceVariant
-            },
-            maxLines = 2,
-            textAlign = TextAlign.Center,
         )
+        if (enabled && progress > 0f) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clearAndSetSemantics { }
+                    .drawWithContent {
+                        clipRect(right = size.width * progress) {
+                            this@drawWithContent.drawContent()
+                        }
+                    },
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .fillMaxWidth(progress)
+                        .clip(RoundedCornerShape(50))
+                        .background(activeColor),
+                )
+                SwipeLabel(
+                    text = text,
+                    color = activeContent,
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .padding(horizontal = 72.dp),
+                )
+            }
+        }
         Box(
             modifier = Modifier
                 .offset { IntOffset(offsetPx.roundToInt(), 0) }
@@ -203,11 +226,7 @@ fun SwipeToConfirm(
                 .size(thumbSize)
                 .clip(CircleShape)
                 .background(
-                    if (enabled) {
-                        MaterialTheme.colorScheme.primary
-                    } else {
-                        MaterialTheme.colorScheme.outline
-                    },
+                    if (enabled) activeColor else MaterialTheme.colorScheme.outline,
                 ),
             contentAlignment = Alignment.Center,
         ) {
@@ -215,7 +234,7 @@ fun SwipeToConfirm(
                 imageVector = Icons.Default.KeyboardArrowRight,
                 contentDescription = null,
                 tint = if (enabled) {
-                    MaterialTheme.colorScheme.onPrimary
+                    activeContent
                 } else {
                     MaterialTheme.colorScheme.surface
                 },
@@ -223,4 +242,29 @@ fun SwipeToConfirm(
             )
         }
     }
+}
+
+private val DarkContent = Color(0xFF0B1F10)
+
+@Composable
+private fun SwipeLabel(
+    text: String,
+    color: Color,
+    modifier: Modifier = Modifier,
+) {
+    Text(
+        text = text,
+        modifier = modifier,
+        style = MaterialTheme.typography.labelLarge,
+        color = color,
+        maxLines = 2,
+        textAlign = TextAlign.Center,
+    )
+}
+
+private fun readableContentColor(background: Color): Color {
+    val backgroundLuminance = background.luminance()
+    val darkContrast = (backgroundLuminance + 0.05f) / (DarkContent.luminance() + 0.05f)
+    val lightContrast = 1.05f / (backgroundLuminance + 0.05f)
+    return if (darkContrast >= lightContrast) DarkContent else Color.White
 }

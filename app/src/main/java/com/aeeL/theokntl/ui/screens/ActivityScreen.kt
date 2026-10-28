@@ -47,6 +47,8 @@ fun ActivityScreen(
     val clipboard = LocalClipboardManager.current
     val listState = rememberLazyListState()
     var confirmClear by rememberSaveable { mutableStateOf(false) }
+    val copiedMessage = stringResource(R.string.activity_copied)
+    val shareTitle = stringResource(R.string.activity_share_title)
 
     LaunchedEffect(entries.size) {
         if (entries.isNotEmpty()) {
@@ -89,7 +91,7 @@ fun ActivityScreen(
                             clipboard.setText(AnnotatedString(onLogJson()))
                             Toast.makeText(
                                 context,
-                                context.getString(R.string.activity_copied),
+                                copiedMessage,
                                 Toast.LENGTH_SHORT,
                             ).show()
                         },
@@ -107,7 +109,7 @@ fun ActivityScreen(
                             context.startActivity(
                                 Intent.createChooser(
                                     intent,
-                                    context.getString(R.string.activity_share_title),
+                                    shareTitle,
                                 ),
                             )
                         },

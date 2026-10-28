@@ -1,8 +1,6 @@
 package com.aeeL.theokntl.ui
 
-import android.app.Activity
 import android.content.Context
-import android.content.ContextWrapper
 import android.content.res.Configuration
 import com.aeeL.theokntl.domain.model.AppLanguage
 import java.util.Locale
@@ -29,25 +27,21 @@ fun setAppLanguage(context: Context, language: AppLanguage) {
         AppLanguage.INDONESIAN -> editor.putString(LANGUAGE_KEY, "id")
     }
     editor.apply()
-    context.findActivity()?.recreate()
 }
 
-fun localizedContext(base: Context): Context {
-    val tag = when (currentAppLanguage(base)) {
-        AppLanguage.SYSTEM -> return base
-        AppLanguage.ENGLISH -> "en"
-        AppLanguage.INDONESIAN -> "id"
+fun localizedContext(base: Context, language: AppLanguage): Context {
+    val source = base.applicationContext.resources.configuration
+    val locale = when (language) {
+        AppLanguage.SYSTEM -> source.locales[0] ?: Locale.getDefault()
+        AppLanguage.ENGLISH -> Locale.forLanguageTag("en")
+        AppLanguage.INDONESIAN -> Locale.forLanguageTag("id")
     }
-    val locale = Locale.forLanguageTag(tag)
-    val configuration = Configuration(base.resources.configuration).apply {
+    val configuration = Configuration(source).apply {
         setLocale(locale)
         setLayoutDirection(locale)
     }
     return base.createConfigurationContext(configuration)
 }
 
-private fun Context.findActivity(): Activity? = when (this) {
-    is Activity -> this
-    is ContextWrapper -> baseContext.findActivity()
-    else -> null
-}
+fun localizedContext(base: Context): Context =
+    localizedContext(base, currentAppLanguage(base))
