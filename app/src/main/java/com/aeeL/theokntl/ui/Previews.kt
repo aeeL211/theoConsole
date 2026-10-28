@@ -7,6 +7,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.aeeL.theokntl.domain.model.AccountField
 import com.aeeL.theokntl.domain.model.AccountRow
 import com.aeeL.theokntl.domain.model.AccountView
+import com.aeeL.theokntl.domain.model.AppLanguage
 import com.aeeL.theokntl.domain.model.AppSettings
 import com.aeeL.theokntl.domain.model.ConsoleState
 import com.aeeL.theokntl.domain.model.FeatureReport
@@ -24,6 +25,7 @@ import com.aeeL.theokntl.ui.screens.LoginScreen
 import com.aeeL.theokntl.ui.screens.PurchasesScreen
 import com.aeeL.theokntl.ui.screens.SettingsScreen
 import com.aeeL.theokntl.ui.screens.TopUpScreen
+import com.aeeL.theokntl.ui.screens.TopUpSuccessScreen
 import com.aeeL.theokntl.ui.theme.TheoConsoleTheme
 
 private val previewFeatures = FeatureReport(
@@ -183,12 +185,26 @@ private fun SettingsPreview() {
     PreviewSurface {
         SettingsScreen(
             settings = AppSettings(username = "aeeL", themeMode = ThemeMode.SYSTEM),
+            language = AppLanguage.SYSTEM,
+            onLanguage = {},
             onThemeMode = {},
+            onPalette = {},
             onDynamicColor = {},
             onDebugDetails = {},
             onHelp = {},
             onProtocol = {},
             onDeveloper = {},
+        )
+    }
+}
+
+@Preview(name = "Top up success", widthDp = 420, heightDp = 900, showBackground = true)
+@Composable
+private fun TopUpSuccessPreview() {
+    PreviewSurface {
+        TopUpSuccessScreen(
+            outcome = previewState.lastTopUp,
+            onDone = {},
         )
     }
 }

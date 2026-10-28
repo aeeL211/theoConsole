@@ -12,6 +12,7 @@ import com.aeeL.theokntl.core.ConsoleConstants
 import com.aeeL.theokntl.domain.feature.PurchaseStampStore
 import com.aeeL.theokntl.domain.model.AppSettings
 import com.aeeL.theokntl.domain.model.ThemeMode
+import com.aeeL.theokntl.domain.model.ThemePalette
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.IOException
 import javax.inject.Inject
@@ -28,6 +29,7 @@ private val Context.consoleDataStore: DataStore<Preferences> by preferencesDataS
 
 private val USERNAME = stringPreferencesKey(ConsoleConstants.USERNAME_KEY)
 private val THEME_MODE = stringPreferencesKey("theme_mode")
+private val THEME_PALETTE = stringPreferencesKey("theme_palette")
 private val DYNAMIC_COLOR = booleanPreferencesKey("dynamic_color")
 private val DEBUG_DETAILS = booleanPreferencesKey("debug_details")
 private val PURCHASE_STATE = stringPreferencesKey(ConsoleConstants.PURCHASE_STATE_KEY)
@@ -59,7 +61,10 @@ class AppPreferences @Inject constructor(
                 themeMode = preferences[THEME_MODE]
                     ?.let { stored -> ThemeMode.entries.firstOrNull { it.name == stored } }
                     ?: ThemeMode.SYSTEM,
-                dynamicColor = preferences[DYNAMIC_COLOR] ?: true,
+                palette = preferences[THEME_PALETTE]
+                    ?.let { stored -> ThemePalette.entries.firstOrNull { it.name == stored } }
+                    ?: ThemePalette.TEAL,
+                dynamicColor = preferences[DYNAMIC_COLOR] ?: false,
                 debugDetails = preferences[DEBUG_DETAILS] ?: false,
             )
         }
@@ -83,6 +88,12 @@ class AppPreferences @Inject constructor(
     suspend fun setThemeMode(mode: ThemeMode) {
         dataStore.edit { preferences ->
             preferences[THEME_MODE] = mode.name
+        }
+    }
+
+    suspend fun setPalette(palette: ThemePalette) {
+        dataStore.edit { preferences ->
+            preferences[THEME_PALETTE] = palette.name
         }
     }
 

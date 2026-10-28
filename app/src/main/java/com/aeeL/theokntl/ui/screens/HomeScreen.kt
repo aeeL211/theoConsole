@@ -6,7 +6,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Info
@@ -21,14 +23,17 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.aeeL.theokntl.R
 import com.aeeL.theokntl.core.Formatters
 import com.aeeL.theokntl.domain.model.ConsoleState
 import com.aeeL.theokntl.domain.model.FeatureReport
 import com.aeeL.theokntl.domain.model.TopUpOutcome
+import com.aeeL.theokntl.domain.time.DayPeriod
 import com.aeeL.theokntl.ui.components.BusyPanel
 import com.aeeL.theokntl.ui.components.EmptyPanel
 import com.aeeL.theokntl.ui.components.FeatureReportContent
@@ -38,6 +43,8 @@ import com.aeeL.theokntl.ui.components.SectionCard
 import com.aeeL.theokntl.ui.components.StatTile
 import com.aeeL.theokntl.ui.components.StatusPill
 import com.aeeL.theokntl.ui.components.ToolRow
+import com.aeeL.theokntl.ui.components.dayPeriodLabel
+import com.aeeL.theokntl.ui.components.rememberDayPeriod
 import kotlin.math.roundToInt
 
 @Composable
@@ -54,10 +61,12 @@ fun HomeScreen(
     onDeveloper: () -> Unit,
     onHelp: () -> Unit,
 ) {
+    val period = rememberDayPeriod()
     BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
         val wide = maxWidth >= 720.dp
         if (!state.signedIn) {
             ScreenColumn {
+                GreetingHeader(state = state, period = period)
                 EmptyPanel(
                     title = stringResource(R.string.home_signed_out_title),
                     body = stringResource(R.string.home_signed_out_body),
@@ -75,18 +84,7 @@ fun HomeScreen(
         }
 
         ScreenColumn {
-            Text(
-                text = state.account?.label ?: stringResource(R.string.home_account_fallback),
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.SemiBold,
-            )
-            Text(
-                text = state.lastAction?.let {
-                    stringResource(R.string.home_last_action, it)
-                } ?: stringResource(R.string.home_signed_in),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
+            GreetingHeader(state = state, period = period)
             if (state.busy) {
                 BusyPanel(operation = state.busyOperation, onStop = onStop)
             }
@@ -163,6 +161,50 @@ fun HomeScreen(
 }
 
 @Composable
+private fun GreetingHeader(
+    state: ConsoleState,
+    period: DayPeriod,
+) {
+    val greeting = stringResource(dayPeriodLabel(period))
+    val accountName = state.account?.label?.takeIf { it.isNotBlank() }
+    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+        Text(
+            text = stringResource(R.string.home_eyebrow),
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.primary,
+            letterSpacing = 2.sp,
+        )
+        Text(
+            text = if (state.signedIn && accountName != null) {
+                stringResource(R.string.home_greeting_name, greeting, accountName)
+            } else {
+                greeting
+            },
+            style = MaterialTheme.typography.displaySmall,
+            fontWeight = FontWeight.Black,
+        )
+        if (state.signedIn) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+            ) {
+                StatusPill(
+                    text = stringResource(R.string.home_signed_in),
+                    positive = true,
+                )
+                state.lastAction?.let { lastAction ->
+                    Text(
+                        text = stringResource(R.string.home_last_action, lastAction),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
 private fun BalanceSection(state: ConsoleState) {
     val stats = state.stats
     val balance = stats.balance ?: 0L
@@ -188,7 +230,11 @@ private fun BalanceSection(state: ConsoleState) {
         }
         LinearProgressIndicator(
             progress = { stats.progress },
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(10.dp)
+                .clip(CircleShape),
+            trackColor = MaterialTheme.colorScheme.surfaceVariant,
         )
         Text(
             text = stringResource(

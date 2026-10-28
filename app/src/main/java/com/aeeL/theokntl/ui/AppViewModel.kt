@@ -7,6 +7,7 @@ import com.aeeL.theokntl.data.log.SessionLog
 import com.aeeL.theokntl.data.store.AppPreferences
 import com.aeeL.theokntl.domain.model.AppSettings
 import com.aeeL.theokntl.domain.model.ThemeMode
+import com.aeeL.theokntl.domain.model.ThemePalette
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.SharingStarted
@@ -31,6 +32,13 @@ class AppViewModel @Inject constructor(
 
     fun setDynamicColor(enabled: Boolean) {
         persist("the dynamic color setting") { preferences.setDynamicColor(enabled) }
+    }
+
+    fun setPalette(palette: ThemePalette) {
+        persist("the theme palette") {
+            preferences.setPalette(palette)
+            preferences.setDynamicColor(false)
+        }
     }
 
     fun setDebugDetails(enabled: Boolean) {

@@ -1,5 +1,10 @@
 package com.aeeL.theokntl.ui.screens
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -8,9 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -28,19 +31,16 @@ import com.aeeL.theokntl.R
 import com.aeeL.theokntl.core.Formatters
 import com.aeeL.theokntl.domain.model.ConsoleState
 import com.aeeL.theokntl.domain.model.FeatureUnlocks
-import com.aeeL.theokntl.domain.model.TopUpOutcome
 import com.aeeL.theokntl.domain.model.TopUpReview
 import com.aeeL.theokntl.domain.validation.AmountError
 import com.aeeL.theokntl.domain.validation.AmountValidator
 import com.aeeL.theokntl.ui.components.BusyPanel
-import com.aeeL.theokntl.ui.components.ConfirmDialog
 import com.aeeL.theokntl.ui.components.EmptyPanel
-import com.aeeL.theokntl.ui.components.FeatureReportContent
 import com.aeeL.theokntl.ui.components.LabeledValue
 import com.aeeL.theokntl.ui.components.ScreenColumn
 import com.aeeL.theokntl.ui.components.SectionCard
 import com.aeeL.theokntl.ui.components.StatTile
-import com.aeeL.theokntl.ui.components.StatusPill
+import com.aeeL.theokntl.ui.components.SwipeToConfirm
 import com.aeeL.theokntl.ui.components.featureLabel
 
 @Composable
@@ -56,7 +56,6 @@ fun TopUpScreen(
 ) {
     var amount by rememberSaveable { mutableStateOf("") }
     var skipReview by rememberSaveable { mutableStateOf(false) }
-    var confirmApply by rememberSaveable { mutableStateOf(false) }
     val room = state.stats.room ?: 0L
     val validation = AmountValidator.validate(amount, room)
     val busy = state.busy
@@ -73,20 +72,27 @@ fun TopUpScreen(
         return
     }
 
-    if (confirmApply) {
-        ConfirmDialog(
-            title = stringResource(R.string.topup_confirm_title),
-            body = stringResource(
-                R.string.topup_confirm_body,
-                Formatters.number(review?.amount ?: 0L),
-            ),
-            confirmLabel = stringResource(R.string.action_apply),
-            onConfirm = {
-                confirmApply = false
-                onApply()
-            },
-            onDismiss = { confirmApply = false },
-        )
+    val amountReady = amount.isNotBlank() && validation.error == null
+    val swipeEnabled = if (review != null) !busy else amountReady && !busy
+    val swipeLabel = when {
+        busy -> stringResource(R.string.topup_swipe_busy)
+        review != null -> stringResource(R.string.topup_swipe_confirm)
+        skipReview -> stringResource(R.string.topup_swipe_apply)
+        else -> stringResource(R.string.topup_swipe_review)
+    }
+    val swipeHint = if (!swipeEnabled && !busy) {
+        stringResource(R.string.topup_swipe_invalid)
+    } else {
+        stringResource(R.string.topup_swipe_hint)
+    }
+    val onSwipe: () -> Unit = {
+        if (review != null) {
+            onApply()
+        } else if (skipReview) {
+            onTopUp(amount, true)
+        } else {
+            onReview(amount)
+        }
     }
 
     BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
@@ -117,22 +123,19 @@ fun TopUpScreen(
                                 if (it && review != null) onCancelReview()
                             },
                             busy = busy,
-                            hasReview = review != null,
-                            onReview = { onReview(amount) },
-                            onTopUp = { onTopUp(amount, true) },
                         )
-                        LastOutcomeSection(outcome = state.lastTopUp)
                     }
                     Column(
                         modifier = Modifier.weight(1f),
                         verticalArrangement = Arrangement.spacedBy(16.dp),
                     ) {
-                        ReviewSection(
-                            review = review,
-                            busy = busy,
-                            onApply = { confirmApply = true },
-                            onCancel = onCancelReview,
-                        )
+                        AnimatedVisibility(
+                            visible = review != null,
+                            enter = fadeIn() + expandVertically(),
+                            exit = fadeOut() + shrinkVertically(),
+                        ) {
+                            review?.let { ReviewSection(review = it) }
+                        }
                     }
                 }
             } else {
@@ -150,17 +153,26 @@ fun TopUpScreen(
                         if (it && review != null) onCancelReview()
                     },
                     busy = busy,
-                    hasReview = review != null,
-                    onReview = { onReview(amount) },
-                    onTopUp = { onTopUp(amount, true) },
                 )
-                ReviewSection(
-                    review = review,
-                    busy = busy,
-                    onApply = { confirmApply = true },
-                    onCancel = onCancelReview,
+                AnimatedVisibility(
+                    visible = review != null,
+                    enter = fadeIn() + expandVertically(),
+                    exit = fadeOut() + shrinkVertically(),
+                ) {
+                    review?.let { ReviewSection(review = it) }
+                }
+            }
+            SectionCard(title = stringResource(R.string.topup_confirm_title)) {
+                Text(
+                    text = swipeHint,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
-                LastOutcomeSection(outcome = state.lastTopUp)
+                SwipeToConfirm(
+                    text = swipeLabel,
+                    enabled = swipeEnabled,
+                    onConfirmed = onSwipe,
+                )
             }
         }
     }
@@ -175,9 +187,6 @@ private fun FormSection(
     skipReview: Boolean,
     onSkipReviewChange: (Boolean) -> Unit,
     busy: Boolean,
-    hasReview: Boolean,
-    onReview: () -> Unit,
-    onTopUp: () -> Unit,
 ) {
     SectionCard(title = stringResource(R.string.topup_title)) {
         Text(
@@ -229,17 +238,6 @@ private fun FormSection(
                 enabled = !busy,
             )
         }
-        Button(
-            onClick = if (skipReview) onTopUp else onReview,
-            modifier = Modifier.fillMaxWidth(),
-            enabled = !busy && amount.isNotBlank() && error == null && !hasReview,
-        ) {
-            Text(
-                stringResource(
-                    if (skipReview) R.string.action_apply_now else R.string.action_review_topup,
-                ),
-            )
-        }
         Text(
             text = stringResource(R.string.topup_write_warning),
             style = MaterialTheme.typography.bodySmall,
@@ -249,21 +247,8 @@ private fun FormSection(
 }
 
 @Composable
-private fun ReviewSection(
-    review: TopUpReview?,
-    busy: Boolean,
-    onApply: () -> Unit,
-    onCancel: () -> Unit,
-) {
+private fun ReviewSection(review: TopUpReview) {
     SectionCard(title = stringResource(R.string.topup_review_title)) {
-        if (review == null) {
-            Text(
-                text = stringResource(R.string.topup_review_empty),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-            return@SectionCard
-        }
         LabeledValue(
             label = stringResource(R.string.topup_account),
             value = "${review.accountLabel} · ${review.accountUserId}",
@@ -303,69 +288,12 @@ private fun ReviewSection(
                 style = MaterialTheme.typography.bodyMedium,
             )
         }
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            Button(
-                onClick = onApply,
-                modifier = Modifier.weight(1f),
-                enabled = !busy,
-            ) {
-                Text(stringResource(R.string.action_apply))
-            }
-            OutlinedButton(
-                onClick = onCancel,
-                modifier = Modifier.weight(1f),
-                enabled = !busy,
-            ) {
-                Text(stringResource(R.string.action_cancel))
-            }
-        }
-    }
-}
-
-@Composable
-private fun LastOutcomeSection(outcome: TopUpOutcome?) {
-    if (outcome == null) return
-    SectionCard(title = stringResource(R.string.topup_outcome_title)) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            StatTile(
-                label = stringResource(R.string.home_before),
-                value = Formatters.number(outcome.before),
-                modifier = Modifier.weight(1f),
-            )
-            StatTile(
-                label = stringResource(R.string.home_after),
-                value = Formatters.number(outcome.after),
-                modifier = Modifier.weight(1f),
-            )
-            StatTile(
-                label = stringResource(R.string.home_target),
-                value = Formatters.number(outcome.target),
-                modifier = Modifier.weight(1f),
-            )
-        }
-        if (outcome.capped) {
-            StatusPill(
-                text = stringResource(R.string.topup_capped),
-                positive = false,
-            )
-            Text(
-                text = stringResource(R.string.topup_capped_hint),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-        }
         Text(
-            text = stringResource(R.string.topup_features_title),
-            style = MaterialTheme.typography.titleSmall,
-            modifier = Modifier.padding(top = 4.dp),
+            text = stringResource(R.string.topup_review_swipe_hint),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.padding(top = 2.dp),
         )
-        FeatureReportContent(report = outcome.features)
     }
 }
 

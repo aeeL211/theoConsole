@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Theo Console</string>
+    <string name="home_eyebrow">THEO CONSOLE</string>
+    <string name="greeting_morning">Good morning</string>
+    <string name="greeting_afternoon">Good afternoon</string>
+    <string name="greeting_evening">Good evening</string>
+    <string name="greeting_night">Good night</string>
+    <string name="home_greeting_name">%1$s,\n%2$s</string>
 
     <string name="title_home">Home</string>
     <string name="title_login">Sign in</string>
@@ -93,12 +99,12 @@
     <string name="login_back_home">Back to home</string>
 
     <string name="topup_title">Apply diamonds</string>
-    <string name="topup_subtitle">The amount is added through the game event counter. Review the target before writing.</string>
+    <string name="topup_subtitle">The amount is added through the game event counter. Review the target, then swipe to write.</string>
     <string name="topup_room">Room left</string>
     <string name="topup_amount_label">Diamonds</string>
     <string name="topup_amount_hint">Digits only, for example 12000.</string>
     <string name="topup_skip_review">Apply without review</string>
-    <string name="topup_skip_review_hint">Skip the review card and write immediately, like the CLI --yes option.</string>
+    <string name="topup_skip_review_hint">Skip the review card and swipe once to write immediately.</string>
     <string name="topup_write_warning">This writes to the real game account. There is no undo.</string>
     <string name="topup_review_title">Review</string>
     <string name="topup_review_empty">Enter an amount and review it to see the target and unlock list.</string>
@@ -110,6 +116,18 @@
     <string name="topup_outcome_title">Top-up result</string>
     <string name="topup_confirm_title">Confirm top-up</string>
     <string name="topup_confirm_body">Write %1$s diamonds to this account? This changes the real game account.</string>
+    <string name="topup_swipe_review">Swipe to review</string>
+    <string name="topup_swipe_apply">Swipe to top up now</string>
+    <string name="topup_swipe_confirm">Swipe to confirm top up</string>
+    <string name="topup_swipe_busy">Writing to the account…</string>
+    <string name="topup_swipe_invalid">Enter a valid amount first.</string>
+    <string name="topup_swipe_hint">Drag the handle to the right. The account is written only after the swipe completes.</string>
+    <string name="topup_review_swipe_hint">Swipe the bar below to write this exact amount.</string>
+    <string name="topup_success_eyebrow">TRANSACTION CONFIRMED</string>
+    <string name="topup_success_title">Top-up complete</string>
+    <string name="topup_success_subtitle">The balance is refreshed and both feature rows were checked.</string>
+    <string name="topup_success_amount">+%1$s diamonds</string>
+    <string name="topup_success_done">Back to home</string>
     <string name="topup_signed_out">Sign in to top up</string>
     <string name="topup_validation_empty">Enter a diamond amount.</string>
     <string name="topup_validation_not_integer">The amount must be a whole number.</string>
@@ -186,9 +204,9 @@
 
     <string name="help_intro">This app is an Android port of the theotown-console CLI, with a screen for every interactive command.</string>
     <string name="help_section_start">Getting started</string>
-    <string name="help_start_body">1. Sign in with the forum account. 2. Read the balance on Home. 3. Top up on the Top up tab and apply the reviewed target. 4. Read or sync feature purchases after the write.</string>
+    <string name="help_start_body">1. Sign in with the forum account. 2. Read the balance on Home. 3. Top up on the Top up tab, review the target, then swipe to write. 4. Read or sync feature purchases after the write.</string>
     <string name="help_section_topup">Top-up</string>
-    <string name="help_topup_body">The target is max(earned, spend) + amount - spend. The write is rejected above 2,147,483,647 or when the balance has no room under 100,000. The balance is read again after the write and the two feature rows are checked in a short watch window.</string>
+    <string name="help_topup_body">The target is max(earned, spend) + amount - spend. The write is rejected above 2,147,483,647 or when the balance has no room under 100,000. A swipe-to-confirm control performs the write; the balance is read again and the two feature rows are checked in a short watch window.</string>
     <string name="help_section_features">Feature purchases</string>
     <string name="help_features_body">Sync reads first, writes only missing rows, and keeps a 12-hour stamp per account. If the rows stay missing it refreshes the session once, falls back to max purchase, and probes with a temporary row. The full watch can take more than a minute; use Stop to cancel.</string>
     <string name="help_section_options">CLI options</string>
@@ -202,6 +220,18 @@
     <string name="settings_theme_system">Follow system</string>
     <string name="settings_theme_light">Light</string>
     <string name="settings_theme_dark">Dark</string>
+    <string name="settings_language">Language</string>
+    <string name="settings_language_hint">Changing the language reloads the screen so every label follows it.</string>
+    <string name="settings_language_system">Follow system</string>
+    <string name="settings_language_english">English</string>
+    <string name="settings_language_indonesian">Indonesian</string>
+    <string name="settings_palette">Accent color</string>
+    <string name="settings_palette_hint">Pick an expressive palette. Choosing one turns off dynamic color.</string>
+    <string name="settings_palette_teal">Teal</string>
+    <string name="settings_palette_tangerine">Tangerine</string>
+    <string name="settings_palette_grape">Grape</string>
+    <string name="settings_palette_ocean">Ocean</string>
+    <string name="settings_palette_rose">Rose</string>
     <string name="settings_appearance">Appearance</string>
     <string name="settings_dynamic_color">Dynamic color</string>
     <string name="settings_dynamic_color_hint">Use Material You colors on Android 12 and newer.</string>

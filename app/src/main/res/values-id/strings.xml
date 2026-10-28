@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Theo Console</string>
+    <string name="home_eyebrow">THEO CONSOLE</string>
+    <string name="greeting_morning">Selamat pagi</string>
+    <string name="greeting_afternoon">Selamat siang</string>
+    <string name="greeting_evening">Selamat sore</string>
+    <string name="greeting_night">Selamat malam</string>
+    <string name="home_greeting_name">%1$s,\n%2$s</string>
 
     <string name="title_home">Beranda</string>
     <string name="title_login">Masuk</string>
@@ -93,12 +99,12 @@
     <string name="login_back_home">Kembali ke beranda</string>
 
     <string name="topup_title">Terapkan diamond</string>
-    <string name="topup_subtitle">Jumlah ditambahkan lewat penghitung event game. Tinjau target sebelum menulis.</string>
+    <string name="topup_subtitle">Jumlah ditambahkan lewat penghitung event game. Tinjau target, lalu geser untuk menulis.</string>
     <string name="topup_room">Sisa ruang</string>
     <string name="topup_amount_label">Diamond</string>
     <string name="topup_amount_hint">Hanya angka, misalnya 12000.</string>
     <string name="topup_skip_review">Terapkan tanpa tinjauan</string>
-    <string name="topup_skip_review_hint">Lewati kartu tinjauan dan langsung tulis, seperti opsi --yes di CLI.</string>
+    <string name="topup_skip_review_hint">Lewati kartu tinjauan dan geser sekali untuk langsung menulis.</string>
     <string name="topup_write_warning">Ini menulis ke akun game asli. Tidak ada pembatalan.</string>
     <string name="topup_review_title">Tinjauan</string>
     <string name="topup_review_empty">Masukkan jumlah dan tinjau untuk melihat target dan daftar fitur.</string>
@@ -110,6 +116,18 @@
     <string name="topup_outcome_title">Hasil top-up</string>
     <string name="topup_confirm_title">Konfirmasi top-up</string>
     <string name="topup_confirm_body">Tulis %1$s diamond ke akun ini? Ini mengubah akun game asli.</string>
+    <string name="topup_swipe_review">Geser untuk meninjau</string>
+    <string name="topup_swipe_apply">Geser untuk top up sekarang</string>
+    <string name="topup_swipe_confirm">Geser untuk konfirmasi top up</string>
+    <string name="topup_swipe_busy">Sedang menulis ke akun…</string>
+    <string name="topup_swipe_invalid">Masukkan nominal yang valid dulu.</string>
+    <string name="topup_swipe_hint">Tarik tuas ke kanan. Akun hanya ditulis setelah geseran selesai.</string>
+    <string name="topup_review_swipe_hint">Geser bilah di bawah untuk menulis nominal ini.</string>
+    <string name="topup_success_eyebrow">TRANSAKSI TERKONFIRMASI</string>
+    <string name="topup_success_title">Top up berhasil</string>
+    <string name="topup_success_subtitle">Saldo sudah diperbarui dan kedua baris fitur telah diperiksa.</string>
+    <string name="topup_success_amount">+%1$s diamond</string>
+    <string name="topup_success_done">Kembali ke beranda</string>
     <string name="topup_signed_out">Masuk untuk top up</string>
     <string name="topup_validation_empty">Masukkan jumlah diamond.</string>
     <string name="topup_validation_not_integer">Jumlah harus bilangan bulat.</string>
@@ -186,9 +204,9 @@
 
     <string name="help_intro">Aplikasi ini adalah port Android dari CLI theotown-console, dengan layar untuk setiap command interaktif.</string>
     <string name="help_section_start">Mulai</string>
-    <string name="help_start_body">1. Masuk dengan akun forum. 2. Baca saldo di Beranda. 3. Top up di tab Top up dan terapkan target yang sudah ditinjau. 4. Baca atau sinkronkan pembelian fitur setelah penulisan.</string>
+    <string name="help_start_body">1. Masuk dengan akun forum. 2. Baca saldo di Beranda. 3. Top up di tab Top up, tinjau target, lalu geser untuk menulis. 4. Baca atau sinkronkan pembelian fitur setelah penulisan.</string>
     <string name="help_section_topup">Top-up</string>
-    <string name="help_topup_body">Target adalah max(earned, spend) + jumlah - spend. Penulisan ditolak di atas 2.147.483.647 atau jika saldo tidak punya ruang di bawah 100.000. Saldo dibaca lagi setelah penulisan dan dua baris fitur diperiksa dalam jendela pantau singkat.</string>
+    <string name="help_topup_body">Target adalah max(earned, spend) + jumlah - spend. Penulisan ditolak di atas 2.147.483.647 atau jika saldo tidak punya ruang di bawah 100.000. Kontrol geser untuk konfirmasi melakukan penulisan; saldo dibaca lagi dan dua baris fitur diperiksa dalam jendela pantau singkat.</string>
     <string name="help_section_features">Pembelian fitur</string>
     <string name="help_features_body">Sinkron membaca dulu, hanya menulis baris yang belum ada, dan menyimpan cap waktu 12 jam per akun. Jika baris tetap hilang, sesi disegarkan sekali, fallback ke max purchase, lalu diuji dengan baris sementara. Pantauan penuh bisa lebih dari satu menit; pakai Hentikan untuk membatalkan.</string>
     <string name="help_section_options">Opsi CLI</string>
@@ -202,6 +220,18 @@
     <string name="settings_theme_system">Ikuti sistem</string>
     <string name="settings_theme_light">Terang</string>
     <string name="settings_theme_dark">Gelap</string>
+    <string name="settings_language">Bahasa</string>
+    <string name="settings_language_hint">Mengganti bahasa akan memuat ulang layar agar semua label diperbarui.</string>
+    <string name="settings_language_system">Ikuti sistem</string>
+    <string name="settings_language_english">Inggris</string>
+    <string name="settings_language_indonesian">Indonesia</string>
+    <string name="settings_palette">Warna aksen</string>
+    <string name="settings_palette_hint">Pilih palet ekspresif. Memilih palet akan mematikan warna dinamis.</string>
+    <string name="settings_palette_teal">Toska</string>
+    <string name="settings_palette_tangerine">Jingga</string>
+    <string name="settings_palette_grape">Anggur</string>
+    <string name="settings_palette_ocean">Samudra</string>
+    <string name="settings_palette_rose">Mawar</string>
     <string name="settings_appearance">Tampilan</string>
     <string name="settings_dynamic_color">Warna dinamis</string>
     <string name="settings_dynamic_color_hint">Pakai warna Material You di Android 12 ke atas.</string>

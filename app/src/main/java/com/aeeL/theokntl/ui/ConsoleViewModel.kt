@@ -9,6 +9,7 @@ import com.aeeL.theokntl.core.toFailureInfo
 import com.aeeL.theokntl.data.log.SessionLog
 import com.aeeL.theokntl.domain.gateway.ConsoleGateway
 import com.aeeL.theokntl.domain.model.ConsoleState
+import com.aeeL.theokntl.domain.model.TopUpOutcome
 import com.aeeL.theokntl.domain.model.TopUpReview
 import com.aeeL.theokntl.domain.usecase.ApplyTopUpUseCase
 import com.aeeL.theokntl.domain.usecase.CancelTopUpUseCase
@@ -52,6 +53,9 @@ class ConsoleViewModel @Inject constructor(
 
     private val _failures = Channel<FailureInfo>(Channel.BUFFERED)
     val failures = _failures.receiveAsFlow()
+
+    private val _topUpSuccess = Channel<TopUpOutcome>(Channel.BUFFERED)
+    val topUpSuccess = _topUpSuccess.receiveAsFlow()
 
     private var operationJob: Job? = null
 
@@ -127,7 +131,10 @@ class ConsoleViewModel @Inject constructor(
 
     private fun applyCurrentReview() {
         _review.value = null
-        start { applyTopUpUseCase() }
+        start {
+            val outcome = applyTopUpUseCase()
+            _topUpSuccess.send(outcome)
+        }
     }
 
     private fun reviewOrReport(rawAmount: String): TopUpReview? = try {
