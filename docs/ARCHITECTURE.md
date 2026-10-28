@@ -234,7 +234,7 @@ ditangani di dalam proses Android tanpa runtime atau layanan tambahan.
 - Trigger: push ke `main` dan `workflow_dispatch`.
 - Runner Ubuntu, JDK 17, Gradle 9.8.2 melalui `gradle/actions/setup-gradle`,
   cache aktif, dan `concurrency` membatalkan build lama.
-- Langkah: checkout → JDK → Gradle → SDK platform 37 → signing opsional →
+- Langkah: checkout → JDK → Gradle → SDK platform 37.0 → signing opsional →
   `gradle lintRelease testReleaseUnitTest assembleRelease` → upload
   `theo-console.apk` sebagai artifact `theo-console`.
 - Hanya varian release yang dibangun; ABI native dibatasi ke `armeabi-v7a` dan
