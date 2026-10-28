@@ -7,9 +7,9 @@ ditangani di dalam proses Android tanpa runtime atau layanan tambahan.
 ## 1. Ringkasan
 
 - Package: `com.aeeL.theokntl`
-- minSdk 26, targetSdk 36, compileSdk 36, JDK 17
+- minSdk 26, targetSdk 36, compileSdk 37, JDK 17
 - Single module `app`
-- Kotlin 2.2.20, Jetpack Compose, Material 3, Hilt, Coroutines/Flow,
+- Kotlin 2.4.21, Jetpack Compose, Material 3, Hilt, Coroutines/Flow,
   Navigation Compose, DataStore, OkHttp, kotlinx.serialization
 - MVVM + UDF dengan pemisahan `ui/`, `domain/`, `data/`, dan `core/`
 - Hanya meminta izin `INTERNET`; tidak ada storage permission, notifikasi, atau
@@ -196,21 +196,21 @@ ditangani di dalam proses Android tanpa runtime atau layanan tambahan.
 
 | Komponen | Versi | Alasan |
 | --- | --- | --- |
-| AGP | 8.11.1 | Stabil, mendukung compileSdk 36 dan kompatibel dengan KGP 2.2.20 |
-| Gradle | 8.13 | Minimum untuk AGP 8.11.x |
-| JDK | 17 (Temurin) | Didukung AGP 8.11 |
-| Kotlin | 2.2.20 | Stabil, mendukung Compose BOM 2025.09.01 dan KSP |
-| KSP | 2.2.20-2.0.3 | Rilis resmi untuk Kotlin 2.2.20 |
-| Hilt | 2.56.2 | Stabil, mendukung KSP2 |
-| Compose BOM | 2025.09.01 | Compose UI 1.9.2 + Material3 1.4.0 yang kompatibel |
+| AGP | 9.4.1 | Stabil, mendukung compileSdk 37 dan Gradle 9.8.x |
+| Gradle | 9.8.2 | Minimum AGP 9.4 adalah 9.6.0 |
+| JDK | 17 (Temurin) | Didukung AGP 9.4 |
+| Kotlin | 2.4.21 | KGP bawaan AGP ditingkatkan lewat buildscript |
+| KSP | 2.3.12 | Versi terpisah dari Kotlin, mendukung AGP 9 |
+| Hilt | 2.60.1 | Stabil, mendukung KSP dan AGP 9 |
+| Compose BOM | 2026.09.00 | Compose UI 1.12.1 + Material3 1.4.0 yang kompatibel |
 | Material3 | 1.4.0 (via BOM) | Stabil; ekspresi visual dibangun di atas API stabil |
 | Roboto Flex | Variable font bundled | Tipografi ekspresif, lisensi OFL disertakan |
-| AppCompat | 1.7.1 | Host theme `Theme.AppCompat.DayNight.NoActionBar` |
-| Navigation Compose | 2.8.9 | Stabil |
-| OkHttp | 4.12.0 | Stabil, mendukung Android 8+ |
-| kotlinx.serialization | 1.8.1 | JSON dan state pembelian |
-| DataStore | 1.1.4 | Stabil |
-| minSdk / targetSdk / compileSdk | 26 / 36 / 36 | Kebijakan proyek |
+| AppCompat | 1.8.0 | Host theme `Theme.AppCompat.DayNight.NoActionBar` |
+| Navigation Compose | 2.10.2 | Stabil |
+| OkHttp | 5.5.1 | Stabil, mendukung Android 8+ |
+| kotlinx.serialization | 1.12.0 | JSON dan state pembelian |
+| DataStore | 1.3.0 | Stabil |
+| minSdk / targetSdk / compileSdk | 26 / 36 / 37 | Kebijakan proyek |
 
 ## 8. Pengujian
 
@@ -232,9 +232,9 @@ ditangani di dalam proses Android tanpa runtime atau layanan tambahan.
 
 - Workflow: `.github/workflows/build.yml`
 - Trigger: push ke `main` dan `workflow_dispatch`.
-- Runner Ubuntu, JDK 17, Gradle 8.13 melalui `gradle/actions/setup-gradle`,
+- Runner Ubuntu, JDK 17, Gradle 9.8.2 melalui `gradle/actions/setup-gradle`,
   cache aktif, dan `concurrency` membatalkan build lama.
-- Langkah: checkout → JDK → Gradle → SDK platform 36 → signing opsional →
+- Langkah: checkout → JDK → Gradle → SDK platform 37 → signing opsional →
   `gradle lintRelease testReleaseUnitTest assembleRelease` → upload
   `theo-console.apk` sebagai artifact `theo-console`.
 - Hanya varian release yang dibangun; ABI native dibatasi ke `armeabi-v7a` dan

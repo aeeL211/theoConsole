@@ -4,7 +4,7 @@ Aplikasi Android native untuk TheoTown Console, dibangun dengan Kotlin +
 Jetpack Compose + Material 3 ekspresif.
 
 - Package: `com.aeeL.theokntl`
-- minSdk 26, targetSdk 36, compileSdk 36
+- minSdk 26, targetSdk 36, compileSdk 37
 - Single module `app`, Clean Architecture ringan (`ui/`, `domain/`, `data/`)
 - MVVM + UDF, Hilt, Coroutines/Flow, Navigation Compose, DataStore
 - HTTP memakai OkHttp dengan protokol terenkripsi milik klien TheoTown
@@ -19,7 +19,7 @@ apa pun secara lokal.
 Workflow: `.github/workflows/build.yml`
 
 - Trigger: push ke `main` dan `workflow_dispatch`
-- JDK 17 (Temurin), Gradle 8.13 lewat `gradle/actions/setup-gradle`
+- JDK 17 (Temurin), Gradle 9.8.2 lewat `gradle/actions/setup-gradle`
 - Perintah: `gradle lintRelease testReleaseUnitTest assembleRelease`
 - Hanya varian release yang dibangun; ABI native dibatasi ke `armeabi-v7a`
   dan `arm64-v8a`

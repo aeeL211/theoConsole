@@ -10,9 +10,9 @@ dalam proses Android tanpa runtime, layanan, atau proses tambahan di perangkat.
 
 - Package: `com.aeeL.theokntl`
 - Single module: `app`
-- Kotlin 2.2.20, Jetpack Compose, Material 3, Hilt, Coroutines/Flow,
+- Kotlin 2.4.21, Jetpack Compose, Material 3, Hilt, Coroutines/Flow,
   Navigation Compose, DataStore, OkHttp, kotlinx.serialization
-- minSdk 26, targetSdk 36, compileSdk 36, JDK 17
+- minSdk 26, targetSdk 36, compileSdk 37, JDK 17
 - Dokumentasi: Indonesia; komentar kode mengikuti bahasa di sekitarnya; nama API
   dan tipe tetap Inggris
 
