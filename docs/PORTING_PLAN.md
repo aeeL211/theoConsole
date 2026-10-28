@@ -21,7 +21,7 @@ ke repositori Android (lihat `.gitignore`).
 | Command CLI | Padanan Android | Layer / UseCase |
 | --- | --- | --- |
 | `login [nama]` | `LoginScreen` (form username, password, switch "ingat username") | `LoginUseCase` → `ConsoleRepository.login()` |
-| `topup <jumlah>` | `TopUpScreen` (input nominal, kartu tinjauan, tombol terapkan) | `ReviewTopUpUseCase`, `ApplyTopUpUseCase` |
+| `topup <jumlah>` | `TopUpScreen` (input nominal, kartu tinjauan, kontrol swipe TWRP-style) lalu `TopUpSuccessScreen` | `ReviewTopUpUseCase`, `ApplyTopUpUseCase` |
 | `purchases` | `PurchasesScreen` (status Free fast speed & Free tunnels) | `ReadPurchasesUseCase` |
 | `refresh` | Aksi "Baca ulang" di Beranda dan Top up | `RefreshBalanceUseCase` |
 | `sync` | Aksi "Sinkron fitur" di Beranda, Top up, dan Pembelian | `SyncFeaturesUseCase` → `FeatureSync` |
@@ -41,9 +41,9 @@ ke repositori Android (lihat `.gitignore`).
 | Opsi / perilaku CLI | Padanan Android |
 | --- | --- |
 | `--user <nama>` | Username tersimpan menjadi prefill di layar login |
-| `--yes` | Switch "Terapkan tanpa tinjauan" di layar Top up |
+| `--yes` | Switch "Terapkan tanpa tinjauan": satu swipe langsung menulis tanpa kartu tinjauan |
 | `--json` | Tombol "Salin JSON" dan "Bagikan" di layar Aktivitas |
-| `--no-color` | Tema aplikasi (terang/gelap/sistem), tanpa warna ANSI |
+| `--no-color` | Tema aplikasi (terang/gelap/sistem), palet aksen, dan tanpa warna ANSI |
 | `--debug` | Switch "Detail teknis" di Pengaturan (pesan error teknis) |
 | `--help`, `-h` | Layar Bantuan |
 | `--version`, `-v` | Baris versi di Pengaturan dan Bantuan |
@@ -62,13 +62,18 @@ ke repositori Android (lihat `.gitignore`).
     `FeatureSync` (orchestrasi pembelian dengan dependency interface), use case.
   - `data/`: OkHttp transport, klien protokol terenkripsi, DataStore,
     `ConsoleRepository`, log sesi, implementasi gateway/state store.
-  - `ui/`: Compose + Material 3, navigasi, ViewModel, theme.
+  - `ui/`: Compose + Material 3 dengan tipografi, shape, dan motion ekspresif,
+  lima palet aksen, bahasa per-app, navigasi, ViewModel, theme.
 - MVVM + UDF: `StateFlow` untuk state, `Channel`/`Flow` untuk event sekali pakai.
+  Event sukses top-up memakai `Channel<TopUpOutcome>` agar layar sukses tidak
+  dibuka ulang saat recomposition.
 - DI: Hilt (`@HiltAndroidApp`, `@HiltViewModel`, modul `SingletonComponent`).
 - Async: Coroutines + Flow. Semua I/O jaringan di `Dispatchers.IO`/OkHttp.
-- Penyimpanan: Preferences DataStore untuk username, pengaturan, dan cap waktu
-  penulisan pembelian. Room tidak diperlukan.
-- Navigasi: Navigation Compose dengan route string dan bottom bar.
+- Penyimpanan: Preferences DataStore untuk username, tema/palet, dan cap waktu
+  penulisan pembelian. Bahasa memakai AppCompat per-app locales. Room tidak
+  diperlukan.
+- Navigasi: Navigation Compose dengan route string, bottom bar, slide + fade,
+  dan swipe horizontal antar tab utama.
 - Tidak ada dependency npm yang di-port; tidak ada proses anak.
 
 ### Pemetaan library
@@ -126,18 +131,41 @@ ke repositori Android (lihat `.gitignore`).
 
 ## 6. UI
 
-- Material 3, edge-to-edge, tema terang/gelap/sistem.
-- Dynamic color hanya jika `Build.VERSION.SDK_INT >= 31`.
-- Layar: Beranda, Login, Top up, Pembelian, Akun, Sesi, Protokol, Bantuan,
-  Pengembang, Pengaturan, Aktivitas.
-- Layout responsif: `BoxWithConstraints` dengan breakpoint 720dp untuk
-  dua kolom di tablet; bukan `WindowSizeClass` eksperimental agar API stabil.
-- Loading, error, empty state, dan dialog konfirmasi untuk aksi yang menulis.
+- Gaya Material 3 ekspresif di atas Material 3 stabil: skala tipografi display
+  yang besar, shape lebih membulat, palet aksen, dan motion kartu/hero. API
+  `MaterialExpressiveTheme` baru tersedia di artifact beta, jadi proyek tetap
+  memakai `MaterialTheme` stabil dan membangun ekspresi lewat typography,
+  shapes, warna, serta animasi sendiri.
+- Palet aksen: Teal, Tangerine, Grape, Ocean, Rose. Masing-masing punya varian
+  terang/gelap. Dynamic color hanya jika `Build.VERSION.SDK_INT >= 31`, default
+  mati; memilih palet otomatis mematikan dynamic color.
+- Tema terang/gelap/sistem dan edge-to-edge. Warna status bar mengikuti tema.
+- Bahasa: Ikuti sistem, Inggris, Indonesia. Memakai AppCompat per-app locales,
+  `values-en/`, `values-id/`, dan `locales_config.xml`; perubahan bahasa memuat
+  ulang activity agar seluruh label konsisten.
+- Layar: Beranda, Login, Top up, Sukses top up, Pembelian, Akun, Sesi, Protokol,
+  Bantuan, Pengembang, Pengaturan, Aktivitas.
+- Beranda memakai sapaan otomatis berdasarkan jam: pagi 04.00–10.59, siang
+  11.00–14.59, sore 15.00–17.59, malam 18.00–03.59.
+- Navigasi tab utama memakai swipe horizontal (ambang 72dp) di Beranda,
+  Pembelian, dan Akun. Top up tidak memakai swipe navigasi karena gestur
+  horizontal di layar itu dicadangkan untuk konfirmasi.
+- Top up memakai kontrol swipe-to-confirm bergaya TWRP; tidak ada tombol Apply
+  atau Cancel. Swipe pertama membuka tinjauan, kecuali switch "tanpa tinjauan"
+  aktif; swipe berikutnya menulis. Mengubah nominal membatalkan tinjauan.
+- Setelah tulis berhasil, event `TopUpOutcome` membuka layar sukses terpisah
+  dengan orb animasi, confetti, ringkasan before/after, status capped, dan
+  laporan fitur. Layar ini menyembunyikan top bar/bottom bar dan mendukung back.
+- Transisi navigasi memakai slide horizontal + fade, bukan crossfade.
+- Layout responsif: `BoxWithConstraints` dengan breakpoint 720dp untuk dua
+  kolom di tablet; bukan `WindowSizeClass` eksperimental agar API stabil.
+- Loading, error, empty state; aksi yang menulis memakai swipe atau dialog
+  konfirmasi (sign out).
 - Log gaya terminal: `LazyColumn`, font monospace, timestamp, level, salin,
   bagikan, bersihkan.
 - Semua string UI di `values/strings.xml` (Inggris default), `values-en/`, dan
   `values-id/`. Log protokol bersifat data teknis (tidak diterjemahkan).
-- Preview Compose untuk komponen utama dan layar contoh.
+- Preview Compose untuk layar utama, termasuk preview layar sukses top-up.
 
 ## 7. Keamanan dan privasi
 
@@ -174,8 +202,12 @@ referensi (`cli_src/`) tidak di-commit ke repositori Android.
 - Angka `earned`/`spend` diperlakukan sebagai `Long` saat ditampilkan agar
   pengurangan tidak overflow, tetapi nilai tulis event tetap dibatasi
   `INT32_MAX` seperti CLI.
-- Penulisan top-up/pembelian adalah aksi nyata ke akun. UI menampilkan
-  peringatan dan meminta konfirmasi (kecuali switch `--yes` dinyalakan).
+- Penulisan top-up/pembelian adalah aksi nyata ke akun. Top-up memakai swipe
+  untuk konfirmasi (tanpa tombol Apply/Cancel); switch "tanpa tinjauan"
+  melewati kartu tinjauan tetapi tetap memerlukan satu swipe.
+- Preferensi tema/palet disimpan di DataStore. Pilihan bahasa disimpan oleh
+  AppCompat auto-store, bukan di DataStore, agar sistem per-app locale tetap
+  menjadi sumber kebenaran.
 - Build, lint, dan test hanya dijalankan di GitHub Actions. Tidak ada Gradle
   wrapper karena wrapper tidak bisa digenerate tanpa menjalankan Gradle;
   CI memakai Gradle 8.13 terpasang.
@@ -184,13 +216,15 @@ referensi (`cli_src/`) tidak di-commit ke repositori Android.
 
 | Komponen | Versi | Alasan |
 | --- | --- | --- |
-| AGP | 8.11.2 | Stabil, mendukung compileSdk 36 |
+| AGP | 8.11.1 | Stabil, mendukung compileSdk 36 dan kompatibel dengan KGP 2.2.20 |
 | Gradle | 8.13 | Minimum untuk AGP 8.11.x |
 | JDK | 17 (Temurin) | Didukung AGP 8.11 |
-| Kotlin | 2.1.21 | Stabil, cocok dengan KSP/Compose |
-| KSP | 2.1.21-2.0.2 | Rilis resmi untuk Kotlin 2.1.21 |
+| Kotlin | 2.2.20 | Stabil, mendukung Compose BOM 2025.09.01 dan KSP |
+| KSP | 2.2.20-2.0.3 | Rilis resmi untuk Kotlin 2.2.20 |
 | Hilt | 2.56.2 | Stabil, mendukung KSP2 |
-| Compose BOM | 2025.05.01 | Menentukan versi Compose yang kompatibel |
+| Compose BOM | 2025.09.01 | Compose UI 1.9.2 + Material3 1.4.0 yang kompatibel |
+| Material3 | 1.4.0 (via BOM) | Stabil; ekspresi visual dibangun di atas API stabil |
+| AppCompat | 1.7.1 | Per-app locales dan theme host Compose |
 | Navigation Compose | 2.8.9 | Stabil |
 | OkHttp | 4.12.0 | Stabil, mendukung Android 8+ |
 | kotlinx.serialization | 1.8.1 | JSON + state pembelian |
@@ -205,7 +239,8 @@ referensi (`cli_src/`) tidak di-commit ke repositori Android.
   - status fitur dan verifikasi,
   - crypto: MD5 vektor uji, AES-CBC vektor NIST, segel password (panjang/format),
   - `FeatureSync` dengan gateway palsu: idempoten, watch, refresh, fallback,
-    dan probe.
+    dan probe,
+  - batas periode sapaan Beranda (0, 3, 4, 10, 11, 14, 15, 17, 18, 23).
 - UI test dasar (Compose) hanya dikompilasi di CI, tidak dijalankan tanpa
   emulator.
 - Lint + R8/shrinkResources saat release.

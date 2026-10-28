@@ -1,7 +1,7 @@
 # Theo Console
 
 Aplikasi Android native untuk TheoTown Console: port dari CLI Node.js
-`theotown-console` ke Kotlin + Jetpack Compose + Material 3.
+`theotown-console` ke Kotlin + Jetpack Compose + Material 3 ekspresif.
 
 - Package: `com.aeeL.theokntl`
 - minSdk 26, targetSdk 36, compileSdk 36
@@ -69,15 +69,21 @@ gagal; isi keempat secret secara bersamaan.
 
 - Login forum dengan password tersegel (RSA PKCS#1 v1.5 + mask MD5); password
   tidak disimpan.
-- Beranda: saldo, earned/spend, sisa ruang, progres batas 100.000, status fitur.
-- Top up: validasi nominal, tinjauan target, konfirmasi tulis, opsi terapkan
-  tanpa tinjauan, dan pemeriksaan fitur setelah tulis.
+- Beranda: sapaan otomatis sesuai jam, saldo, earned/spend, sisa ruang, progres
+  batas 100.000, status fitur, dan ringkasan top-up terakhir.
+- Top up: validasi nominal, tinjauan target, konfirmasi swipe-to-confirm tanpa
+  tombol Apply/Cancel, opsi lewati tinjauan, dan layar sukses animasi terpisah.
 - Pembelian: baca status Free fast speed dan Free tunnels, sinkron fitur dengan
   watch, refresh sesi, fallback max purchase, dan probe.
 - Akun, sesi (fingerprint kunci, endpoint), protokol, pengembang, bantuan,
   pengaturan tema, dan log aktivitas gaya terminal dengan salin/bagikan JSON.
-- Edge-to-edge, predictive back, dynamic color hanya Android 12+, tema
-  terang/gelap/sistem, layout dua kolom pada layar ≥720dp.
+- Tema ekspresif dengan lima palet aksen (Teal, Tangerine, Grape, Ocean, Rose),
+  tipografi besar, shape membulat, dan motion slide/fade.
+- Pengaturan bahasa Indonesia/Inggris/ikuti sistem, tema terang/gelap/sistem,
+  dynamic color Android 12+ (default mati), dan detail teknis.
+- Navigasi swipe horizontal antar tab utama; gestur horizontal pada Top up
+  dicadangkan untuk konfirmasi.
+- Edge-to-edge, predictive back, layout dua kolom pada layar ≥720dp.
 - String UI tersedia dalam bahasa Inggris (`values/`, `values-en/`) dan
   Indonesia (`values-id/`).
 
