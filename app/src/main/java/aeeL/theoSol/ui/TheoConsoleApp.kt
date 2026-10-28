@@ -38,10 +38,8 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.outlined.AccountCircle as AccountCircleOutlined
 import androidx.compose.material.icons.outlined.Home as HomeOutlined
-import androidx.compose.material.icons.outlined.ShoppingCart as ShoppingCartOutlined
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -97,7 +95,6 @@ import aeeL.theoSol.ui.screens.HelpScreen
 import aeeL.theoSol.ui.screens.HomeScreen
 import aeeL.theoSol.ui.screens.LoginScreen
 import aeeL.theoSol.ui.screens.ProtocolScreen
-import aeeL.theoSol.ui.screens.PurchasesScreen
 import aeeL.theoSol.ui.screens.SessionScreen
 import aeeL.theoSol.ui.screens.SettingsScreen
 import aeeL.theoSol.ui.screens.TopUpScreen
@@ -113,7 +110,6 @@ object Routes {
     const val LOGIN = "login"
     const val TOP_UP = "top_up"
     const val TOP_UP_SUCCESS = "top_up_success"
-    const val PURCHASES = "purchases"
     const val ACCOUNT = "account"
     const val SESSION = "session"
     const val PROTOCOL = "protocol"
@@ -142,12 +138,6 @@ private val bottomDestinations = listOf(
         label = R.string.title_topup,
         icon = DiamondOutlined,
         selectedIcon = DiamondFilled,
-    ),
-    BottomDestination(
-        route = Routes.PURCHASES,
-        label = R.string.title_purchases,
-        icon = Icons.Outlined.ShoppingCartOutlined,
-        selectedIcon = Icons.Filled.ShoppingCart,
     ),
     BottomDestination(
         route = Routes.ACCOUNT,
@@ -481,7 +471,6 @@ private fun MainTabs(
         pageCount = { bottomDestinations.size },
     )
     val topUpPage = pageIndex(Routes.TOP_UP)
-    val purchasesPage = pageIndex(Routes.PURCHASES)
     val homePage = pageIndex(Routes.HOME)
     val latestPage by rememberUpdatedState(currentPage)
     val latestOnPageSelected by rememberUpdatedState(onPageSelected)
@@ -524,7 +513,6 @@ private fun MainTabs(
                 onSync = consoleViewModel::syncFeatures,
                 onStop = consoleViewModel::stopOperation,
                 onTopUp = { onPageSelected(topUpPage) },
-                onPurchases = { onPageSelected(purchasesPage) },
                 onSession = { openRoute(Routes.SESSION) },
                 onProtocol = { openRoute(Routes.PROTOCOL) },
                 onDeveloper = { openRoute(Routes.DEVELOPER) },
@@ -538,13 +526,6 @@ private fun MainTabs(
                 onTopUp = consoleViewModel::topUp,
                 onApply = consoleViewModel::applyTopUp,
                 onCancelReview = consoleViewModel::cancelTopUp,
-                onStop = consoleViewModel::stopOperation,
-            )
-            purchasesPage -> PurchasesScreen(
-                state = console,
-                onLogin = { openRoute(Routes.LOGIN) },
-                onRead = consoleViewModel::readPurchases,
-                onSync = consoleViewModel::syncFeatures,
                 onStop = consoleViewModel::stopOperation,
             )
             else -> AccountScreen(
@@ -578,9 +559,11 @@ private fun ConsoleTopBar(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                // The status bar is hidden, so only side cutouts need padding.
+                // The top cutout inset here would leave a dead band above the bar.
                 .windowInsetsPadding(
                     WindowInsets.displayCutout.only(
-                        WindowInsetsSides.Top + WindowInsetsSides.Horizontal,
+                        WindowInsetsSides.Horizontal,
                     ),
                 ),
         ) {
@@ -631,7 +614,6 @@ private fun routeTitle(route: String): Int = when (route) {
     Routes.LOGIN -> R.string.title_login
     Routes.TOP_UP -> R.string.title_topup
     Routes.TOP_UP_SUCCESS -> R.string.topup_success_title
-    Routes.PURCHASES -> R.string.title_purchases
     Routes.ACCOUNT -> R.string.title_account
     Routes.SESSION -> R.string.title_session
     Routes.PROTOCOL -> R.string.title_protocol

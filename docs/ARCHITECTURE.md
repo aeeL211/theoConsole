@@ -51,9 +51,9 @@ ditangani di dalam proses Android tanpa runtime atau layanan tambahan.
 
 ### Navigasi
 
-- Navigation Compose menangani halaman detail, sedangkan empat tab utama memakai
+- Navigation Compose menangani halaman detail, sedangkan tiga tab utama memakai
   `HorizontalPager` dan bottom bar yang tersinkron dua arah.
-- Tab utama: Beranda, Top up, Pembelian, dan Akun.
+- Tab utama: Beranda, Top up, dan Akun.
 - Pager tetap dapat digeser di semua tab; swipe-to-confirm mengonsumsi gestur
   horizontal hanya di area kontrolnya.
 - Halaman Pengaturan dan detail selalu dapat kembali ke tab pager yang sedang
@@ -129,7 +129,8 @@ ditangani di dalam proses Android tanpa runtime atau layanan tambahan.
   `BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE`. Window tetap menggambar di belakang
   navigation bar dan display cutout (`layoutInDisplayCutoutMode=ALWAYS` pada
   API 30+, `SHORT_EDGES` pada API 28–29).
-- Top bar setinggi 52dp hanya memakai inset cutout atas/horizontal; status bar
+- Top bar setinggi 52dp hanya memakai inset cutout horizontal; inset cutout atas
+  tidak ditambahkan agar bar tidak turun dan area notch tetap terisi. Status bar
   tidak menambah padding kedua. Bottom bar dan layar sukses memakai inset
   sistem masing-masing satu kali; background tetap memenuhi layar.
 - Top bar menggunakan surface penuh hingga area cutout dengan sudut bawah
@@ -154,8 +155,11 @@ ditangani di dalam proses Android tanpa runtime atau layanan tambahan.
 
 ### Layar
 
-- Beranda, Login, Top up, Sukses top up, Pembelian, Akun, Sesi, Protokol,
-  Bantuan, Pengembang, Pengaturan, dan Aktivitas.
+- Beranda, Login, Top up, Sukses top up, Akun, Sesi, Protokol, Bantuan,
+  Pengembang, Pengaturan, dan Aktivitas.
+- Pembelian tidak memiliki tab terpisah. Setelah top-up, fitur Free fast speed
+  dan Free tunnels dibaca dan disinkronkan otomatis; Beranda menyediakan aksi
+  sinkron manual.
 - Sapaan Beranda mengikuti jam: pagi 04.00–10.59, siang 11.00–14.59, sore
   15.00–17.59, malam 18.00–03.59.
 - Top up memakai kontrol swipe-to-confirm; tidak ada tombol Apply atau Cancel.
@@ -164,9 +168,10 @@ ditangani di dalam proses Android tanpa runtime atau layanan tambahan.
 - Swipe pertama membuka tinjauan, kecuali opsi lewati tinjauan aktif. Swipe
   berikutnya menulis. Mengubah nominal membatalkan tinjauan.
 - Setelah tulis berhasil, layar sukses terpisah menampilkan check orb dengan
-  reveal satu kali, ringkasan before/amount/after, status capped, dan laporan
-  fitur. Tidak ada animasi infinite atau gradient dekoratif. Layar ini
-  menyembunyikan top bar/bottom bar dan mendukung tombol kembali.
+  ring pulse/rotasi halus di sekeliling ikon, reveal sekali, ringkasan
+  before/amount/after, status capped, dan laporan fitur. Tidak ada gradient atau
+  confetti dekoratif. Layar ini menyembunyikan top bar/bottom bar dan mendukung
+  tombol kembali.
 - Transisi navigasi memakai slide horizontal + fade sekitar 260ms
   (`FastOutSlowInEasing`); layar sukses memakai fade + scale halus.
 - Layout responsif memakai `BoxWithConstraints` dengan breakpoint 720dp untuk

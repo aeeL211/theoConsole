@@ -66,18 +66,6 @@ fun DeveloperScreen() {
                 },
             )
         }
-        SectionHeader(title = stringResource(R.string.developer_title))
-        AppCard {
-            LabeledValue(
-                label = stringResource(R.string.developer_name),
-                value = developer.name,
-            )
-            LabeledValue(
-                label = stringResource(R.string.developer_telegram),
-                value = developer.telegramLabel,
-                monospace = true,
-            )
-        }
         SectionHeader(title = stringResource(R.string.developer_build))
         AppCard {
             LabeledValue(

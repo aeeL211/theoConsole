@@ -20,6 +20,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import aeeL.theoSol.R
 import aeeL.theoSol.domain.model.ConsoleState
 import aeeL.theoSol.ui.components.AppCard
@@ -189,7 +190,12 @@ fun AccountScreen(
                 contentColor = MaterialTheme.colorScheme.error,
             ),
         ) {
-            Text(stringResource(R.string.action_sign_out))
+            Text(
+                text = stringResource(R.string.action_sign_out),
+                style = MaterialTheme.typography.bodyLarge.copy(
+                    fontWeight = FontWeight.SemiBold,
+                ),
+            )
         }
     }
 }

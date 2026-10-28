@@ -27,7 +27,6 @@ import aeeL.theoSol.ui.screens.DeveloperScreen
 import aeeL.theoSol.ui.screens.HelpScreen
 import aeeL.theoSol.ui.screens.HomeScreen
 import aeeL.theoSol.ui.screens.LoginScreen
-import aeeL.theoSol.ui.screens.PurchasesScreen
 import aeeL.theoSol.ui.screens.SessionScreen
 import aeeL.theoSol.ui.screens.SettingsScreen
 import aeeL.theoSol.ui.screens.TopUpScreen
@@ -118,7 +117,6 @@ private fun HomePreview() {
             onSync = {},
             onStop = {},
             onTopUp = {},
-            onPurchases = {},
             onSession = {},
             onProtocol = {},
             onDeveloper = {},
@@ -155,21 +153,6 @@ private fun TopUpPreview() {
             onTopUp = { _, _ -> },
             onApply = {},
             onCancelReview = {},
-            onStop = {},
-        )
-    }
-}
-
-@Preview(name = "Purchases", widthDp = 420, heightDp = 800, showBackground = true)
-@Preview(name = "Purchases dark", widthDp = 420, heightDp = 800, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-private fun PurchasesPreview() {
-    PreviewSurface {
-        PurchasesScreen(
-            state = previewState,
-            onLogin = {},
-            onRead = {},
-            onSync = {},
             onStop = {},
         )
     }

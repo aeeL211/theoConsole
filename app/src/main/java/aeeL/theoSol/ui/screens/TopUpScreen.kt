@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.FilterChip
@@ -19,6 +18,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -274,6 +274,20 @@ private fun ApplyHero(
                 checked = skipReview,
                 onCheckedChange = onSkipReviewChange,
                 enabled = !busy,
+                colors = SwitchDefaults.colors(
+                    checkedThumbColor = MaterialTheme.colorScheme.onPrimary,
+                    checkedTrackColor = MaterialTheme.colorScheme.primary,
+                    uncheckedThumbColor = MaterialTheme.colorScheme.outline,
+                    uncheckedTrackColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+                    disabledCheckedThumbColor =
+                        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
+                    disabledCheckedTrackColor =
+                        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
+                    disabledUncheckedThumbColor =
+                        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
+                    disabledUncheckedTrackColor =
+                        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
+                ),
             )
         }
         Text(

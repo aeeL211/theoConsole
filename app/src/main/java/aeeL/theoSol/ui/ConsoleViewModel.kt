@@ -14,7 +14,6 @@ import aeeL.theoSol.domain.model.TopUpReview
 import aeeL.theoSol.domain.usecase.ApplyTopUpUseCase
 import aeeL.theoSol.domain.usecase.CancelTopUpUseCase
 import aeeL.theoSol.domain.usecase.LoginUseCase
-import aeeL.theoSol.domain.usecase.ReadPurchasesUseCase
 import aeeL.theoSol.domain.usecase.RefreshBalanceUseCase
 import aeeL.theoSol.domain.usecase.ReviewTopUpUseCase
 import aeeL.theoSol.domain.usecase.SignOutUseCase
@@ -40,7 +39,6 @@ class ConsoleViewModel @Inject constructor(
     private val reviewTopUpUseCase: ReviewTopUpUseCase,
     private val applyTopUpUseCase: ApplyTopUpUseCase,
     private val cancelTopUpUseCase: CancelTopUpUseCase,
-    private val readPurchasesUseCase: ReadPurchasesUseCase,
     private val syncFeaturesUseCase: SyncFeaturesUseCase,
     private val signOutUseCase: SignOutUseCase,
     private val sessionLog: SessionLog,
@@ -88,10 +86,6 @@ class ConsoleViewModel @Inject constructor(
     fun cancelTopUp() {
         cancelTopUpUseCase()
         _review.value = null
-    }
-
-    fun readPurchases() {
-        start { readPurchasesUseCase() }
     }
 
     fun syncFeatures() {

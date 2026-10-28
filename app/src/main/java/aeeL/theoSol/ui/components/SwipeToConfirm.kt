@@ -9,7 +9,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
@@ -51,6 +50,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.disabled
 import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.semantics.role
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -195,7 +195,7 @@ fun SwipeToConfirm(
         if (enabled && progress > 0f) {
             Box(
                 modifier = Modifier
-                    .fillMaxSize()
+                    .matchParentSize()
                     .clearAndSetSemantics { }
                     .drawWithContent {
                         clipRect(right = size.width * progress) {
@@ -255,7 +255,9 @@ private fun SwipeLabel(
     Text(
         text = text,
         modifier = modifier,
-        style = MaterialTheme.typography.labelLarge,
+        style = MaterialTheme.typography.bodyLarge.copy(
+            fontWeight = FontWeight.SemiBold,
+        ),
         color = color,
         maxLines = 2,
         textAlign = TextAlign.Center,

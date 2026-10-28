@@ -73,8 +73,8 @@ Jaga perilaku berikut saat mengubah UI:
 - Swipe-to-confirm berubah dari merah ke hijau seiring progres ke kanan.
   Label dan thumb harus tetap kontras dan fill di-clip ke bentuk pill.
 - Ripple/highlight kartu tools di console harus ter-clip ke bentuk kartu.
-- Kartu loading Pembelian memakai warna `secondaryContainer`/
-  `onSecondaryContainer`.
+- Kartu loading operasi (termasuk sync fitur) memakai warna
+  `secondaryContainer`/`onSecondaryContainer`.
 - Di tab Top up, pager tetap dapat digeser; kontrol swipe-to-confirm mengonsumsi
   gestur horizontal hanya di area kontrolnya agar tidak bentrok. Tombol kembali
   dari tab utama selain Beranda kembali ke Beranda.

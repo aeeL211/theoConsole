@@ -10,7 +10,6 @@
     <string name="title_home">Home</string>
     <string name="title_login">Sign in</string>
     <string name="title_topup">Top up</string>
-    <string name="title_purchases">Purchases</string>
     <string name="title_account">Account</string>
     <string name="title_session">Session</string>
     <string name="title_protocol">Protocol</string>
@@ -29,9 +28,7 @@
     <string name="action_clear">Clear</string>
     <string name="action_copy_json">Copy JSON</string>
     <string name="action_login">Sign in</string>
-    <string name="action_open_purchases">Open purchases</string>
     <string name="action_open_telegram">Open Telegram</string>
-    <string name="action_read">Read now</string>
     <string name="action_refresh">Read again</string>
     <string name="action_review_topup">Review top-up</string>
     <string name="action_share">Share</string>
@@ -74,7 +71,7 @@
     <string name="home_amount">Amount</string>
     <string name="home_after">After</string>
     <string name="home_features">Feature purchases</string>
-    <string name="home_no_features">No purchase data yet. Sync features or open Purchases.</string>
+    <string name="home_no_features">No purchase data yet. Sync features or apply a top-up.</string>
     <string name="home_ceiling_title">Balance at the limit</string>
     <string name="home_ceiling_warning">The account is at the 100,000 diamond limit, so no top-up can be applied. Spend diamonds in the game first.</string>
     <string name="home_tools">Console tools</string>
@@ -134,17 +131,11 @@
     <string name="topup_validation_too_small">The amount must be at least 1.</string>
     <string name="topup_validation_too_large">The amount exceeds the remaining room (%1$s).</string>
 
-    <string name="purchases_signed_out">Sign in to read purchases</string>
-    <string name="purchases_body">Read the purchase rows that decide whether Free fast speed and Free tunnels are unlocked.</string>
-    <string name="purchases_status_title">Feature status</string>
-    <string name="purchases_empty">No purchase data yet. Tap Read now.</string>
     <string name="purchases_verified">Both features are visible</string>
     <string name="purchases_not_verified">Both features are not visible yet</string>
     <string name="purchases_error">The purchase check returned an error. The activity log has the request details.</string>
     <string name="purchases_probe_true">The probe row came back, so the server filters these two purchase IDs.</string>
     <string name="purchases_probe_false">The probe row did not come back either. Rows can appear minutes later; sync again before the next top-up.</string>
-    <string name="purchases_how_title">How the check works</string>
-    <string name="purchases_hint">Add and max writes are serial and stamped for 12 hours per account. Sync again later if the rows lag behind.</string>
 
     <string name="account_signed_out">No account session</string>
     <string name="account_details">Account</string>
@@ -195,9 +186,6 @@
     <string name="protocol_session_iv">Session IV</string>
     <string name="protocol_unknown">Constant</string>
 
-    <string name="developer_title">Developer</string>
-    <string name="developer_name">Name</string>
-    <string name="developer_telegram">Telegram</string>
     <string name="developer_note">This is a community console, not an official TheoTown app.</string>
     <string name="developer_build">Build</string>
     <string name="developer_topup_limit">Balance limit</string>

@@ -2,10 +2,18 @@ package aeeL.theoSol.ui.screens
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.slideInVertically
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -39,6 +47,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -67,11 +80,6 @@ fun TopUpSuccessScreen(
 
     var revealed by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) { revealed = true }
-    val badgeScale by animateFloatAsState(
-        targetValue = if (revealed) 1f else 0.7f,
-        animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing),
-        label = "success badge scale",
-    )
 
     Box(
         modifier = Modifier
@@ -90,22 +98,7 @@ fun TopUpSuccessScreen(
                 .padding(horizontal = Spacing.xl, vertical = Spacing.xl),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Surface(
-                modifier = Modifier
-                    .size(112.dp)
-                    .scale(badgeScale),
-                shape = CircleShape,
-                color = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary,
-            ) {
-                Box(contentAlignment = Alignment.Center) {
-                    Icon(
-                        imageVector = Icons.Default.CheckCircle,
-                        contentDescription = null,
-                        modifier = Modifier.size(64.dp),
-                    )
-                }
-            }
+            SuccessBadge(revealed = revealed)
             Text(
                 text = stringResource(R.string.topup_success_title),
                 style = MaterialTheme.typography.displaySmall,
@@ -186,6 +179,90 @@ fun TopUpSuccessScreen(
                         )
                     }
                 }
+            }
+        }
+    }
+}
+
+@Composable
+private fun SuccessBadge(revealed: Boolean) {
+    val primary = MaterialTheme.colorScheme.primary
+    val tertiary = MaterialTheme.colorScheme.tertiary
+    val scale by animateFloatAsState(
+        targetValue = if (revealed) 1f else 0.7f,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessLow,
+        ),
+        label = "success badge scale",
+    )
+    val transition = rememberInfiniteTransition(label = "success ring")
+    val rotation by transition.animateFloat(
+        initialValue = 0f,
+        targetValue = 360f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 12_000, easing = LinearEasing),
+            repeatMode = RepeatMode.Restart,
+        ),
+        label = "success ring rotation",
+    )
+    val pulse by transition.animateFloat(
+        initialValue = 0.96f,
+        targetValue = 1.04f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 1_800, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse,
+        ),
+        label = "success ring pulse",
+    )
+
+    Box(
+        modifier = Modifier.size(156.dp),
+        contentAlignment = Alignment.Center,
+    ) {
+        Canvas(modifier = Modifier.fillMaxSize()) {
+            drawCircle(
+                color = primary.copy(alpha = 0.12f),
+                radius = size.minDimension * 0.46f * pulse,
+            )
+            drawCircle(
+                color = tertiary.copy(alpha = 0.14f),
+                radius = size.minDimension * 0.38f,
+            )
+        }
+        Canvas(
+            modifier = Modifier
+                .fillMaxSize()
+                .graphicsLayer { rotationZ = rotation },
+        ) {
+            val inset = size.minDimension * 0.08f
+            drawArc(
+                color = primary.copy(alpha = 0.5f),
+                startAngle = 18f,
+                sweepAngle = 108f,
+                useCenter = false,
+                topLeft = Offset(inset, inset),
+                size = Size(size.width - inset * 2f, size.height - inset * 2f),
+                style = Stroke(
+                    width = 3.dp.toPx(),
+                    cap = StrokeCap.Round,
+                ),
+            )
+        }
+        Surface(
+            modifier = Modifier
+                .size(112.dp)
+                .scale(scale),
+            shape = CircleShape,
+            color = primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary,
+        ) {
+            Box(contentAlignment = Alignment.Center) {
+                Icon(
+                    imageVector = Icons.Default.CheckCircle,
+                    contentDescription = null,
+                    modifier = Modifier.size(64.dp),
+                )
             }
         }
     }

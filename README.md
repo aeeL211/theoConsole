@@ -72,8 +72,9 @@ gagal; isi keempat secret secara bersamaan.
 - Top up: validasi nominal, ringkasan before/amount/after (tanpa baris target
   internal), konfirmasi swipe-to-confirm tanpa tombol Apply/Cancel, opsi lewati
   tinjauan, dan layar sukses animasi terpisah.
-- Pembelian: baca status Free fast speed dan Free tunnels, sinkron fitur dengan
-  watch, refresh sesi, fallback max purchase, dan probe.
+- Verifikasi fitur otomatis setelah top-up: baca status Free fast speed dan Free
+  tunnels, sinkron fitur dengan watch, refresh sesi, fallback max purchase, dan
+  probe. Tidak ada tab Pembelian terpisah.
 - Akun, sesi (fingerprint kunci, endpoint), protokol, pengembang, bantuan,
   pengaturan tema, dan log aktivitas dengan salin/bagikan JSON.
 - Tema ekspresif dengan lima palet aksen (Teal, Tangerine, Grape, Ocean, Rose),
@@ -88,9 +89,9 @@ gagal; isi keempat secret secara bersamaan.
   Bottom bar hanya tampil di tab utama. Halaman detail memakai tombol kembali
   di top bar dan kembali ke tab pager yang sedang aktif; login yang berhasil
   kembali ke Beranda.
-- Status bar disembunyikan, top bar memenuhi area cutout, safe inset hanya
-  diterapkan sekali pada konten, predictive back, dan layout dua kolom pada
-  layar ≥720dp.
+- Status bar disembunyikan; top bar 52dp menempati area cutout tanpa inset atas
+  tambahan, safe inset hanya diterapkan sekali pada konten, predictive back, dan
+  layout dua kolom pada layar ≥720dp.
 - String UI tersedia dalam bahasa Inggris (`values/`, `values-en/`) dan
   Indonesia (`values-id/`).
 

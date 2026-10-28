@@ -10,7 +10,6 @@
     <string name="title_home">Beranda</string>
     <string name="title_login">Masuk</string>
     <string name="title_topup">Top up</string>
-    <string name="title_purchases">Pembelian</string>
     <string name="title_account">Akun</string>
     <string name="title_session">Sesi</string>
     <string name="title_protocol">Protokol</string>
@@ -29,9 +28,7 @@
     <string name="action_clear">Hapus</string>
     <string name="action_copy_json">Salin JSON</string>
     <string name="action_login">Masuk</string>
-    <string name="action_open_purchases">Buka pembelian</string>
     <string name="action_open_telegram">Buka Telegram</string>
-    <string name="action_read">Baca sekarang</string>
     <string name="action_refresh">Baca ulang</string>
     <string name="action_review_topup">Tinjau top-up</string>
     <string name="action_share">Bagikan</string>
@@ -74,7 +71,7 @@
     <string name="home_amount">Jumlah</string>
     <string name="home_after">Sesudah</string>
     <string name="home_features">Pembelian fitur</string>
-    <string name="home_no_features">Belum ada data pembelian. Sinkronkan fitur atau buka Pembelian.</string>
+    <string name="home_no_features">Belum ada data pembelian. Sinkronkan fitur atau lakukan top up.</string>
     <string name="home_ceiling_title">Saldo mencapai batas</string>
     <string name="home_ceiling_warning">Akun berada di batas 100.000 diamond, jadi top-up tidak bisa diterapkan. Belanjakan diamond di game terlebih dahulu.</string>
     <string name="home_tools">Alat konsol</string>
@@ -134,17 +131,11 @@
     <string name="topup_validation_too_small">Jumlah minimal 1.</string>
     <string name="topup_validation_too_large">Jumlah melebihi sisa ruang (%1$s).</string>
 
-    <string name="purchases_signed_out">Masuk untuk membaca pembelian</string>
-    <string name="purchases_body">Baca baris pembelian yang menentukan apakah Kecepatan cepat gratis dan Tunnel gratis terbuka.</string>
-    <string name="purchases_status_title">Status fitur</string>
-    <string name="purchases_empty">Belum ada data pembelian. Ketuk Baca sekarang.</string>
     <string name="purchases_verified">Kedua fitur terlihat</string>
     <string name="purchases_not_verified">Kedua fitur belum terlihat</string>
     <string name="purchases_error">Pemeriksaan pembelian mengembalikan error. Detail permintaan ada di log aktivitas.</string>
     <string name="purchases_probe_true">Baris uji kembali, jadi server memfilter dua ID pembelian ini.</string>
     <string name="purchases_probe_false">Baris uji juga tidak kembali. Baris bisa muncul beberapa menit kemudian; sinkronkan lagi sebelum top-up berikutnya.</string>
-    <string name="purchases_how_title">Cara pemeriksaan bekerja</string>
-    <string name="purchases_hint">Penulisan add dan max berurutan dan diberi cap waktu 12 jam per akun. Sinkronkan lagi nanti jika baris tertinggal.</string>
 
     <string name="account_signed_out">Tidak ada sesi akun</string>
     <string name="account_details">Akun</string>
@@ -195,9 +186,6 @@
     <string name="protocol_session_iv">IV sesi</string>
     <string name="protocol_unknown">Konstanta</string>
 
-    <string name="developer_title">Pengembang</string>
-    <string name="developer_name">Nama</string>
-    <string name="developer_telegram">Telegram</string>
     <string name="developer_note">Ini konsol komunitas, bukan aplikasi resmi TheoTown.</string>
     <string name="developer_build">Build</string>
     <string name="developer_topup_limit">Batas saldo</string>

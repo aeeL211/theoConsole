@@ -13,14 +13,20 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -31,6 +37,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import aeeL.theoSol.R
 import aeeL.theoSol.domain.model.ConsoleState
@@ -54,6 +61,7 @@ import aeeL.theoSol.ui.components.StatusTone
 import aeeL.theoSol.ui.components.dayPeriodLabel
 import aeeL.theoSol.ui.components.localizedNumber
 import aeeL.theoSol.ui.components.rememberDayPeriod
+import aeeL.theoSol.ui.icons.DiamondFilled
 import aeeL.theoSol.ui.theme.Dimens
 import aeeL.theoSol.ui.theme.Spacing
 import kotlin.math.roundToInt
@@ -66,7 +74,6 @@ fun HomeScreen(
     onSync: () -> Unit,
     onStop: () -> Unit,
     onTopUp: () -> Unit,
-    onPurchases: () -> Unit,
     onSession: () -> Unit,
     onProtocol: () -> Unit,
     onDeveloper: () -> Unit,
@@ -149,7 +156,6 @@ fun HomeScreen(
                             report = state.features,
                             busy = state.busy,
                             onSync = onSync,
-                            onPurchases = onPurchases,
                         )
                         ToolsSection(
                             onSession = onSession,
@@ -171,7 +177,6 @@ fun HomeScreen(
                     report = state.features,
                     busy = state.busy,
                     onSync = onSync,
-                    onPurchases = onPurchases,
                 )
                 ToolsSection(
                     onSession = onSession,
@@ -216,7 +221,7 @@ private fun GreetingHeader(
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         maxLines = 1,
-                        overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                        overflow = TextOverflow.Ellipsis,
                     )
                 }
             }
@@ -228,67 +233,139 @@ private fun GreetingHeader(
 private fun BalanceSection(state: ConsoleState) {
     val stats = state.stats
     val balance = stats.balance ?: 0L
-    Column(verticalArrangement = Arrangement.spacedBy(Spacing.md)) {
-        HeroCard {
-            Text(
-                text = stringResource(R.string.home_balance),
-                style = MaterialTheme.typography.labelLarge,
-            )
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.Bottom,
+    val progress = stats.progress.coerceIn(0f, 1f)
+    val secondaryContent = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f)
+    HeroCard {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.Top,
+        ) {
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(Spacing.xs),
             ) {
+                Text(
+                    text = stringResource(R.string.home_balance),
+                    style = MaterialTheme.typography.labelLarge,
+                    color = secondaryContent,
+                )
                 Text(
                     text = localizedNumber(balance),
                     style = MaterialTheme.typography.displayMedium.copy(
                         fontFeatureSettings = "tnum",
                     ),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                 )
+            }
+            Surface(
+                shape = CircleShape,
+                color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.1f),
+                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+            ) {
+                Icon(
+                    imageVector = DiamondFilled,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .padding(Spacing.md)
+                        .size(24.dp),
+                )
+            }
+        }
+        Column(verticalArrangement = Arrangement.spacedBy(Spacing.sm)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
                 Text(
                     text = stringResource(
                         R.string.home_balance_of_limit,
                         localizedNumber(stats.limit),
                     ),
                     style = MaterialTheme.typography.bodySmall,
+                    color = secondaryContent,
+                )
+                Text(
+                    text = stringResource(
+                        R.string.home_progress,
+                        (progress * 100f).roundToInt(),
+                    ),
+                    style = MaterialTheme.typography.labelMedium,
+                    color = secondaryContent,
                 )
             }
             LinearProgressIndicator(
-                progress = { stats.progress },
+                progress = { progress },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(Dimens.progressHeight)
                     .clip(CircleShape),
-                trackColor = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.18f),
-            )
-            Text(
-                text = stringResource(
-                    R.string.home_progress,
-                    (stats.progress * 100f).roundToInt(),
-                ),
-                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                trackColor = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.16f),
             )
         }
+        HorizontalDivider(
+            color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.14f),
+        )
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(Spacing.sm),
+            horizontalArrangement = Arrangement.spacedBy(Spacing.md),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
-            StatTile(
+            BalanceMetric(
                 label = stringResource(R.string.home_earned),
                 value = localizedNumber(stats.earned ?: 0L),
                 modifier = Modifier.weight(1f),
             )
-            StatTile(
+            VerticalDivider(
+                modifier = Modifier.height(28.dp),
+                color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.16f),
+            )
+            BalanceMetric(
                 label = stringResource(R.string.home_spend),
                 value = localizedNumber(stats.spend ?: 0L),
                 modifier = Modifier.weight(1f),
             )
-            StatTile(
+            VerticalDivider(
+                modifier = Modifier.height(28.dp),
+                color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.16f),
+            )
+            BalanceMetric(
                 label = stringResource(R.string.home_room),
                 value = localizedNumber(stats.room ?: 0L),
                 modifier = Modifier.weight(1f),
             )
         }
+    }
+}
+
+@Composable
+private fun BalanceMetric(
+    label: String,
+    value: String,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(2.dp),
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+        )
+        Text(
+            text = value,
+            style = MaterialTheme.typography.titleSmall.copy(
+                fontFeatureSettings = "tnum",
+            ),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+        )
     }
 }
 
@@ -375,7 +452,6 @@ private fun FeaturesSection(
     report: FeatureReport?,
     busy: Boolean,
     onSync: () -> Unit,
-    onPurchases: () -> Unit,
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(Spacing.sm)) {
         SectionHeader(title = stringResource(R.string.home_features))
@@ -399,22 +475,11 @@ private fun FeaturesSection(
                 )
                 FeatureReportContent(report = report)
             }
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(Spacing.sm),
-            ) {
-                SecondaryButton(
-                    text = stringResource(R.string.action_sync),
-                    onClick = onSync,
-                    enabled = !busy,
-                    modifier = Modifier.weight(1f),
-                )
-                SecondaryButton(
-                    text = stringResource(R.string.action_open_purchases),
-                    onClick = onPurchases,
-                    modifier = Modifier.weight(1f),
-                )
-            }
+            SecondaryButton(
+                text = stringResource(R.string.action_sync),
+                onClick = onSync,
+                enabled = !busy,
+            )
         }
     }
 }
