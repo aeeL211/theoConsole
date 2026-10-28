@@ -12,7 +12,7 @@ import java.util.Locale
 @Composable
 fun localizedNumber(value: Long): String {
     val locales = LocalConfiguration.current.locales
-    val locale = if (locales.size() > 0) locales.get(0) else Locale.getDefault()
+    val locale = if (locales.size() > 0) locales.get(0) else Locale.ROOT
     return remember(value, locale) { formatNumber(value, locale) }
 }
 
