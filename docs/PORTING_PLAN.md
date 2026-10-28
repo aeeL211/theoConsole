@@ -278,8 +278,7 @@ referensi (`cli_src/`) tidak di-commit ke repositori Android.
   - `FeatureSync` dengan gateway palsu: idempoten, watch, refresh, fallback,
     dan probe,
   - batas periode sapaan Beranda (0, 3, 4, 10, 11, 14, 15, 17, 18, 23).
-- UI test dasar (Compose) hanya dikompilasi di CI, tidak dijalankan tanpa
-  emulator.
+- UI test dasar (Compose) tidak dijalankan di CI karena tidak ada emulator.
 - Lint + R8/shrinkResources saat release.
 - Verifikasi lokal hanya statis (tanpa Gradle): import, resource, manifest,
   versi dependency, dan sintaks.
@@ -291,8 +290,10 @@ referensi (`cli_src/`) tidak di-commit ke repositori Android.
 - Runner Ubuntu, JDK 17, Gradle 8.13 via `gradle/actions/setup-gradle`,
   cache aktif, `concurrency` membatalkan build lama.
 - Langkah: checkout → JDK → Gradle → SDK platform 36 → signing opsional →
-  `gradle lint testDebugUnitTest assembleDebug assembleRelease` → kompilasi
-  instrumented test → upload APK debug/release dengan nama berisi SHA.
+  `gradle lintRelease testReleaseUnitTest assembleRelease` → upload
+  `theo-console.apk` sebagai artifact `theo-console`.
+- Hanya varian release yang dibangun; ABI native dibatasi ke `armeabi-v7a`
+  dan `arm64-v8a`.
 - Signing release dari secret `KEYSTORE_BASE64`, `KEYSTORE_PASSWORD`,
   `KEY_ALIAS`, `KEY_PASSWORD`; fallback debug signing bila kosong.
 - `permissions: contents: read`.

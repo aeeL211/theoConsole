@@ -20,20 +20,18 @@ Workflow: `.github/workflows/build.yml`
 
 - Trigger: push ke `main` dan `workflow_dispatch`
 - JDK 17 (Temurin), Gradle 8.13 lewat `gradle/actions/setup-gradle`
-- Perintah: `gradle lint testDebugUnitTest assembleDebug assembleRelease`
-- Instrumented test hanya dikompilasi (`assembleDebugAndroidTest`), tidak
-  dijalankan karena tidak ada emulator
-- APK debug dan release di-upload sebagai artifact dengan nama yang memuat
-  commit SHA
+- Perintah: `gradle lintRelease testReleaseUnitTest assembleRelease`
+- Hanya varian release yang dibangun; ABI native dibatasi ke `armeabi-v7a`
+  dan `arm64-v8a`
+- Satu artifact bernama `theo-console` berisi `theo-console.apk`
 
 ## Mengunduh APK dari Actions
 
 1. Buka tab **Actions** di repositori GitHub.
 2. Pilih workflow **Android CI** dan run terbaru yang hijau.
-3. Di bagian **Artifacts**, unduh:
-   - `theo-console-debug-<sha>` untuk APK debug,
-   - `theo-console-release-<sha>` untuk APK release.
-4. Ekstrak ZIP artifact; APK berada di dalamnya. Artifact disimpan 14 hari.
+3. Di bagian **Artifacts**, unduh `theo-console`.
+4. Ekstrak ZIP artifact; APK bernama `theo-console.apk` berada di dalamnya.
+   Artifact disimpan 14 hari.
 
 Untuk memicu build manual, buka **Actions → Android CI → Run workflow** pada
 branch `main`.

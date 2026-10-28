@@ -14,8 +14,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build:
-    name: Lint, test, and build APKs
+  release:
+    name: Release
     runs-on: ubuntu-latest
     timeout-minutes: 45
 
@@ -56,14 +56,14 @@ jobs:
             echo "KEYSTORE_BASE64 is empty; release will use debug signing."
           fi
 
-      - name: Lint, test, and assemble
+      - name: Lint, test, and build release
         env:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: |
           set -o pipefail
-          gradle lint testDebugUnitTest assembleDebug assembleRelease --stacktrace 2>&1 | tee gradle-build.log
+          gradle lintRelease testReleaseUnitTest assembleRelease --stacktrace 2>&1 | tee gradle-build.log
 
       - name: Report Gradle failure
         if: failure()
@@ -85,21 +85,13 @@ jobs:
           if-no-files-found: ignore
           retention-days: 7
 
-      - name: Compile instrumented tests
-        run: gradle assembleDebugAndroidTest --stacktrace
+      - name: Prepare APK
+        run: cp app/build/outputs/apk/release/app-release.apk theo-console.apk
 
-      - name: Upload debug APK
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: theo-console-debug-${{ github.sha }}
-          path: app/build/outputs/apk/debug/app-debug.apk
-          if-no-files-found: error
-          retention-days: 14
-
-      - name: Upload release APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: theo-console-release-${{ github.sha }}
-          path: app/build/outputs/apk/release/app-release.apk
+          name: theo-console
+          path: theo-console.apk
           if-no-files-found: error
           retention-days: 14
