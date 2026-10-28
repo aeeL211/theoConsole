@@ -8,11 +8,11 @@
 -keepclasseswithmembers class kotlinx.serialization.json.** {
     kotlinx.serialization.KSerializer serializer(...);
 }
--keep,includedescriptorclasses class com.aeeL.theokntl.**$$serializer { *; }
--keepclassmembers class com.aeeL.theokntl.** {
+-keep,includedescriptorclasses class aeeL.theoSol.**$$serializer { *; }
+-keepclassmembers class aeeL.theoSol.** {
     *** Companion;
 }
--keepclasseswithmembers class com.aeeL.theokntl.** {
+-keepclasseswithmembers class aeeL.theoSol.** {
     kotlinx.serialization.KSerializer serializer(...);
 }
 

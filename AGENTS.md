@@ -8,7 +8,7 @@ Theo Console adalah aplikasi Android native untuk membaca saldo dan melakukan
 top-up akun TheoTown. Aplikasi harus tetap mandiri: seluruh fitur berjalan di
 dalam proses Android tanpa runtime, layanan, atau proses tambahan di perangkat.
 
-- Package: `com.aeeL.theokntl`
+- Package: `aeeL.theoSol`
 - Single module: `app`
 - Kotlin 2.4.21, Jetpack Compose, Material 3, Hilt, Coroutines/Flow,
   Navigation Compose, DataStore, OkHttp, kotlinx.serialization
@@ -68,15 +68,16 @@ Jaga perilaku berikut saat mengubah UI:
 - Perubahan bahasa harus langsung terlihat tanpa `Activity.recreate()`.
   Gunakan `LocalConfiguration`/`LocalResources`; jangan memakai `LocalContext`
   untuk string yang harus mengikuti bahasa aplikasi.
-- Top bar memenuhi area notch/cutout dengan sudut bawah membulat. Bottom bar
-  memiliki sudut atas membulat.
+- Status bar disembunyikan (immersive), top bar memenuhi area cutout dengan
+  sudut bawah membulat, dan bottom bar memiliki sudut atas membulat.
 - Swipe-to-confirm berubah dari merah ke hijau seiring progres ke kanan.
   Label dan thumb harus tetap kontras dan fill di-clip ke bentuk pill.
 - Ripple/highlight kartu tools di console harus ter-clip ke bentuk kartu.
 - Kartu loading Pembelian memakai warna `secondaryContainer`/
   `onSecondaryContainer`.
-- Di tab Top up, swipe horizontal pager dinonaktifkan agar gestur dipakai untuk
-  konfirmasi. Tombol kembali dari tab utama selain Beranda kembali ke Beranda.
+- Di tab Top up, pager tetap dapat digeser; kontrol swipe-to-confirm mengonsumsi
+  gestur horizontal hanya di area kontrolnya agar tidak bentrok. Tombol kembali
+  dari tab utama selain Beranda kembali ke Beranda.
 - Jangan menambahkan tombol Apply/Cancel pada top-up; konfirmasi memakai swipe.
 - Semua string UI harus melalui resource. Jangan hardcode teks yang terlihat
   pengguna.

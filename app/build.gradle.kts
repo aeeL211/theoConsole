@@ -11,11 +11,11 @@ val releaseKeystore = keystorePath?.let { file(it) }
 val hasReleaseKeystore = releaseKeystore != null && releaseKeystore.exists()
 
 android {
-    namespace = "com.aeeL.theokntl"
+    namespace = "aeeL.theoSol"
     compileSdk = 37
 
     defaultConfig {
-        applicationId = "com.aeeL.theokntl"
+        applicationId = "aeeL.theoSol"
         minSdk = 26
         targetSdk = 36
         versionCode = 1

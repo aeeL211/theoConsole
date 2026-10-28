@@ -6,7 +6,7 @@ ditangani di dalam proses Android tanpa runtime atau layanan tambahan.
 
 ## 1. Ringkasan
 
-- Package: `com.aeeL.theokntl`
+- Package: `aeeL.theoSol`
 - minSdk 26, targetSdk 36, compileSdk 37, JDK 17
 - Single module `app`
 - Kotlin 2.4.21, Jetpack Compose, Material 3, Hilt, Coroutines/Flow,
@@ -54,9 +54,12 @@ ditangani di dalam proses Android tanpa runtime atau layanan tambahan.
 - Navigation Compose menangani halaman detail, sedangkan empat tab utama memakai
   `HorizontalPager` dan bottom bar yang tersinkron dua arah.
 - Tab utama: Beranda, Top up, Pembelian, dan Akun.
+- Pager tetap dapat digeser di semua tab; swipe-to-confirm mengonsumsi gestur
+  horizontal hanya di area kontrolnya.
 - Halaman Pengaturan dan detail selalu dapat kembali ke tab pager yang sedang
-  aktif. Menekan bottom bar saat berada di halaman detail kembali ke
-  `Routes.MAIN`, bukan menumpuk halaman baru.
+  aktif. Bottom bar hanya tampil di tab utama; tombol kembali mengembalikan ke
+  halaman sebelumnya, dan detail tingkat pertama kembali ke `Routes.MAIN`
+  tanpa menumpuk halaman baru.
 - Tombol kembali sistem dari tab utama selain Beranda mengembalikan pengguna ke
   Beranda.
 
@@ -122,25 +125,31 @@ ditangani di dalam proses Android tanpa runtime atau layanan tambahan.
 
 ### Edge-to-edge dan inset
 
-- Window menggambar di belakang status bar, navigation bar, dan display cutout
-  (`layoutInDisplayCutoutMode=ALWAYS` pada API 30+, `SHORT_EDGES` pada API
-  28–29).
-- Top bar, bottom bar, dan layar sukses memakai safe inset agar konten tidak
-  tertutup notch, sementara background tetap memenuhi layar.
-- Top bar menggunakan surface penuh hingga area notch dengan sudut bawah
+- Status bar disembunyikan dengan `WindowInsetsControllerCompat.hide()` dan
+  `BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE`. Window tetap menggambar di belakang
+  navigation bar dan display cutout (`layoutInDisplayCutoutMode=ALWAYS` pada
+  API 30+, `SHORT_EDGES` pada API 28–29).
+- Top bar setinggi 52dp hanya memakai inset cutout atas/horizontal; status bar
+  tidak menambah padding kedua. Bottom bar dan layar sukses memakai inset
+  sistem masing-masing satu kali; background tetap memenuhi layar.
+- Top bar menggunakan surface penuh hingga area cutout dengan sudut bawah
   membulat; bottom bar memiliki sudut atas membulat.
 
 ### Bahasa
 
-- Pilihan bahasa: ikuti sistem, Inggris, dan Indonesia.
-- Perubahan bahasa langsung memperbarui `LocalConfiguration`/`LocalResources`
-  tanpa recreate activity.
+- Pilihan bahasa: ikuti sistem, Inggris, dan Indonesia. Opsi sistem membaca
+  locale perangkat dari `Resources.getSystem()`, bukan konfigurasi activity
+  yang sudah di-override.
+- Perubahan bahasa langsung memperbarui `LocalConfiguration`, `LocalResources`,
+  dan `LocalLayoutDirection` tanpa recreate activity.
 - Pilihan tersimpan dan diterapkan saat cold start melalui
   `attachBaseContext()`.
 - `locales_config.xml` dan AppCompat per-app locale tidak dipakai agar sumber
   kebenaran bahasa hanya satu.
 - String Inggris tersedia di `values/` dan `values-en/`; string Indonesia di
   `values-id/`. Jumlah key ketiganya dijaga sama.
+- Nominal, saldo, dan batas di UI mengikuti locale aktif. Log protokol dan
+  nilai mesin tetap memakai format stabil.
 - Log protokol adalah data teknis dan tidak diterjemahkan.
 
 ### Layar
@@ -154,10 +163,12 @@ ditangani di dalam proses Android tanpa runtime atau layanan tambahan.
   atau penyelesaian.
 - Swipe pertama membuka tinjauan, kecuali opsi lewati tinjauan aktif. Swipe
   berikutnya menulis. Mengubah nominal membatalkan tinjauan.
-- Setelah tulis berhasil, layar sukses terpisah menampilkan orb animasi,
-  confetti, ringkasan before/amount/after, status capped, dan laporan fitur.
-  Layar ini menyembunyikan top bar/bottom bar dan mendukung tombol kembali.
-- Transisi navigasi memakai slide horizontal + fade.
+- Setelah tulis berhasil, layar sukses terpisah menampilkan check orb dengan
+  reveal satu kali, ringkasan before/amount/after, status capped, dan laporan
+  fitur. Tidak ada animasi infinite atau gradient dekoratif. Layar ini
+  menyembunyikan top bar/bottom bar dan mendukung tombol kembali.
+- Transisi navigasi memakai slide horizontal + fade sekitar 260ms
+  (`FastOutSlowInEasing`); layar sukses memakai fade + scale halus.
 - Layout responsif memakai `BoxWithConstraints` dengan breakpoint 720dp untuk
   dua kolom; `WindowSizeClass` eksperimental tidak dipakai.
 - Loading, error, dan empty state disediakan. Aksi yang menulis memakai swipe

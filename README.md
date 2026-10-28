@@ -3,7 +3,7 @@
 Aplikasi Android native untuk TheoTown Console, dibangun dengan Kotlin +
 Jetpack Compose + Material 3 ekspresif.
 
-- Package: `com.aeeL.theokntl`
+- Package: `aeeL.theoSol`
 - minSdk 26, targetSdk 36, compileSdk 37
 - Single module `app`, Clean Architecture ringan (`ui/`, `domain/`, `data/`)
 - MVVM + UDF, Hilt, Coroutines/Flow, Navigation Compose, DataStore
@@ -83,12 +83,14 @@ gagal; isi keempat secret secara bersamaan.
   dynamic color Android 12+ (default mati, kontrol disembunyikan di Android
   < 12), dan detail teknis. Bahasa dan tema memakai selector dropdown.
 - Navigasi tab utama memakai `HorizontalPager` + bottom bar yang sinkron;
-  swipe horizontal berpindah tab, tetapi dinonaktifkan saat halaman Top up
-  aktif agar gestur horizontal dipakai untuk konfirmasi. Bottom bar tetap
-  bisa dipakai berpindah tab. Membuka Pengaturan dari tab mana pun lalu
-  memilih tab akan kembali ke halaman utama yang diminta.
-- Edge-to-edge penuh hingga area notch/cutout, safe insets pada konten,
-  predictive back, dan layout dua kolom pada layar ≥720dp.
+  swipe horizontal berpindah tab di semua tab, termasuk Top up. Kontrol
+  swipe-to-confirm mengonsumsi gestur horizontal hanya di area kontrolnya.
+  Bottom bar hanya tampil di tab utama. Halaman detail memakai tombol kembali
+  di top bar dan kembali ke tab pager yang sedang aktif; login yang berhasil
+  kembali ke Beranda.
+- Status bar disembunyikan, top bar memenuhi area cutout, safe inset hanya
+  diterapkan sekali pada konten, predictive back, dan layout dua kolom pada
+  layar ≥720dp.
 - String UI tersedia dalam bahasa Inggris (`values/`, `values-en/`) dan
   Indonesia (`values-id/`).
 
@@ -105,7 +107,7 @@ di bawah SIL Open Font License 1.1. Teks lisensi lengkap tersedia di
 ## Struktur singkat
 
 ```
-app/src/main/java/com/aeeL/theokntl/
+app/src/main/java/aeeL/theoSol/
   core/       konstanta wire, crypto, error, formatter
   domain/     model, validasi, top-up math, FeatureSync, gateway, use case
   data/       OkHttp transport, TheoClient, repository, DataStore, log
