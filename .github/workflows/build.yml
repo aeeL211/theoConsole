@@ -68,8 +68,15 @@ jobs:
             echo "::error::Gradle did not produce a log file."
             exit 0
           fi
-          grep -E '(^e: |^FAILURE:|^> Task .* FAILED|^Execution failed|^[0-9]+ tests completed|^There were failing tests|^FAILED|^Lint found|^.*\.kt:[0-9]+:[0-9]+:|^.*\.xml:[0-9]+:)' gradle-build.log \
-            | tail -n 80 \
+          message="$(awk '/^\* What went wrong:/{flag=1} flag{print} /^\* Try:/{flag=0}' gradle-build.log | head -n 40)"
+          if [ -z "$message" ]; then
+            message="$(tail -n 40 gradle-build.log)"
+          fi
+          message="${message//'%'/'%25'}"
+          message="${message//$'\n'/'%0A'}"
+          echo "::error title=Gradle failure::$message"
+          grep -E '(^e: |^> Task .* FAILED|^[0-9]+ tests completed|^There were failing tests|^FAILED|^Lint found|^.*\.kt:[0-9]+:[0-9]+:|^.*\.xml:[0-9]+:)' gradle-build.log \
+            | tail -n 20 \
             | while IFS= read -r line; do echo "::error::$line"; done
 
       - name: Upload Gradle log
