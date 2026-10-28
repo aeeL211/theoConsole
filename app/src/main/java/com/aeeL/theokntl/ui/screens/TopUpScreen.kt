@@ -273,11 +273,6 @@ private fun ReviewSection(review: TopUpReview) {
                 modifier = Modifier.weight(1f),
             )
         }
-        LabeledValue(
-            label = stringResource(R.string.home_target),
-            value = Formatters.number(review.target),
-            mono = true,
-        )
         Text(
             text = stringResource(R.string.topup_unlocks),
             style = MaterialTheme.typography.labelMedium,

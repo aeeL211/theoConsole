@@ -20,12 +20,17 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
@@ -57,7 +62,6 @@ import com.aeeL.theokntl.R
 import com.aeeL.theokntl.core.Formatters
 import com.aeeL.theokntl.domain.model.TopUpOutcome
 import com.aeeL.theokntl.ui.components.FeatureReportContent
-import com.aeeL.theokntl.ui.components.LabeledValue
 import com.aeeL.theokntl.ui.components.SectionCard
 import com.aeeL.theokntl.ui.components.StatTile
 import com.aeeL.theokntl.ui.components.StatusPill
@@ -105,6 +109,11 @@ fun TopUpSuccessScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .windowInsetsPadding(
+                    WindowInsets.safeDrawing.only(
+                        WindowInsetsSides.Top + WindowInsetsSides.Bottom,
+                    ),
+                )
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 24.dp, vertical = 20.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -176,11 +185,6 @@ fun TopUpSuccessScreen(
                             modifier = Modifier.weight(1f),
                         )
                     }
-                    LabeledValue(
-                        label = stringResource(R.string.home_target),
-                        value = Formatters.number(outcome.target),
-                        mono = true,
-                    )
                     if (outcome.capped) {
                         StatusPill(
                             text = stringResource(R.string.topup_capped),

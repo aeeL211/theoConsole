@@ -74,7 +74,6 @@
     <string name="home_before">Sebelum</string>
     <string name="home_amount">Jumlah</string>
     <string name="home_after">Sesudah</string>
-    <string name="home_target">Target</string>
     <string name="home_features">Pembelian fitur</string>
     <string name="home_no_features">Belum ada data pembelian. Sinkronkan fitur atau buka Pembelian.</string>
     <string name="home_ceiling_title">Saldo mencapai batas</string>
@@ -99,7 +98,7 @@
     <string name="login_back_home">Kembali ke beranda</string>
 
     <string name="topup_title">Terapkan diamond</string>
-    <string name="topup_subtitle">Jumlah ditambahkan lewat penghitung event game. Tinjau target, lalu geser untuk menulis.</string>
+    <string name="topup_subtitle">Jumlah ditambahkan lewat penghitung event game. Tinjau ringkasan, lalu geser untuk menulis.</string>
     <string name="topup_room">Sisa ruang</string>
     <string name="topup_amount_label">Diamond</string>
     <string name="topup_amount_hint">Hanya angka, misalnya 12000.</string>
@@ -107,11 +106,11 @@
     <string name="topup_skip_review_hint">Lewati kartu tinjauan dan geser sekali untuk langsung menulis.</string>
     <string name="topup_write_warning">Ini menulis ke akun game asli. Tidak ada pembatalan.</string>
     <string name="topup_review_title">Tinjauan</string>
-    <string name="topup_review_empty">Masukkan jumlah dan tinjau untuk melihat target dan daftar fitur.</string>
+    <string name="topup_review_empty">Masukkan jumlah dan tinjau untuk melihat ringkasan sebelum/sesudah dan daftar fitur.</string>
     <string name="topup_account">Akun</string>
     <string name="topup_unlocks">Fitur yang diperiksa setelah top-up</string>
-    <string name="topup_capped">Target tidak tercapai</string>
-    <string name="topup_capped_hint">Server melaporkan saldo lebih rendah dari target. Jalankan sinkron fitur dan baca saldo lagi nanti.</string>
+    <string name="topup_capped">Saldo di bawah perkiraan</string>
+    <string name="topup_capped_hint">Server melaporkan saldo lebih rendah dari perkiraan. Jalankan sinkron fitur dan baca saldo lagi nanti.</string>
     <string name="topup_features_title">Pemeriksaan fitur</string>
     <string name="topup_outcome_title">Hasil top-up</string>
     <string name="topup_confirm_title">Konfirmasi top-up</string>
@@ -204,9 +203,9 @@
 
     <string name="help_intro">Aplikasi ini adalah port Android dari CLI theotown-console, dengan layar untuk setiap command interaktif.</string>
     <string name="help_section_start">Mulai</string>
-    <string name="help_start_body">1. Masuk dengan akun forum. 2. Baca saldo di Beranda. 3. Top up di tab Top up, tinjau target, lalu geser untuk menulis. 4. Baca atau sinkronkan pembelian fitur setelah penulisan.</string>
+    <string name="help_start_body">1. Masuk dengan akun forum. 2. Baca saldo di Beranda. 3. Top up di tab Top up, tinjau ringkasan, lalu geser untuk menulis. 4. Baca atau sinkronkan pembelian fitur setelah penulisan.</string>
     <string name="help_section_topup">Top-up</string>
-    <string name="help_topup_body">Target adalah max(earned, spend) + jumlah - spend. Penulisan ditolak di atas 2.147.483.647 atau jika saldo tidak punya ruang di bawah 100.000. Kontrol geser untuk konfirmasi melakukan penulisan; saldo dibaca lagi dan dua baris fitur diperiksa dalam jendela pantau singkat.</string>
+    <string name="help_topup_body">Saldo yang diharapkan dinormalisasi sebagai max(earned, spend) + jumlah - spend. Penulisan ditolak di atas 2.147.483.647 atau jika saldo tidak punya ruang di bawah 100.000. Kontrol geser untuk konfirmasi melakukan penulisan; saldo dibaca lagi dan dua baris fitur diperiksa dalam jendela pantau singkat.</string>
     <string name="help_section_features">Pembelian fitur</string>
     <string name="help_features_body">Sinkron membaca dulu, hanya menulis baris yang belum ada, dan menyimpan cap waktu 12 jam per akun. Jika baris tetap hilang, sesi disegarkan sekali, fallback ke max purchase, lalu diuji dengan baris sementara. Pantauan penuh bisa lebih dari satu menit; pakai Hentikan untuk membatalkan.</string>
     <string name="help_section_options">Opsi CLI</string>
@@ -235,7 +234,6 @@
     <string name="settings_appearance">Tampilan</string>
     <string name="settings_dynamic_color">Warna dinamis</string>
     <string name="settings_dynamic_color_hint">Pakai warna Material You di Android 12 ke atas.</string>
-    <string name="settings_dynamic_color_unsupported">Warna dinamis butuh Android 12 ke atas; aplikasi memakai palet sendiri.</string>
     <string name="settings_debug">Detail teknis</string>
     <string name="settings_debug_hint">Tampilkan teks error teknis dan detail probe.</string>
     <string name="settings_about">Tentang</string>

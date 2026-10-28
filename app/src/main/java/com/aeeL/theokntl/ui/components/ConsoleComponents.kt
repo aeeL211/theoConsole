@@ -66,7 +66,9 @@ fun SectionCard(
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.45f)),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+        ),
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
@@ -98,7 +100,7 @@ fun LabeledValue(
         Text(
             text = value,
             style = MaterialTheme.typography.bodyLarge,
-            fontFamily = if (mono) FontFamily.Monospace else FontFamily.Default,
+            fontFamily = if (mono) FontFamily.Monospace else null,
             overflow = TextOverflow.Ellipsis,
         )
     }
@@ -113,7 +115,7 @@ fun StatTile(
     Surface(
         modifier = modifier,
         shape = MaterialTheme.shapes.medium,
-        color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.6f),
+        color = MaterialTheme.colorScheme.surfaceContainerHigh,
     ) {
         Column(
             modifier = Modifier.padding(12.dp),
@@ -122,13 +124,13 @@ fun StatTile(
             Text(
                 text = label,
                 style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             Text(
                 text = value,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                color = MaterialTheme.colorScheme.onSurface,
             )
         }
     }
@@ -142,7 +144,12 @@ fun EmptyPanel(
     actionLabel: String? = null,
     onAction: (() -> Unit)? = null,
 ) {
-    Card(modifier = modifier.fillMaxWidth()) {
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+        ),
+    ) {
         Column(
             modifier = Modifier.padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -302,6 +309,9 @@ fun ToolRow(
         modifier = modifier
             .fillMaxWidth()
             .clickable(onClick = onClick),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+        ),
     ) {
         Row(
             modifier = Modifier.padding(16.dp),
@@ -421,7 +431,7 @@ fun InlineRow(
             text = value,
             modifier = Modifier.weight(1f),
             style = MaterialTheme.typography.bodyMedium,
-            fontFamily = if (mono) FontFamily.Monospace else FontFamily.Default,
+            fontFamily = if (mono) FontFamily.Monospace else null,
         )
     }
 }

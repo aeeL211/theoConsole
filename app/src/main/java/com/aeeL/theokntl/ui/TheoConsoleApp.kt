@@ -8,11 +8,17 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.AddCircle
@@ -38,8 +44,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -49,8 +57,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -58,8 +64,9 @@ import androidx.navigation.compose.rememberNavController
 import com.aeeL.theokntl.R
 import com.aeeL.theokntl.domain.model.AppLanguage
 import com.aeeL.theokntl.domain.model.AppSettings
+import com.aeeL.theokntl.domain.model.ConsoleState
 import com.aeeL.theokntl.domain.model.TopUpOutcome
-import com.aeeL.theokntl.ui.components.swipeToNavigate
+import com.aeeL.theokntl.domain.model.TopUpReview
 import com.aeeL.theokntl.ui.screens.AccountScreen
 import com.aeeL.theokntl.ui.screens.ActivityScreen
 import com.aeeL.theokntl.ui.screens.DeveloperScreen
@@ -75,6 +82,7 @@ import com.aeeL.theokntl.ui.screens.TopUpSuccessScreen
 import com.aeeL.theokntl.ui.theme.TheoConsoleTheme
 
 object Routes {
+    const val MAIN = "main"
     const val HOME = "home"
     const val LOGIN = "login"
     const val TOP_UP = "top_up"
@@ -112,13 +120,17 @@ private val detailRoutes = setOf(
     Routes.ACTIVITY,
 )
 
+private fun pageIndex(route: String): Int =
+    bottomDestinations.indexOfFirst { it.route == route }.coerceAtLeast(0)
+
 @Composable
 fun TheoConsoleRoot(
     appViewModel: AppViewModel = hiltViewModel(),
     consoleViewModel: ConsoleViewModel = hiltViewModel(),
 ) {
     val settings by appViewModel.settings.collectAsStateWithLifecycle()
-    val language = currentAppLanguage()
+    val context = LocalContext.current
+    val language = remember(context) { currentAppLanguage(context) }
     TheoConsoleTheme(
         themeMode = settings.themeMode,
         dynamicColor = settings.dynamicColor,
@@ -128,7 +140,7 @@ fun TheoConsoleRoot(
             TheoConsoleApp(
                 settings = settings,
                 language = language,
-                onLanguage = ::setAppLanguage,
+                onLanguage = { selected -> setAppLanguage(context, selected) },
                 appViewModel = appViewModel,
                 consoleViewModel = consoleViewModel,
             )
@@ -149,12 +161,28 @@ private fun TheoConsoleApp(
     val logEntries by consoleViewModel.logEntries.collectAsStateWithLifecycle()
     val navController = rememberNavController()
     val backStackEntry by navController.currentBackStackEntryAsState()
-    val route = backStackEntry?.destination?.route ?: Routes.HOME
+    val navRoute = backStackEntry?.destination?.route ?: Routes.MAIN
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
     val debugDetails = settings.debugDetails
-    val immersive = route == Routes.TOP_UP_SUCCESS
+    val immersive = navRoute == Routes.TOP_UP_SUCCESS
+    var mainPage by rememberSaveable { mutableIntStateOf(pageIndex(Routes.HOME)) }
     var successOutcome by remember { mutableStateOf<TopUpOutcome?>(null) }
+    val homePage = pageIndex(Routes.HOME)
+
+    val pageRoute = bottomDestinations.getOrNull(mainPage)?.route ?: Routes.HOME
+    val displayRoute = if (navRoute == Routes.MAIN) pageRoute else navRoute
+    val goToMain: (Int) -> Unit = { page ->
+        mainPage = page.coerceIn(0, bottomDestinations.lastIndex)
+        if (!navController.popBackStack(Routes.MAIN, inclusive = false)) {
+            navController.navigate(Routes.MAIN) { launchSingleTop = true }
+        }
+    }
+    val openRoute: (String) -> Unit = { route ->
+        if (navController.currentDestination?.route != route) {
+            navController.navigate(route) { launchSingleTop = true }
+        }
+    }
 
     LaunchedEffect(debugDetails) {
         consoleViewModel.failures.collect { failure ->
@@ -170,7 +198,6 @@ private fun TheoConsoleApp(
             successOutcome = outcome
             if (navController.currentDestination?.route != Routes.TOP_UP_SUCCESS) {
                 navController.navigate(Routes.TOP_UP_SUCCESS) {
-                    popUpTo(Routes.TOP_UP) { inclusive = true }
                     launchSingleTop = true
                 }
             }
@@ -179,35 +206,34 @@ private fun TheoConsoleApp(
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             if (!immersive) {
                 ConsoleTopBar(
-                    route = route,
-                    canGoBack = route in detailRoutes,
+                    route = displayRoute,
+                    canGoBack = navRoute in detailRoutes,
                     onBack = { navController.popBackStack() },
-                    onActivity = {
-                        if (route != Routes.ACTIVITY) {
-                            navController.navigate(Routes.ACTIVITY) { launchSingleTop = true }
-                        }
-                    },
-                    onSettings = {
-                        if (route != Routes.SETTINGS) {
-                            navController.navigate(Routes.SETTINGS) { launchSingleTop = true }
-                        }
-                    },
+                    onActivity = { openRoute(Routes.ACTIVITY) },
+                    onSettings = { openRoute(Routes.SETTINGS) },
                 )
             }
         },
         bottomBar = {
-            if (!immersive && route != Routes.LOGIN) {
+            if (!immersive && navRoute != Routes.LOGIN) {
                 NavigationBar(
                     containerColor = MaterialTheme.colorScheme.surfaceContainer,
                     tonalElevation = 0.dp,
                 ) {
-                    bottomDestinations.forEach { destination ->
+                    bottomDestinations.forEachIndexed { index, destination ->
                         NavigationBarItem(
-                            selected = route == destination.route,
-                            onClick = { navController.navigateTopLevel(destination.route) },
+                            selected = mainPage == index,
+                            onClick = {
+                                if (navRoute == Routes.MAIN) {
+                                    mainPage = index
+                                } else {
+                                    goToMain(index)
+                                }
+                            },
                             icon = {
                                 Icon(
                                     imageVector = destination.icon,
@@ -222,12 +248,18 @@ private fun TheoConsoleApp(
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { innerPadding ->
+        val insetSides = if (navRoute == Routes.LOGIN) {
+            WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom
+        } else {
+            WindowInsetsSides.Horizontal
+        }
         NavHost(
             navController = navController,
-            startDestination = Routes.HOME,
+            startDestination = Routes.MAIN,
             modifier = Modifier
                 .padding(innerPadding)
                 .consumeWindowInsets(innerPadding)
+                .windowInsetsPadding(WindowInsets.safeDrawing.only(insetSides))
                 .imePadding(),
             enterTransition = {
                 slideInHorizontally(
@@ -254,98 +286,45 @@ private fun TheoConsoleApp(
                 ) + fadeOut(animationSpec = tween(180))
             },
         ) {
-            composable(Routes.HOME) {
-                SwipePage(route = Routes.HOME, navController = navController) {
-                    HomeScreen(
-                        state = console,
-                        onLogin = { navController.navigate(Routes.LOGIN) { launchSingleTop = true } },
-                        onRefresh = consoleViewModel::refreshBalance,
-                        onSync = consoleViewModel::syncFeatures,
-                        onStop = consoleViewModel::stopOperation,
-                        onTopUp = { navController.navigateTopLevel(Routes.TOP_UP) },
-                        onPurchases = { navController.navigateTopLevel(Routes.PURCHASES) },
-                        onSession = { navController.navigate(Routes.SESSION) { launchSingleTop = true } },
-                        onProtocol = { navController.navigate(Routes.PROTOCOL) { launchSingleTop = true } },
-                        onDeveloper = { navController.navigate(Routes.DEVELOPER) { launchSingleTop = true } },
-                        onHelp = { navController.navigate(Routes.HELP) { launchSingleTop = true } },
-                    )
-                }
+            composable(Routes.MAIN) {
+                MainTabs(
+                    currentPage = mainPage,
+                    onPageSelected = { mainPage = it },
+                    console = console,
+                    review = review,
+                    consoleViewModel = consoleViewModel,
+                    openRoute = openRoute,
+                )
             }
             composable(Routes.LOGIN) {
                 LaunchedEffect(console.signedIn) {
                     if (console.signedIn) {
-                        navController.navigate(Routes.HOME) {
-                            popUpTo(navController.graph.findStartDestination().id) {
-                                inclusive = false
-                            }
-                            launchSingleTop = true
-                        }
+                        goToMain(homePage)
                     }
                 }
                 LoginScreen(
                     initialUsername = settings.username,
                     console = console,
                     onLogin = consoleViewModel::login,
-                    onBackHome = {
-                        navController.navigate(Routes.HOME) { launchSingleTop = true }
-                    },
+                    onBackHome = { goToMain(homePage) },
                     onStop = consoleViewModel::stopOperation,
                 )
             }
-            composable(Routes.TOP_UP) {
-                SwipePage(route = Routes.TOP_UP, navController = navController) {
-                    TopUpScreen(
-                        state = console,
-                        review = review,
-                        onLogin = { navController.navigate(Routes.LOGIN) { launchSingleTop = true } },
-                        onReview = consoleViewModel::reviewTopUp,
-                        onTopUp = consoleViewModel::topUp,
-                        onApply = consoleViewModel::applyTopUp,
-                        onCancelReview = consoleViewModel::cancelTopUp,
-                        onStop = consoleViewModel::stopOperation,
-                    )
-                }
-            }
             composable(Routes.TOP_UP_SUCCESS) {
-                val done = {
+                val finishSuccess = {
+                    goToMain(homePage)
                     successOutcome = null
-                    navController.navigateTopLevel(Routes.HOME)
                 }
-                BackHandler(onBack = done)
+                BackHandler(onBack = finishSuccess)
                 TopUpSuccessScreen(
                     outcome = successOutcome ?: console.lastTopUp,
-                    onDone = done,
+                    onDone = finishSuccess,
                 )
-            }
-            composable(Routes.PURCHASES) {
-                SwipePage(route = Routes.PURCHASES, navController = navController) {
-                    PurchasesScreen(
-                        state = console,
-                        onLogin = { navController.navigate(Routes.LOGIN) { launchSingleTop = true } },
-                        onRead = consoleViewModel::readPurchases,
-                        onSync = consoleViewModel::syncFeatures,
-                        onStop = consoleViewModel::stopOperation,
-                    )
-                }
-            }
-            composable(Routes.ACCOUNT) {
-                SwipePage(route = Routes.ACCOUNT, navController = navController) {
-                    AccountScreen(
-                        state = console,
-                        onLogin = { navController.navigate(Routes.LOGIN) { launchSingleTop = true } },
-                        onOpenSession = { navController.navigate(Routes.SESSION) { launchSingleTop = true } },
-                        onSignOut = {
-                            consoleViewModel.signOut()
-                            navController.navigateTopLevel(Routes.HOME)
-                        },
-                        onStop = consoleViewModel::stopOperation,
-                    )
-                }
             }
             composable(Routes.SESSION) {
                 SessionScreen(
                     state = console,
-                    onLogin = { navController.navigate(Routes.LOGIN) { launchSingleTop = true } },
+                    onLogin = { openRoute(Routes.LOGIN) },
                     onStop = consoleViewModel::stopOperation,
                 )
             }
@@ -367,9 +346,9 @@ private fun TheoConsoleApp(
                     onPalette = appViewModel::setPalette,
                     onDynamicColor = appViewModel::setDynamicColor,
                     onDebugDetails = appViewModel::setDebugDetails,
-                    onHelp = { navController.navigate(Routes.HELP) { launchSingleTop = true } },
-                    onProtocol = { navController.navigate(Routes.PROTOCOL) { launchSingleTop = true } },
-                    onDeveloper = { navController.navigate(Routes.DEVELOPER) { launchSingleTop = true } },
+                    onHelp = { openRoute(Routes.HELP) },
+                    onProtocol = { openRoute(Routes.PROTOCOL) },
+                    onDeveloper = { openRoute(Routes.DEVELOPER) },
                 )
             }
             composable(Routes.ACTIVITY) {
@@ -384,29 +363,80 @@ private fun TheoConsoleApp(
 }
 
 @Composable
-private fun SwipePage(
-    route: String,
-    navController: NavHostController,
-    content: @Composable () -> Unit,
+private fun MainTabs(
+    currentPage: Int,
+    onPageSelected: (Int) -> Unit,
+    console: ConsoleState,
+    review: TopUpReview?,
+    consoleViewModel: ConsoleViewModel,
+    openRoute: (String) -> Unit,
 ) {
-    val index = bottomDestinations.indexOfFirst { it.route == route }
-    val previous = bottomDestinations.getOrNull(index - 1)?.route
-    val next = bottomDestinations.getOrNull(index + 1)?.route
-    val enabled = index >= 0 && route != Routes.TOP_UP
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .swipeToNavigate(
-                enabled = enabled,
-                onSwipeLeft = {
-                    if (next != null) navController.navigateTopLevel(next)
+    val pagerState = rememberPagerState(
+        initialPage = currentPage,
+        pageCount = { bottomDestinations.size },
+    )
+    val topUpPage = pageIndex(Routes.TOP_UP)
+    val purchasesPage = pageIndex(Routes.PURCHASES)
+    val homePage = pageIndex(Routes.HOME)
+
+    LaunchedEffect(currentPage) {
+        if (pagerState.currentPage != currentPage) {
+            pagerState.animateScrollToPage(currentPage)
+        }
+    }
+    LaunchedEffect(pagerState.settledPage) {
+        if (pagerState.settledPage != currentPage) {
+            onPageSelected(pagerState.settledPage)
+        }
+    }
+
+    HorizontalPager(
+        state = pagerState,
+        modifier = Modifier.fillMaxSize(),
+        userScrollEnabled = pagerState.settledPage != topUpPage,
+    ) { page ->
+        when (page) {
+            homePage -> HomeScreen(
+                state = console,
+                onLogin = { openRoute(Routes.LOGIN) },
+                onRefresh = consoleViewModel::refreshBalance,
+                onSync = consoleViewModel::syncFeatures,
+                onStop = consoleViewModel::stopOperation,
+                onTopUp = { onPageSelected(topUpPage) },
+                onPurchases = { onPageSelected(purchasesPage) },
+                onSession = { openRoute(Routes.SESSION) },
+                onProtocol = { openRoute(Routes.PROTOCOL) },
+                onDeveloper = { openRoute(Routes.DEVELOPER) },
+                onHelp = { openRoute(Routes.HELP) },
+            )
+            topUpPage -> TopUpScreen(
+                state = console,
+                review = review,
+                onLogin = { openRoute(Routes.LOGIN) },
+                onReview = consoleViewModel::reviewTopUp,
+                onTopUp = consoleViewModel::topUp,
+                onApply = consoleViewModel::applyTopUp,
+                onCancelReview = consoleViewModel::cancelTopUp,
+                onStop = consoleViewModel::stopOperation,
+            )
+            purchasesPage -> PurchasesScreen(
+                state = console,
+                onLogin = { openRoute(Routes.LOGIN) },
+                onRead = consoleViewModel::readPurchases,
+                onSync = consoleViewModel::syncFeatures,
+                onStop = consoleViewModel::stopOperation,
+            )
+            else -> AccountScreen(
+                state = console,
+                onLogin = { openRoute(Routes.LOGIN) },
+                onOpenSession = { openRoute(Routes.SESSION) },
+                onSignOut = {
+                    consoleViewModel.signOut()
+                    onPageSelected(homePage)
                 },
-                onSwipeRight = {
-                    if (previous != null) navController.navigateTopLevel(previous)
-                },
-            ),
-    ) {
-        content()
+                onStop = consoleViewModel::stopOperation,
+            )
+        }
     }
 }
 
@@ -430,6 +460,9 @@ private fun ConsoleTopBar(
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.background,
             scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+        ),
+        windowInsets = WindowInsets.safeDrawing.only(
+            WindowInsetsSides.Top + WindowInsetsSides.Horizontal,
         ),
         navigationIcon = {
             if (canGoBack) {
@@ -460,7 +493,7 @@ private fun ConsoleTopBar(
 
 @StringRes
 private fun routeTitle(route: String): Int = when (route) {
-    Routes.HOME -> R.string.app_name
+    Routes.MAIN, Routes.HOME -> R.string.app_name
     Routes.LOGIN -> R.string.title_login
     Routes.TOP_UP -> R.string.title_topup
     Routes.TOP_UP_SUCCESS -> R.string.topup_success_title
@@ -473,12 +506,4 @@ private fun routeTitle(route: String): Int = when (route) {
     Routes.SETTINGS -> R.string.title_settings
     Routes.ACTIVITY -> R.string.title_activity
     else -> R.string.app_name
-}
-
-private fun NavHostController.navigateTopLevel(route: String) {
-    navigate(route) {
-        popUpTo(graph.findStartDestination().id) { saveState = true }
-        launchSingleTop = true
-        restoreState = true
-    }
 }

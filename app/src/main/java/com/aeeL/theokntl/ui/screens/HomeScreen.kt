@@ -37,7 +37,6 @@ import com.aeeL.theokntl.domain.time.DayPeriod
 import com.aeeL.theokntl.ui.components.BusyPanel
 import com.aeeL.theokntl.ui.components.EmptyPanel
 import com.aeeL.theokntl.ui.components.FeatureReportContent
-import com.aeeL.theokntl.ui.components.LabeledValue
 import com.aeeL.theokntl.ui.components.ScreenColumn
 import com.aeeL.theokntl.ui.components.SectionCard
 import com.aeeL.theokntl.ui.components.StatTile
@@ -234,7 +233,7 @@ private fun BalanceSection(state: ConsoleState) {
                 .fillMaxWidth()
                 .height(10.dp)
                 .clip(CircleShape),
-            trackColor = MaterialTheme.colorScheme.surfaceVariant,
+            trackColor = MaterialTheme.colorScheme.surfaceContainerHighest,
         )
         Text(
             text = stringResource(
@@ -330,10 +329,6 @@ private fun LastTopUpSection(outcome: TopUpOutcome?) {
                 modifier = Modifier.weight(1f),
             )
         }
-        LabeledValue(
-            label = stringResource(R.string.home_target),
-            value = Formatters.number(outcome.target),
-        )
         if (outcome.capped) {
             StatusPill(
                 text = stringResource(R.string.topup_capped),

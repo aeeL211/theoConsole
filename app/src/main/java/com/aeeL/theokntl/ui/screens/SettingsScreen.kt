@@ -14,13 +14,19 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -52,6 +58,16 @@ fun SettingsScreen(
     onDeveloper: () -> Unit,
 ) {
     val dynamicSupported = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+    val languageOptions = listOf(
+        AppLanguage.SYSTEM to stringResource(R.string.settings_language_system),
+        AppLanguage.ENGLISH to stringResource(R.string.settings_language_english),
+        AppLanguage.INDONESIAN to stringResource(R.string.settings_language_indonesian),
+    )
+    val themeOptions = listOf(
+        ThemeMode.SYSTEM to stringResource(R.string.settings_theme_system),
+        ThemeMode.LIGHT to stringResource(R.string.settings_theme_light),
+        ThemeMode.DARK to stringResource(R.string.settings_theme_dark),
+    )
 
     ScreenColumn {
         SectionCard(title = stringResource(R.string.settings_language)) {
@@ -60,46 +76,18 @@ fun SettingsScreen(
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
-            AppLanguage.entries.forEach { option ->
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable { onLanguage(option) }
-                        .padding(vertical = 3.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                ) {
-                    RadioButton(
-                        selected = language == option,
-                        onClick = { onLanguage(option) },
-                    )
-                    Text(
-                        text = stringResource(languageLabel(option)),
-                        style = MaterialTheme.typography.bodyLarge,
-                    )
-                }
-            }
+            SettingsSelector(
+                valueLabel = stringResource(languageLabel(language)),
+                options = languageOptions,
+                onSelected = onLanguage,
+            )
         }
         SectionCard(title = stringResource(R.string.settings_theme)) {
-            ThemeMode.entries.forEach { mode ->
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable { onThemeMode(mode) }
-                        .padding(vertical = 3.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                ) {
-                    RadioButton(
-                        selected = settings.themeMode == mode,
-                        onClick = { onThemeMode(mode) },
-                    )
-                    Text(
-                        text = stringResource(themeModeLabel(mode)),
-                        style = MaterialTheme.typography.bodyLarge,
-                    )
-                }
-            }
+            SettingsSelector(
+                valueLabel = stringResource(themeModeLabel(settings.themeMode)),
+                options = themeOptions,
+                onSelected = onThemeMode,
+            )
         }
         SectionCard(title = stringResource(R.string.settings_palette)) {
             Text(
@@ -154,33 +142,28 @@ fun SettingsScreen(
                     }
                 }
             }
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text = stringResource(R.string.settings_dynamic_color),
-                        style = MaterialTheme.typography.bodyLarge,
-                    )
-                    Text(
-                        text = stringResource(
-                            if (dynamicSupported) {
-                                R.string.settings_dynamic_color_hint
-                            } else {
-                                R.string.settings_dynamic_color_unsupported
-                            },
-                        ),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+            if (dynamicSupported) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = stringResource(R.string.settings_dynamic_color),
+                            style = MaterialTheme.typography.bodyLarge,
+                        )
+                        Text(
+                            text = stringResource(R.string.settings_dynamic_color_hint),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                    Switch(
+                        checked = settings.dynamicColor,
+                        onCheckedChange = onDynamicColor,
                     )
                 }
-                Switch(
-                    checked = settings.dynamicColor && dynamicSupported,
-                    onCheckedChange = onDynamicColor,
-                    enabled = dynamicSupported,
-                )
             }
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -237,6 +220,52 @@ fun SettingsScreen(
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
+        }
+    }
+}
+
+@Composable
+private fun <T> SettingsSelector(
+    valueLabel: String,
+    options: List<Pair<T, String>>,
+    onSelected: (T) -> Unit,
+) {
+    var expanded by remember { mutableStateOf(false) }
+    Box(modifier = Modifier.fillMaxWidth()) {
+        OutlinedButton(
+            onClick = { expanded = true },
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                Text(
+                    text = valueLabel,
+                    modifier = Modifier.weight(1f),
+                    style = MaterialTheme.typography.bodyLarge,
+                    textAlign = TextAlign.Start,
+                )
+                Icon(
+                    imageVector = Icons.Default.KeyboardArrowDown,
+                    contentDescription = null,
+                )
+            }
+        }
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+        ) {
+            options.forEach { (value, label) ->
+                DropdownMenuItem(
+                    text = { Text(label) },
+                    onClick = {
+                        expanded = false
+                        onSelected(value)
+                    },
+                )
+            }
         }
     }
 }
