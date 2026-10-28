@@ -94,7 +94,7 @@ gagal; isi keempat secret secara bersamaan.
   tambahan, safe inset hanya diterapkan sekali pada konten, predictive back, dan
   layout dua kolom pada layar ≥720dp.
 - String UI tersedia dalam bahasa Inggris (`values/`, `values-en/`) dan
-  Indonesia (`values-id/`).
+  Indonesia (`values-id/`, dengan alias `values-in/` untuk perangkat API < 35).
 
 Seluruh alur berjalan di dalam aplikasi Android; tidak ada runtime, layanan,
 atau proses tambahan yang diperlukan di perangkat.
@@ -117,7 +117,8 @@ app/src/main/java/aeeL/theoSol/
   ui/         theme, ViewModel, navigation, screen, komponen
 app/src/main/res/values/       string default (Inggris) dan tema
 app/src/main/res/values-en/    string Inggris
-app/src/main/res/values-id/    string Indonesia
+app/src/main/res/values-id/    string Indonesia (`id`)
+app/src/main/res/values-in/    alias Indonesia untuk API < 35 (`in`)
 app/src/main/res/font/         Roboto Flex variable font
 app/src/main/assets/licenses/  lisensi font OFL
 app/src/test/                  unit test domain dan crypto

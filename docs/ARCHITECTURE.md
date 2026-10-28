@@ -148,7 +148,9 @@ ditangani di dalam proses Android tanpa runtime atau layanan tambahan.
 - `locales_config.xml` dan AppCompat per-app locale tidak dipakai agar sumber
   kebenaran bahasa hanya satu.
 - String Inggris tersedia di `values/` dan `values-en/`; string Indonesia di
-  `values-id/`. Jumlah key ketiganya dijaga sama.
+  `values-id/` dan `values-in/`. `values-in/` adalah salinan kompatibilitas
+  untuk API < 35, yang masih memakai kode locale lama `in`; `values-id/` dipakai
+  pada API 35 ke atas. Jumlah key keempat file dijaga sama.
 - Nominal, saldo, dan batas di UI mengikuti locale aktif. Log protokol dan
   nilai mesin tetap memakai format stabil.
 - Log protokol adalah data teknis dan tidak diterjemahkan.

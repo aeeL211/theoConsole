@@ -88,10 +88,12 @@ Jaga perilaku berikut saat mengubah UI:
 ## Lokalisasi
 
 - File string: `app/src/main/res/values/strings.xml` (Inggris default),
-  `app/src/main/res/values-en/strings.xml`, dan
-  `app/src/main/res/values-id/strings.xml`.
-- Jumlah key di ketiga file harus sama. Saat menambah atau mengubah key,
-  perbarui ketiganya.
+  `app/src/main/res/values-en/strings.xml`,
+  `app/src/main/res/values-id/strings.xml`, dan
+  `app/src/main/res/values-in/strings.xml`.
+- Jumlah key di keempat file harus sama. Saat menambah atau mengubah key,
+  perbarui keempatnya. `values-in/` adalah salinan kompatibilitas `values-id/`
+  untuk API < 35; jangan menerjemahkan ulang, cukup samakan isinya.
 - Gunakan `stringResource` untuk Composable. Untuk Toast, share intent, atau
   pesan error di luar Composable, gunakan `Resources` yang sudah dilokalkan.
 - Log protokol adalah data teknis dan tidak perlu diterjemahkan.
@@ -127,7 +129,8 @@ Karena Gradle tidak boleh dijalankan lokal, lakukan pemeriksaan berikut:
 
 - Baca ulang diff dan pastikan tidak ada perubahan yang tidak disengaja.
 - Pastikan import, referensi resource, dan nama simbol konsisten.
-- Pastikan key string di `values/`, `values-en/`, dan `values-id/` tetap sama.
+- Pastikan key string di `values/`, `values-en/`, `values-id/`, dan
+  `values-in/` tetap sama.
 - Cari referensi lama atau nama file yang sudah dihapus.
 - Periksa sintaks YAML workflow secara manual.
 - Jalankan `git diff --check`.

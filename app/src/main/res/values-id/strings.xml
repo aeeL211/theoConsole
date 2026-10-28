@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Kualifikasi modern `id`; values-in adalah salinan kompatibilitas API < 35. -->
 <resources>
     <string name="app_name">Theo Console</string>
     <string name="greeting_morning">Selamat pagi</string>
