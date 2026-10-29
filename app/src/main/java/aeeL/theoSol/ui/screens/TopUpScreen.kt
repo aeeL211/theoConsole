@@ -48,6 +48,8 @@ import aeeL.theoSol.ui.components.StatTile
 import aeeL.theoSol.ui.components.SwipeToConfirm
 import aeeL.theoSol.ui.components.featureLabel
 import aeeL.theoSol.ui.components.localizedNumber
+import aeeL.theoSol.ui.feedback.HapticEffect
+import aeeL.theoSol.ui.feedback.rememberHaptics
 import aeeL.theoSol.ui.icons.DiamondFilled
 import aeeL.theoSol.ui.theme.Spacing
 
@@ -269,6 +271,7 @@ private fun QuickAmounts(
     enabled: Boolean,
 ) {
     if (room <= 0L) return
+    val haptics = rememberHaptics()
     val maxLabel = stringResource(R.string.topup_quick_max)
     val picks = remember(room) {
         (listOf(1_000L, 5_000L, 10_000L, 25_000L, 50_000L)
@@ -289,7 +292,10 @@ private fun QuickAmounts(
                 rowPicks.forEach { value ->
                     FilterChip(
                         selected = selected == value,
-                        onClick = { onPick(value.toString()) },
+                        onClick = {
+                            haptics.perform(HapticEffect.SELECT)
+                            onPick(value.toString())
+                        },
                         enabled = enabled,
                         label = {
                             Text(

@@ -72,6 +72,9 @@ gagal; isi keempat secret secara bersamaan.
 - Top up: validasi nominal, ringkasan before/amount/after (tanpa baris target
   internal), tinjauan wajib, konfirmasi swipe-to-confirm tanpa tombol
   Apply/Cancel, dan layar sukses animasi terpisah.
+- Umpan balik haptik pada aksi utama: tombol, tab, toggle, nominal cepat,
+  konfirmasi swipe, sukses, dan kegagalan. Top up yang berhasil memutar efek
+  suara `berhasil.wav` dari `app/src/main/res/raw/` mengikuti volume media.
 - Verifikasi fitur otomatis setelah top-up: baca status Free fast speed dan Free
   tunnels, sinkron fitur dengan watch, refresh sesi, fallback max purchase, dan
   probe. Tidak ada tab Pembelian terpisah.
@@ -114,12 +117,13 @@ app/src/main/java/aeeL/theoSol/
   domain/     model, validasi, top-up math, FeatureSync, gateway, use case
   data/       OkHttp transport, TheoClient, repository, DataStore, log
   di/         modul Hilt
-  ui/         theme, ViewModel, navigation, screen, komponen
+  ui/         theme, ViewModel, navigation, layar, komponen, feedback
 app/src/main/res/values/       string default (Inggris) dan tema
 app/src/main/res/values-en/    string Inggris
 app/src/main/res/values-id/    string Indonesia (`id`)
 app/src/main/res/values-in/    alias Indonesia untuk API < 35 (`in`)
 app/src/main/res/font/         Roboto Flex variable font
+app/src/main/res/raw/          efek suara top-up berhasil
 app/src/main/assets/licenses/  lisensi font OFL
 app/src/test/                  unit test domain dan crypto
 app/src/androidTest/           UI test dasar (butuh emulator; tidak dijalankan CI)

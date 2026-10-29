@@ -40,6 +40,8 @@ import aeeL.theoSol.ui.components.EmptyPanel
 import aeeL.theoSol.ui.components.HeroCard
 import aeeL.theoSol.ui.components.PrimaryButton
 import aeeL.theoSol.ui.components.ScreenColumn
+import aeeL.theoSol.ui.feedback.HapticEffect
+import aeeL.theoSol.ui.feedback.rememberHaptics
 import aeeL.theoSol.ui.icons.DiamondFilled
 import aeeL.theoSol.ui.theme.Spacing
 
@@ -56,6 +58,7 @@ fun LoginScreen(
     var rememberUsername by rememberSaveable { mutableStateOf(true) }
     var usernameMissing by rememberSaveable { mutableStateOf(false) }
     var passwordMissing by rememberSaveable { mutableStateOf(false) }
+    val haptics = rememberHaptics()
 
     LaunchedEffect(initialUsername) {
         if (username.isBlank()) username = initialUsername
@@ -177,7 +180,10 @@ fun LoginScreen(
                 }
                 Switch(
                     checked = rememberUsername,
-                    onCheckedChange = { rememberUsername = it },
+                    onCheckedChange = {
+                        haptics.perform(HapticEffect.SELECT)
+                        rememberUsername = it
+                    },
                     enabled = !busy,
                 )
             }

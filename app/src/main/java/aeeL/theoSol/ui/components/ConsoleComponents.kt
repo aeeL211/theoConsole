@@ -69,6 +69,8 @@ import aeeL.theoSol.domain.model.BusyOperation
 import aeeL.theoSol.domain.model.FeatureReport
 import aeeL.theoSol.domain.model.FeatureStatus
 import aeeL.theoSol.ui.LocalDebugDetails
+import aeeL.theoSol.ui.feedback.HapticEffect
+import aeeL.theoSol.ui.feedback.rememberHaptics
 import aeeL.theoSol.ui.theme.Dimens
 import aeeL.theoSol.ui.theme.PillShape
 import aeeL.theoSol.ui.theme.Spacing
@@ -121,9 +123,14 @@ fun AppCard(
     verticalArrangement: Arrangement.Vertical = Arrangement.spacedBy(Spacing.md),
     content: @Composable ColumnScope.() -> Unit,
 ) {
-    if (onClick != null) {
+    val haptics = rememberHaptics()
+    val click = onClick
+    if (click != null) {
         Card(
-            onClick = onClick,
+            onClick = {
+                haptics.perform(HapticEffect.TAP)
+                click()
+            },
             modifier = modifier.fillMaxWidth(),
             shape = MaterialTheme.shapes.medium,
             colors = CardDefaults.cardColors(containerColor = containerColor),
@@ -236,8 +243,12 @@ fun PrimaryButton(
     enabled: Boolean = true,
     loading: Boolean = false,
 ) {
+    val haptics = rememberHaptics()
     Button(
-        onClick = onClick,
+        onClick = {
+            haptics.perform(HapticEffect.TAP)
+            onClick()
+        },
         modifier = modifier
             .fillMaxWidth()
             .heightIn(min = Dimens.buttonHeight),
@@ -271,8 +282,12 @@ fun SecondaryButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
 ) {
+    val haptics = rememberHaptics()
     OutlinedButton(
-        onClick = onClick,
+        onClick = {
+            haptics.perform(HapticEffect.TAP)
+            onClick()
+        },
         modifier = modifier
             .fillMaxWidth()
             .heightIn(min = Dimens.buttonHeight),
@@ -422,11 +437,20 @@ fun AppListItem(
     trailing: (@Composable () -> Unit)? = null,
     showChevron: Boolean = true,
 ) {
+    val haptics = rememberHaptics()
+    val click = onClick
     Row(
         modifier = modifier
             .fillMaxWidth()
             .then(
-                if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier,
+                if (click != null) {
+                    Modifier.clickable {
+                        haptics.perform(HapticEffect.TAP)
+                        click()
+                    }
+                } else {
+                    Modifier
+                },
             )
             .heightIn(min = Dimens.listItemMinHeight)
             .padding(horizontal = Spacing.lg, vertical = Spacing.md),
@@ -470,7 +494,7 @@ fun AppListItem(
         }
         when {
             trailing != null -> trailing()
-            showChevron && onClick != null -> Icon(
+            showChevron && click != null -> Icon(
                 imageVector = Icons.Default.KeyboardArrowRight,
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -488,6 +512,7 @@ fun SettingsSwitchRow(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
 ) {
+    val haptics = rememberHaptics()
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -495,7 +520,10 @@ fun SettingsSwitchRow(
                 value = checked,
                 enabled = enabled,
                 role = Role.Switch,
-                onValueChange = onCheckedChange,
+                onValueChange = {
+                    haptics.perform(HapticEffect.SELECT)
+                    onCheckedChange(it)
+                },
             )
             .heightIn(min = Dimens.listItemMinHeight)
             .padding(horizontal = Spacing.lg, vertical = Spacing.md),
@@ -768,13 +796,17 @@ fun ConfirmDialog(
     onConfirm: () -> Unit,
     onDismiss: () -> Unit,
 ) {
+    val haptics = rememberHaptics()
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(title) },
         text = { Text(body) },
         confirmButton = {
             Button(
-                onClick = onConfirm,
+                onClick = {
+                    haptics.perform(HapticEffect.TAP)
+                    onConfirm()
+                },
                 shape = PillShape,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.error,
@@ -790,7 +822,12 @@ fun ConfirmDialog(
             }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) {
+            TextButton(
+                onClick = {
+                    haptics.perform(HapticEffect.TAP)
+                    onDismiss()
+                },
+            ) {
                 Text(stringResource(R.string.action_cancel))
             }
         },

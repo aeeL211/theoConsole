@@ -86,6 +86,8 @@ import aeeL.theoSol.domain.model.AppSettings
 import aeeL.theoSol.domain.model.ConsoleState
 import aeeL.theoSol.domain.model.TopUpOutcome
 import aeeL.theoSol.domain.model.TopUpReview
+import aeeL.theoSol.ui.feedback.HapticEffect
+import aeeL.theoSol.ui.feedback.rememberHaptics
 import aeeL.theoSol.ui.icons.DiamondFilled
 import aeeL.theoSol.ui.icons.DiamondOutlined
 import aeeL.theoSol.ui.screens.AccountScreen
@@ -214,6 +216,7 @@ private fun TheoConsoleApp(
     val backStackEntry by navController.currentBackStackEntryAsState()
     val navRoute = backStackEntry?.destination?.route ?: Routes.MAIN
     val snackbarHostState = remember { SnackbarHostState() }
+    val haptics = rememberHaptics()
     val failureResources = LocalResources.current
     val debugDetails = settings.debugDetails
     val immersive = navRoute == Routes.TOP_UP_SUCCESS
@@ -241,6 +244,7 @@ private fun TheoConsoleApp(
 
     LaunchedEffect(debugDetails, failureResources) {
         consoleViewModel.failures.collect { failure ->
+            haptics.perform(HapticEffect.REJECT)
             snackbarHostState.showSnackbar(
                 message = failureText(failureResources, failure, debugDetails),
                 duration = SnackbarDuration.Long,
@@ -460,6 +464,7 @@ private fun MainTabs(
         initialPage = currentPage,
         pageCount = { bottomDestinations.size },
     )
+    val haptics = rememberHaptics()
     val topUpPage = pageIndex(Routes.TOP_UP)
     val homePage = pageIndex(Routes.HOME)
     val latestPage by rememberUpdatedState(currentPage)
@@ -481,6 +486,7 @@ private fun MainTabs(
     LaunchedEffect(pagerState) {
         snapshotFlow { pagerState.settledPage }.collect { settled ->
             if (settled != latestPage) {
+                haptics.perform(HapticEffect.SELECT)
                 latestOnPageSelected(settled)
             }
         }
@@ -537,6 +543,7 @@ private fun ConsoleTopBar(
     onActivity: () -> Unit,
     onSettings: () -> Unit,
 ) {
+    val haptics = rememberHaptics()
     Surface(
         color = MaterialTheme.colorScheme.surfaceContainer,
         contentColor = MaterialTheme.colorScheme.onSurface,
@@ -562,7 +569,12 @@ private fun ConsoleTopBar(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 if (canGoBack) {
-                    IconButton(onClick = onBack) {
+                    IconButton(
+                        onClick = {
+                            haptics.perform(HapticEffect.TAP)
+                            onBack()
+                        },
+                    ) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
                             contentDescription = stringResource(R.string.action_back),
@@ -578,13 +590,23 @@ private fun ConsoleTopBar(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
-                IconButton(onClick = onActivity) {
+                IconButton(
+                    onClick = {
+                        haptics.perform(HapticEffect.TAP)
+                        onActivity()
+                    },
+                ) {
                     Icon(
                         imageVector = Icons.Default.List,
                         contentDescription = stringResource(R.string.action_activity),
                     )
                 }
-                IconButton(onClick = onSettings) {
+                IconButton(
+                    onClick = {
+                        haptics.perform(HapticEffect.TAP)
+                        onSettings()
+                    },
+                ) {
                     Icon(
                         imageVector = Icons.Default.Settings,
                         contentDescription = stringResource(R.string.action_settings),

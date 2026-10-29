@@ -43,6 +43,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -66,6 +67,9 @@ import aeeL.theoSol.ui.components.StatTile
 import aeeL.theoSol.ui.components.StatusChip
 import aeeL.theoSol.ui.components.StatusTone
 import aeeL.theoSol.ui.components.localizedNumber
+import aeeL.theoSol.ui.feedback.HapticEffect
+import aeeL.theoSol.ui.feedback.rememberHaptics
+import aeeL.theoSol.ui.feedback.rememberTopUpSuccessSound
 import aeeL.theoSol.ui.theme.Spacing
 
 @Composable
@@ -78,8 +82,18 @@ fun TopUpSuccessScreen(
         return
     }
 
+    val haptics = rememberHaptics()
+    val successSound = rememberTopUpSuccessSound()
     var revealed by remember { mutableStateOf(false) }
-    LaunchedEffect(Unit) { revealed = true }
+    var celebrated by rememberSaveable { mutableStateOf(false) }
+    LaunchedEffect(Unit) {
+        if (!celebrated) {
+            celebrated = true
+            haptics.perform(HapticEffect.CONFIRM)
+            successSound?.play()
+        }
+        revealed = true
+    }
 
     Box(
         modifier = Modifier

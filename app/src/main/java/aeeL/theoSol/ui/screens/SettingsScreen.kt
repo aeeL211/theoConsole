@@ -52,6 +52,8 @@ import aeeL.theoSol.ui.components.ListDivider
 import aeeL.theoSol.ui.components.ScreenColumn
 import aeeL.theoSol.ui.components.SectionHeader
 import aeeL.theoSol.ui.components.SettingsSwitchRow
+import aeeL.theoSol.ui.feedback.HapticEffect
+import aeeL.theoSol.ui.feedback.rememberHaptics
 import aeeL.theoSol.ui.theme.Dimens
 import aeeL.theoSol.ui.theme.Spacing
 import aeeL.theoSol.ui.theme.paletteAccent
@@ -71,6 +73,7 @@ fun SettingsScreen(
     onDeveloper: () -> Unit,
 ) {
     val dynamicSupported = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+    val haptics = rememberHaptics()
     val languageOptions = listOf(
         AppLanguage.SYSTEM to stringResource(R.string.settings_language_system),
         AppLanguage.ENGLISH to stringResource(R.string.settings_language_english),
@@ -123,7 +126,10 @@ fun SettingsScreen(
                             .selectable(
                                 selected = selected,
                                 role = Role.RadioButton,
-                                onClick = { onPalette(option) },
+                                onClick = {
+                                    haptics.perform(HapticEffect.SELECT)
+                                    onPalette(option)
+                                },
                             )
                             .padding(vertical = Spacing.xs),
                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -240,12 +246,16 @@ private fun <T> ChoiceRow(
     onSelected: (T) -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
+    val haptics = rememberHaptics()
     Box(modifier = Modifier.fillMaxWidth()) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .heightIn(min = Dimens.listItemMinHeight)
-                .clickable(role = Role.Button) { expanded = true }
+                .clickable(role = Role.Button) {
+                    haptics.perform(HapticEffect.TAP)
+                    expanded = true
+                }
                 .padding(horizontal = Spacing.lg, vertical = Spacing.md),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(Spacing.md),
@@ -277,6 +287,7 @@ private fun <T> ChoiceRow(
                     text = { Text(label) },
                     onClick = {
                         expanded = false
+                        haptics.perform(HapticEffect.SELECT)
                         onSelected(option)
                     },
                 )

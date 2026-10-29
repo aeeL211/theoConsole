@@ -26,7 +26,7 @@ ditangani di dalam proses Android tanpa runtime atau layanan tambahan.
 - `data/`: OkHttp transport, `TheoClient`, `ConsoleRepository`, DataStore,
   penyimpanan preferensi, dan log sesi.
 - `ui/`: Compose + Material 3, theme, navigasi, ViewModel, layar, komponen,
-  ikon, dan preview.
+  ikon, feedback haptik/suara, dan preview.
 - `di/`: modul Hilt.
 
 ### State dan event
@@ -122,6 +122,17 @@ ditangani di dalam proses Android tanpa runtime atau layanan tambahan.
   kontrol tidak memakai warna permukaan campuran.
 - Dynamic color hanya tersedia pada Android 12+ dan default mati. Memilih palet
   otomatis mematikan dynamic color; kontrolnya disembunyikan pada Android < 12.
+
+### Haptik dan suara
+
+- Haptik dipusatkan di `ui/feedback/Haptics.kt` dan memakai
+  `HapticFeedbackConstants`: tap untuk aksi, tick untuk pilihan/toggle, confirm
+  untuk konfirmasi/sukses, dan reject untuk kegagalan. Perangkat tetap mengikuti
+  pengaturan haptik sistem.
+- Efek suara top-up berhasil berada di `app/src/main/res/raw/berhasil.wav` dan
+  diputar sekali melalui `SoundPool` saat layar sukses tampil. Tidak ada izin
+  tambahan, volume mengikuti media perangkat, dan suara tidak diulang saat
+  rotasi.
 
 ### Edge-to-edge dan inset
 

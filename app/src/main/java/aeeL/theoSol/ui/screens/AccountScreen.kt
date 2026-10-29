@@ -39,6 +39,8 @@ import aeeL.theoSol.ui.components.StatusChip
 import aeeL.theoSol.ui.components.StatusTone
 import aeeL.theoSol.ui.components.accountFieldLabel
 import aeeL.theoSol.ui.components.sessionStatusLabel
+import aeeL.theoSol.ui.feedback.HapticEffect
+import aeeL.theoSol.ui.feedback.rememberHaptics
 import aeeL.theoSol.ui.theme.Dimens
 import aeeL.theoSol.ui.theme.PillShape
 import aeeL.theoSol.ui.theme.Spacing
@@ -51,6 +53,7 @@ fun AccountScreen(
     onStop: () -> Unit,
 ) {
     var confirmSignOut by rememberSaveable { mutableStateOf(false) }
+    val haptics = rememberHaptics()
     val account = state.account
     val session = state.session
 
@@ -192,7 +195,10 @@ fun AccountScreen(
             )
         }
         OutlinedButton(
-            onClick = { confirmSignOut = true },
+            onClick = {
+                haptics.perform(HapticEffect.TAP)
+                confirmSignOut = true
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .heightIn(min = Dimens.buttonHeight),

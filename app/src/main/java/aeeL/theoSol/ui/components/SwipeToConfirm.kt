@@ -39,11 +39,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.luminance
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
@@ -54,6 +52,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import aeeL.theoSol.ui.feedback.HapticEffect
+import aeeL.theoSol.ui.feedback.rememberHaptics
 import kotlin.math.roundToInt
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -66,12 +66,13 @@ fun SwipeToConfirm(
     modifier: Modifier = Modifier,
 ) {
     val density = LocalDensity.current
-    val haptics = LocalHapticFeedback.current
+    val haptics = rememberHaptics()
     val scope = rememberCoroutineScope()
     val confirmAction by rememberUpdatedState(onConfirmed)
     var widthPx by remember { mutableIntStateOf(0) }
     var offsetPx by remember { mutableFloatStateOf(0f) }
     var animationJob by remember { mutableStateOf<Job?>(null) }
+    var thresholdCrossed by remember { mutableStateOf(false) }
 
     val thumbSize = 56.dp
     val thumbInset = 8.dp
@@ -112,6 +113,7 @@ fun SwipeToConfirm(
         animationJob?.cancel()
         animationJob = null
         offsetPx = 0f
+        thresholdCrossed = false
     }
 
     Box(
@@ -134,6 +136,7 @@ fun SwipeToConfirm(
                     onDragStart = {
                         animationJob?.cancel()
                         animationJob = null
+                        thresholdCrossed = offsetPx >= maxOffset * trigger
                     },
                     onDragCancel = {
                         settle(
@@ -146,7 +149,7 @@ fun SwipeToConfirm(
                     },
                     onDragEnd = {
                         if (offsetPx >= maxOffset * trigger) {
-                            haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                            haptics.perform(HapticEffect.CONFIRM)
                             settle(
                                 target = maxOffset,
                                 animationSpec = tween(durationMillis = 140),
@@ -165,7 +168,15 @@ fun SwipeToConfirm(
                     },
                 ) { change, dragAmount ->
                     change.consume()
-                    offsetPx = (offsetPx + dragAmount).coerceIn(0f, maxOffset)
+                    val next = (offsetPx + dragAmount).coerceIn(0f, maxOffset)
+                    val crossed = next >= maxOffset * trigger
+                    if (crossed != thresholdCrossed) {
+                        thresholdCrossed = crossed
+                        if (crossed) {
+                            haptics.perform(HapticEffect.SELECT)
+                        }
+                    }
+                    offsetPx = next
                 }
             }
             .clearAndSetSemantics {
@@ -173,6 +184,7 @@ fun SwipeToConfirm(
                 contentDescription = text
                 if (enabled) {
                     onClick(label = text) {
+                        haptics.perform(HapticEffect.CONFIRM)
                         confirmAction()
                         true
                     }

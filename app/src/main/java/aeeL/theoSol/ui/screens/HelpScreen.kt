@@ -36,6 +36,8 @@ import aeeL.theoSol.ui.components.AppCard
 import aeeL.theoSol.ui.components.ListDivider
 import aeeL.theoSol.ui.components.ScreenColumn
 import aeeL.theoSol.ui.components.SectionHeader
+import aeeL.theoSol.ui.feedback.HapticEffect
+import aeeL.theoSol.ui.feedback.rememberHaptics
 import aeeL.theoSol.ui.theme.Spacing
 
 @Composable
@@ -84,6 +86,7 @@ private fun HelpItem(
     body: String,
 ) {
     var expanded by rememberSaveable(title) { mutableStateOf(false) }
+    val haptics = rememberHaptics()
     val arrowRotation by animateFloatAsState(
         targetValue = if (expanded) 180f else 0f,
         animationSpec = tween(180),
@@ -93,7 +96,10 @@ private fun HelpItem(
         modifier = Modifier
             .fillMaxWidth()
             .animateContentSize()
-            .clickable { expanded = !expanded }
+            .clickable {
+                haptics.perform(HapticEffect.TAP)
+                expanded = !expanded
+            }
             .padding(horizontal = Spacing.lg, vertical = Spacing.md),
     ) {
         Row(
